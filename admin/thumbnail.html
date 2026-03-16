@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -531,47 +531,54 @@
         }
 
         /* Mobile Adjustments */
-        @media (max-width: 1024px) {
-            :root {
-                --sidebar-width: 240px;
-            }
+        .menu-toggle { display: none; background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 10px; color: var(--text-main); font-size: 20px; cursor: pointer; align-items: center; justify-content: center; }
 
-            .admin-container {
-                padding: 20px;
-            }
+        @media (max-width: 1024px) {
+            :root { --sidebar-width: 240px; }
+            .admin-container { padding: 20px; }
         }
 
         @media (max-width: 768px) {
-            .main-wrapper {
-                flex-direction: column;
-            }
+            body { display: block; overflow: auto; }
+            .navbar { height: 60px; padding: 0 16px; }
+            .logo { font-size: 16px; }
+            .menu-toggle { display: flex; }
+            .navbar-right { gap: 8px; }
+            #userEmail, .navbar-right span:not(.logo) { display: none; }
+            
+            .btn-primary span { margin-right: 0; }
+            .btn-primary span + span { display: none; } /* Hide text if present */
+            #thumbnailGeneratorBtn { padding: 10px; width: 40px; height: 40px; border-radius: 10px; overflow: hidden; }
+            #thumbnailGeneratorBtn span { font-size: 18px; }
+            #thumbnailGeneratorBtn span + span, #thumbnailGeneratorBtn b { display: none; }
 
+            .main-wrapper { display: block; }
             .sidebar {
+                position: fixed;
+                top: 60px;
+                left: 0;
                 width: 100%;
-                height: auto;
-                padding: 16px;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
-
-            .table-grid {
-                display: flex;
-                overflow-x: auto;
-                padding-bottom: 8px;
-            }
-
-            .table-btn {
-                width: auto;
-                white-space: nowrap;
-            }
-
-            .sidebar-section-title {
+                height: calc(100vh - 60px);
+                z-index: 1000;
+                background: white;
                 display: none;
+                flex-direction: column;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             }
-
-            .dashboard-stats {
-                grid-template-columns: 1fr 1fr;
-            }
+            .sidebar.active { display: flex; }
+            
+            .admin-container { padding: 16px; width: 100%; }
+            .dashboard-stats { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+            .stat-card { padding: 16px; }
+            .stat-value { font-size: 22px; }
+            
+            .section-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .search-bar { width: 100%; }
+            .search-bar input { max-width: 100%; }
+            
+            .photos-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+            
+            .modal-content { padding: 20px; width: 95%; max-height: 90vh; overflow-y: auto; }
         }
 
         @media (max-width: 480px) {
@@ -685,11 +692,14 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <div class="logo">✨ Admin Dashboard</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <div class="logo">✨ Admin Dashboard</div>
+            </div>
             <div class="navbar-right">
                 <button id="thumbnailGeneratorBtn" class="btn btn-primary"
                     style="background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">
-                    <span>🖼️</span> Generate Thumbnails
+                    <span>🖼️</span> <span class="hide-mobile">Generate Thumbnails</span>
                 </button>
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
                     <span class="user-email" id="userEmail"
@@ -705,54 +715,11 @@
     <div class="main-wrapper">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div>
-                <h3 class="sidebar-section-title">📚 Post Categories</h3>
-                <div class="table-grid">
-                    <button class="table-btn active" data-table="post_site">All Posts</button>
+            <div id="dynamicSidebar">
+                <h3 class="sidebar-section-title" id="sidebarTitle">📁 Loading Categories...</h3>
+                <div class="table-grid" id="sidebarSections">
+                    <!-- Dynamic sections will be injected here -->
                 </div>
-            </div>
-
-            <div>
-                <h3 class="sidebar-section-title">🇧🇩 Bangla Quotes</h3>
-                <div class="table-grid">
-                    <button class="table-btn" data-table="bangla_quotes_1">Category 1</button>
-                    <button class="table-btn" data-table="bangla_quotes_2">Category 2</button>
-                    <button class="table-btn" data-table="bangla_quotes_3">Category 3</button>
-                    <button class="table-btn" data-table="bangla_quotes_4">Category 4</button>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="sidebar-section-title">📸 Photography</h3>
-                <div class="table-grid">
-                    <button class="table-btn" data-table="photography_1">Album 1</button>
-                    <button class="table-btn" data-table="photography_2">Album 2</button>
-                    <button class="table-btn" data-table="photography_3">Album 3</button>
-                    <button class="table-btn" data-table="photography_4">Album 4</button>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="sidebar-section-title">🎨 Illustrations</h3>
-                <div class="table-grid">
-                    <button class="table-btn" data-table="illustration_1">Modern 1</button>
-                    <button class="table-btn" data-table="illustration_2">Modern 2</button>
-                    <button class="table-btn" data-table="dotted_illustration_1">Dotted 1</button>
-                    <button class="table-btn" data-table="dotted_illustration_2">Dotted 2</button>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="sidebar-section-title">🇬🇧 English Quotes</h3>
-                <div class="table-grid">
-                    <button class="table-btn" data-table="english_quote_1">Quotes 1</button>
-                    <button class="table-btn" data-table="english_quote_2">Quotes 2</button>
-                </div>
-            </div>
-
-            <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
-                <h3 class="sidebar-section-title">⚙️ Settings</h3>
-                <button class="table-btn" data-table="id_password">User Access</button>
             </div>
         </aside>
 
@@ -1632,7 +1599,8 @@
         // ============================================
     </script>
     <script>
-        let currentTable = 'post_site';
+        let currentTable = 'kabirdatabase';
+        let currentSection = '';
         const tableNames = {
             'bangla_quotes_1': 'Bangla Quotes 1',
             'bangla_quotes_2': 'Bangla Quotes 2',
@@ -1649,16 +1617,10 @@
             'illustration_2': 'Illustration 2',
             'english_quote_1': 'English Quote 1',
             'english_quote_2': 'English Quote 2',
-            'id_password': 'Credentials',
         };
 
-        const tablesWithSection = ['post_site', 'photography_1', 'photography_2', 'photography_3', 'photography_4', 'dotted_illustration_1', 'dotted_illustration_2', 'illustration_1', 'illustration_2', 'english_quote_1', 'english_quote_2'];
-
-        // Tables with dropdown section (Post Site only)
-        const tablesWithDropdownSection = ['post_site'];
-
-        // Tables with text input section (Photography and Quote tables)
-        const tablesWithTextSection = ['photography_1', 'photography_2', 'photography_3', 'photography_4', 'dotted_illustration_1', 'dotted_illustration_2', 'illustration_1', 'illustration_2', 'english_quote_1', 'english_quote_2'];
+        // Configuration constants for the unified database
+        const tablesWithSection = ['kabirdatabase'];
 
         // Pagination variables
         let currentPage = 1;
@@ -1746,43 +1708,40 @@
             loadPhotos();
         });
 
-        // Table selector
+        // Table/Section selector
+        function selectSection(section) {
+            currentTable = 'kabirdatabase';
+            currentSection = section;
+            currentPage = 1;
+            allPhotos = [];
+            
+            // Update UI
+            document.querySelectorAll('.table-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.table-btn[data-section="${section}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const displayName = tableNames[section] || formatSectionId(section);
+            const titleEl = document.getElementById('sectionTitle');
+            if (titleEl) titleEl.textContent = '📷 Manage Items — ' + displayName;
+
+            updateStats();
+            loadPhotos();
+        }
+
         function selectTable(table) {
             currentTable = table;
-            currentPage = 1;  // Reset to first page
+            currentSection = '';
+            currentPage = 1;
             allPhotos = [];
-            totalItems = 0;
 
-            // Update active button using data attribute so event object isn't required
             document.querySelectorAll('.table-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.querySelector(`.table-btn[data-table="${table}"]`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            const tableName = tableNames[table] || table;
-            if (document.getElementById('currentTableName')) {
-                document.getElementById('currentTableName').textContent = tableName;
-            }
-            if (document.getElementById('currentTableNameModal')) {
-                document.getElementById('currentTableNameModal').textContent = tableName;
-            }
-
-            // Toggle Thumbnail Generator button and section title for credentials view
-            const thumbnailBtn = document.getElementById('thumbnailGeneratorBtn');
-            const isCredentials = currentTable === 'id_password';
-            if (thumbnailBtn) thumbnailBtn.style.display = isCredentials ? 'none' : 'inline-block';
-
             const titleEl = document.getElementById('sectionTitle');
-            if (titleEl) titleEl.textContent = isCredentials ? '⚙ Settings — Credentials' : '📷 Manage Items';
+            if (titleEl) titleEl.textContent = '📷 Manage Items';
 
-            // Update search placeholder (informational; search is global)
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.placeholder = isCredentials ? 'Search by user_id...' : 'Search by title or description...';
-            }
-
-            // update quick stats
             updateStats();
-
             loadPhotos();
         }
 
@@ -1797,30 +1756,58 @@
         }
 
         // Attach data-driven event listeners to sidebar buttons to avoid load-order issues
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.table-btn').forEach(btn => {
-                const table = btn.getAttribute('data-table');
-                if (table) btn.addEventListener('click', () => selectTable(table));
-            });
-
-            // Ensure initial active state
-            const initial = document.querySelector(`.table-btn[data-table="${currentTable}"]`);
-            if (initial) initial.classList.add('active');
-
-            // Simple toast container
-            if (!document.getElementById('toastContainer')) {
-                const container = document.createElement('div');
-                container.id = 'toastContainer';
-                container.style.position = 'fixed';
-                container.style.right = '20px';
-                container.style.bottom = '20px';
-                container.style.zIndex = 9999;
-                document.body.appendChild(container);
-            }
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initial auth check already handled by window.onload
+            
+            // Load dynamic categories
+            await loadSidebarCategories();
 
             // Initial stats update
             updateStats();
         });
+
+        async function loadSidebarCategories() {
+            const sidebarDiv = document.getElementById('sidebarSections');
+            const titleEl = document.getElementById('sidebarTitle');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('kabirdatabase')
+                    .select('section');
+
+                if (error) throw error;
+
+                const uniqueSections = [...new Set(data.map(item => item.section).filter(Boolean))].sort();
+
+                if (uniqueSections.length === 0) {
+                    sidebarDiv.innerHTML = '<p style="padding:10px; font-size:13px; color:#64748b;">No categories found.</p>';
+                } else {
+                    sidebarDiv.innerHTML = uniqueSections.map(sectionId => {
+                        const displayName = tableNames[sectionId] || formatSectionId(sectionId);
+                        const isActive = sectionId === currentSection ? 'active' : '';
+                        return `<button class="table-btn ${isActive}" data-section="${sectionId}" onclick="selectSection('${sectionId}')">${displayName}</button>`;
+                    }).join('');
+                    
+                    // Auto-select first category if none selected
+                    if (!currentSection && uniqueSections.length > 0) {
+                        selectSection(uniqueSections[0]);
+                    }
+                }
+                titleEl.textContent = '📚 Post Categories';
+                
+                // Set up sidebar active class for current section
+                document.querySelectorAll('.table-btn').forEach(btn => {
+                    if (btn.dataset.section === currentSection) btn.classList.add('active');
+                });
+            } catch (err) {
+                console.error('Sidebar error:', err);
+                titleEl.textContent = '❌ Error loading';
+            }
+        }
+
+        function formatSectionId(id) {
+            return id.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
 
         // Simple toast helper
         function showToast(message, type = 'info') {
@@ -1857,10 +1844,12 @@
             grid.style.opacity = '0.6';
 
             try {
-                const { data, error } = await supabase
-                    .from(currentTable)
-                    .select('*')
-                    .order('image_iid', { ascending: true });
+                let query = supabase.from(currentTable).select('*');
+                if (currentSection) {
+                    query = query.eq('section', currentSection);
+                }
+                
+                const { data, error } = await query.order('image_iid', { ascending: true });
 
                 if (error) {
                     if (isAuthError(error)) {
@@ -1910,12 +1899,8 @@
 
         // Render router for current table
         function renderCurrentView() {
-            if (currentTable === 'id_password') {
-                displayCredentials();
-            } else {
-                updateStatistics();
-                displayPhotos();
-            }
+            updateStatistics();
+            displayPhotos();
         }
 
         // Update statistics
@@ -1981,51 +1966,6 @@
                 grid.innerHTML = gridHTML;
                 grid.style.opacity = '1';
             });
-        }
-
-        // Display id_password table (read-only)
-        function displayCredentials() {
-            const grid = document.getElementById('photosGrid');
-
-            if (allPhotos.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 80px 20px; background: white; border-radius: 16px;">No credentials found</div>';
-                return;
-            }
-
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const paginated = allPhotos.slice(startIndex, endIndex);
-
-            const rows = paginated.map((row) => `
-                <tr>
-                    <td style="padding: 16px; border-bottom: 1px solid var(--border); font-weight: 600; font-family: 'Outfit', sans-serif;">${row.user_id || ''}</td>
-                    <td style="padding: 16px; border-bottom: 1px solid var(--border); color: var(--primary); font-family: monospace; letter-spacing: 1px;">••••••••</td>
-                    <td style="padding: 16px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">${row.created_at ? new Date(row.created_at).toLocaleDateString() : ''}</td>
-                    <td style="padding: 16px; border-bottom: 1px solid var(--border); text-align: right;">
-                        <button class="btn-sm btn-edit" onclick="alert('Password: ' + '${row.password}')">Show</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            const tableHtml = `
-                <div style="grid-column: 1/-1; background: white; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead style="background: #f8fafc; border-bottom: 1px solid var(--border);">
-                            <tr>
-                                <th style="text-align: left; padding: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Username</th>
-                                <th style="text-align: left; padding: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Password</th>
-                                <th style="text-align: left; padding: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Created</th>
-                                <th style="text-align: right; padding: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rows}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            grid.innerHTML = tableHtml;
         }
 
         // Escape quotes for onclick
@@ -2095,28 +2035,10 @@
         });
 
         function openThumbnailModal() {
-            const tableNames = {
-                'bangla_quotes_1': 'Bangla Quotes 1',
-                'bangla_quotes_2': 'Bangla Quotes 2',
-                'bangla_quotes_3': 'Bangla Quotes 3',
-                'bangla_quotes_4': 'Bangla Quotes 4',
-                'photography_1': 'Photography 1',
-                'photography_2': 'Photography 2',
-                'photography_3': 'Photography 3',
-                'photography_4': 'Photography 4',
-                'post_site': 'All Posts',
-                'dotted_illustration_1': 'Dotted Illustration 1',
-                'dotted_illustration_2': 'Dotted Illustration 2',
-                'illustration_1': 'Illustration 1',
-                'illustration_2': 'Illustration 2',
-                'english_quote_1': 'English Quote 1',
-                'english_quote_2': 'English Quote 2',
-                'id_password': 'User Access (Read-only)',
-            };
-
+            const tableNameDisplay = tableNames[currentSection] || formatSectionId(currentSection) || currentSection || currentTable;
             const currentTableNameEl = document.getElementById('thumbnailCurrentTable');
             if (currentTableNameEl) {
-                currentTableNameEl.textContent = tableNames[currentTable] || currentTable;
+                currentTableNameEl.textContent = tableNameDisplay;
             }
 
             // Reset UI
@@ -2150,6 +2072,27 @@
                 window.location.href = 'login.html';
             }
         });
+
+        // Mobile Menu Toggle logic
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.sidebar');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuToggle.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+            });
+        }
+
+        // Wrap selectSection to close sidebar on mobile
+        const originalSelectSection = selectSection;
+        selectSection = function(id) {
+            originalSelectSection(id);
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+                if (menuToggle) menuToggle.textContent = '☰';
+            }
+        };
 
         // Close modal on outside click
         window.addEventListener('click', function (event) {

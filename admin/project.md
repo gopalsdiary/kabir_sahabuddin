@@ -12,8 +12,8 @@
   thumbnail_url text null,
 ) TABLESPACE pg_default;
 
-section >> (Dropdown হবে)
-bangla_quotes_1, bangla_quotes_2, bangla_quotes_3, bangla_quotes_4, photography_1, photography_2, illustration_1, illustration_2, english_quote_1, english_quote_2, story_1, story_2, story_3 
+section >>  
+bangla_quotes_1, bangla_quotes_2, bangla_quotes_3, bangla_quotes_4, photography_1, photography_2, illustration_1, illustration_2, english_quote_1, english_quote_2, story_1, story_2, story_3 , others
 
 
 image_url > মূল ফাইল (মূল ফাইল আপলোড করবে)
