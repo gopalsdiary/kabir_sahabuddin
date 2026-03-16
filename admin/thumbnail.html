@@ -1489,25 +1489,22 @@
             select(columns = '*') {
                 this.selectColumns = columns;
                 this._isSelectMode = true;
-                const self = this;
-                const executePromise = this._execute('GET', null);
-
-                executePromise.order = function (column, options = {}) {
-                    self.orderByColumn = column;
-                    self.orderAsc = options.ascending !== false;
-                    return self._execute('GET', null);
-                };
-
-                return executePromise;
+                return this;
             }
 
             order(column, options = {}) {
                 this.orderByColumn = column;
                 this.orderAsc = options.ascending !== false;
-                if (this._isSelectMode) {
-                    return this._execute('GET', null);
-                }
                 return this;
+            }
+
+            async then(resolve, reject) {
+                try {
+                    const result = await this._execute('GET', null);
+                    resolve(result);
+                } catch (err) {
+                    reject(err);
+                }
             }
 
             eq(column, value) {
@@ -1600,7 +1597,7 @@
     </script>
     <script>
         let currentTable = 'kabirdatabase';
-        let currentSection = '';
+        let currentSection = 'all';
         const tableNames = {
             'bangla_quotes_1': 'Bangla Quotes 1',
             'bangla_quotes_2': 'Bangla Quotes 2',
@@ -1782,16 +1779,16 @@
                 if (uniqueSections.length === 0) {
                     sidebarDiv.innerHTML = '<p style="padding:10px; font-size:13px; color:#64748b;">No categories found.</p>';
                 } else {
-                    sidebarDiv.innerHTML = uniqueSections.map(sectionId => {
+                    const allActive = currentSection === 'all' ? 'active' : '';
+                    let buttonsHtml = `<button class="table-btn ${allActive}" data-section="all" onclick="selectSection('all')">✨ All Items</button>`;
+                    
+                    buttonsHtml += uniqueSections.map(sectionId => {
                         const displayName = tableNames[sectionId] || formatSectionId(sectionId);
                         const isActive = sectionId === currentSection ? 'active' : '';
                         return `<button class="table-btn ${isActive}" data-section="${sectionId}" onclick="selectSection('${sectionId}')">${displayName}</button>`;
                     }).join('');
-                    
-                    // Auto-select first category if none selected
-                    if (!currentSection && uniqueSections.length > 0) {
-                        selectSection(uniqueSections[0]);
-                    }
+
+                    sidebarDiv.innerHTML = buttonsHtml;
                 }
                 titleEl.textContent = '📚 Post Categories';
                 
@@ -1845,7 +1842,7 @@
 
             try {
                 let query = supabase.from(currentTable).select('*');
-                if (currentSection) {
+                if (currentSection && currentSection !== 'all') {
                     query = query.eq('section', currentSection);
                 }
                 
