@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Kobir Lyrics</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Using the same style for consistency -->
+    <link rel="stylesheet" href="bangla_style.css?v=1.3">
+    
+    <style>
+        :root {
+            --primary: #0095f6;
+            --accent: #ff007a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+        }
+
+        .app-bar {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: #1a1a1a !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: none !important;
+        }
+
+        .app-title {
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.2rem !important;
+        }
+
+        .icon-button {
+            color: #444 !important;
+        }
+
+        .section-header {
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .section-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+        }
+
+        .section-header p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 100px 20px;
+            color: #888;
+        }
+
+        /* Override some bangla_style.css defaults if needed */
+        .photo-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <header class="app-bar">
+        <div class="app-bar-content">
+            <a href="../home.html" class="icon-button" aria-label="Back">
+                <span class="material-icons">arrow_back</span>
+            </a>
+            <h1 class="app-title" id="displayTitle">Gallery</h1>
+            <div class="spacer"></div>
+            <a href="../home.html" class="icon-button" aria-label="Home">
+                <span class="material-icons">home</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="section-header">
+            <h1 id="sectionHeading">Loading...</h1>
+            <p id="itemCount">Exploring our collection</p>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="gallery" class="gallery-grid">
+            <!-- Photos will be loaded here dynamically -->
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading-indicator">
+            <div class="circular-progress"></div>
+            <p style="margin-top: 10px; color: #666;">Loading magic...</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container" id="pagination" style="display: none;">
+            <button id="prevBtn" class="fab mini" aria-label="Previous Page">
+                <span class="material-icons">chevron_left</span>
+            </button>
+            <div id="pageNumbers" class="page-numbers"></div>
+            <button id="nextBtn" class="fab mini" aria-label="Next Page">
+                <span class="material-icons">chevron_right</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Lightbox Overlay -->
+    <div id="lightbox" class="lightbox-overlay">
+        <div class="lightbox-content">
+            <button class="close-btn" onclick="closeLightbox()" aria-label="Close">
+                <span class="material-icons">close</span>
+            </button>
+            
+            <div class="lightbox-image-wrapper">
+                 <img id="lightboxImage" src="" alt="View">
+                 <button class="nav-btn prev" onclick="prevImage()">
+                    <span class="material-icons">arrow_back</span>
+                 </button>
+                 <button class="nav-btn next" onclick="nextImage()">
+                    <span class="material-icons">arrow_forward</span>
+                 </button>
+            </div>
+            
+            <div class="lightbox-details">
+                <h2 id="lightboxTitle">Title</h2>
+                <div class="lightbox-controls">
+                     Image <span id="imageCounter">1</span> of <span id="totalCounter">1</span>
+                </div>
+                <p id="lightboxDescription">Description goes here...</p>
+                
+                <div style="margin-top: auto;">
+                    <button class="btn-download" onclick="downloadImage()">
+                        <span class="material-icons">download</span> Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration & Logic -->
+    <script>
+        // Get section from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section') || 'bangla_quotes_1';
+        
+        // Humanize section name for display
+        const sectionDisplayNames = {
+            'bangla_quotes_1': 'Bengali Quotes I',
+            'bangla_quotes_2': 'Bengali Quotes II',
+            'bangla_quotes_3': 'Bengali Quotes III',
+            'bangla_quotes_4': 'Bengali Quotes IV',
+            'photography_1': 'Photography I',
+            'photography_2': 'Photography II',
+            'illustration_1': 'Digital Illustration I',
+            'illustration_2': 'Digital Illustration II',
+            'english_quote_1': 'English Quotes I',
+            'english_quote_2': 'English Quotes II',
+            'story_1': 'True Stories I',
+            'story_2': 'True Stories II',
+            'story_3': 'True Stories III',
+            'others': 'Special Collection'
+        };
+
+        const displayName = sectionDisplayNames[section] || section.replace(/_/g, ' ').toUpperCase();
+        document.title = `${displayName} - Kobir Lyrics`;
+        document.getElementById('displayTitle').textContent = displayName;
+        document.getElementById('sectionHeading').textContent = displayName;
+
+        // Configuration for modified bangla_script.js (we'll make it work with sections)
+        window.TABLE_NAME = 'kabirdatabase'; // Force single table
+        window.SECTION_FILTER = section;     // Pass section filter
+        window.PHOTOS_PER_PAGE = 60; 
+    </script>
+    
+    <!-- We need a modified version or just use the existing one if we can trick it -->
+    <script src="gallery_script.js"></script>
+</body>
+</html>
