@@ -1,0 +1,511 @@
+/* Flutter-like Material Design Theme */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root {
+    --primary-color: #eeb600;
+    --primary-variant: #3700b3;
+    --secondary-color: #03dac6;
+    --background-color: #f5f5f5;
+    --surface-color: #ffffff;
+    --error-color: #b00020;
+    --on-primary: #ffffff;
+    --on-surface: #000000;
+    --elevation-1: 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.20);
+    --elevation-2: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.12), 0 1px 8px 0 rgba(0, 0, 0, 0.20);
+    --elevation-4: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--on-surface);
+    line-height: 1.5;
+}
+
+/* App Bar */
+.app-bar {
+    background-color: var(--primary-color);
+    color: var(--on-primary);
+    position: relative;
+    z-index: 1000;
+    box-shadow: var(--elevation-4);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.app-bar-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.app-title {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.icon-button {
+    color: inherit;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+/* Gallery Grid (Masonry using CSS Columns) */
+.gallery-grid {
+    column-count: 5;
+    column-gap: 12px;
+}
+
+/* Photo Card */
+.photo-card {
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    break-inside: avoid;
+    box-shadow: var(--elevation-1);
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-card:hover {
+    box-shadow: var(--elevation-2);
+    transform: translateY(-2px);
+}
+
+.photo-image {
+    width: 100%;
+    position: relative;
+    background-color: #eee;
+    min-height: 150px;
+    /* Placeholder height */
+}
+
+/* Image styling - "Size jemon temon" means we don't force aspect ratio via CSS padding hack if we use masonry */
+/* However, to avoid layout shift, bangla_script.js uses lazy loading. */
+/* The script MIGHT insert image with simple src. 
+   If we want "natural size", we just let img be width 100% and height auto. */
+
+.photo-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.photo-image img.loaded {
+    opacity: 1;
+}
+
+/* Info Section */
+.photo-info {
+    padding: 10px;
+}
+
+.photo-info h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    letter-spacing: 0.1px;
+}
+
+.photo-info p {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.2px;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    display: none;
+    /* Controlled by JS */
+    text-align: center;
+    padding: 20px;
+}
+
+.circular-progress {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(98, 0, 238, 0.2);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+    gap: 16px;
+}
+
+.fab.mini {
+    width: 40px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    box-shadow: var(--elevation-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.fab.mini:hover {
+    background-color: #04efd9;
+    transform: scale(1.1);
+}
+
+.fab.mini:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.page-number {
+    border: none;
+    background: transparent;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.page-number.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.page-number:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lightbox-content {
+    background-color: var(--surface-color);
+    border-radius: 24px;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--elevation-4);
+    width: 100%;
+    /* Full width on mobile */
+}
+
+@media (min-width: 768px) {
+    .lightbox-content {
+        flex-direction: row;
+        width: auto;
+    }
+}
+
+.lightbox-image-wrapper {
+    flex: 2;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 300px;
+}
+
+.lightbox-image-wrapper img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.lightbox-details {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    background: var(--surface-color);
+}
+
+.lightbox-details h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.lightbox-details p {
+    color: rgba(0, 0, 0, 0.6);
+    flex-grow: 1;
+}
+
+.lightbox-controls {
+    margin: 16px 0;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.btn-download {
+    background-color: var(--secondary-color);
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: box-shadow 0.2s;
+    width: 100%;
+}
+
+.btn-download:hover {
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn.prev {
+    left: 16px;
+}
+
+.nav-btn.next {
+    right: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gallery-grid {
+        column-count: 4;
+        /* Increased to 4 as requested to be smaller */
+        column-gap: 6px;
+    }
+
+    .container {
+        padding: 0 8px;
+        margin-top: 16px;
+    }
+
+    .photo-card {
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .photo-info {
+        padding: 8px;
+    }
+
+    .photo-info h3 {
+        font-size: 12px;
+    }
+
+    .photo-info p {
+        font-size: 10px;
+    }
+
+    .lightbox-content {
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .lightbox-image-wrapper {
+        flex: 1;
+        background: black;
+    }
+
+    .lightbox-details {
+        flex: 0 0 auto;
+        padding: 16px;
+        padding-bottom: 70px;
+        /* Space for bottom buttons */
+        background: white;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        margin-top: -16px;
+        /* Overlap effect */
+        position: relative;
+        /* Context for buttons */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Move Nav Buttons to Bottom Details Panel on Mobile */
+    .lightbox-image-wrapper {
+        position: static;
+        /* Release buttons from top section */
+    }
+
+    .nav-btn {
+        top: auto;
+        bottom: 20px;
+        /* Position in the white details area */
+        background: transparent;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        width: 36px;
+        height: 36px;
+        transform: none;
+        z-index: 2005;
+    }
+
+    .nav-btn.prev {
+        left: 20px;
+    }
+
+    .nav-btn.next {
+        right: 20px;
+    }
+
+    /* Make download button extremely small and centered at bottom */
+    .btn-download {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        padding: 0;
+        font-size: 0;
+        /* Hides text */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: unset;
+        margin: 0;
+        z-index: 2006;
+    }
+
+    .btn-download .material-icons {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .lightbox-controls {
+        text-align: center;
+        font-size: 12px;
+    }
+}

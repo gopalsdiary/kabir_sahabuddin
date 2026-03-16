@@ -1,0 +1,1510 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gopal's Diary</title>
+    <meta name="description" content="Gopals Diary — Free to download and use beautiful aesthetic content.">
+    <meta name="theme-color" content="#eeb600">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Performance -->
+    <link rel="dns-prefetch" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co">
+    <link rel="preconnect" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://i.ibb.co">
+    <link rel="preconnect" href="https://i.ibb.co" crossorigin>
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #eeb600;
+            --primary-dark: #c99a00;
+            --secondary: #03dac6;
+            --bg: #f5f5f5;
+            --surface: #ffffff;
+            --on-surface: #1a1a1a;
+            --on-surface-dim: rgba(0,0,0,0.6);
+            --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+            --elevation-2: 0 3px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
+            --elevation-4: 0 6px 12px rgba(0,0,0,0.12), 0 4px 6px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* ===== Reset ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--on-surface);
+            line-height: 1.5;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        /* ===== App Bar ===== */
+        .app-bar {
+            background: var(--primary);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--elevation-4);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            transition: transform 0.3s ease;
+        }
+        .app-bar.hidden {
+            transform: translateY(-100%);
+        }
+        .app-bar-content {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .app-title {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.15px;
+            white-space: nowrap;
+        }
+        .spacer { flex: 1; }
+        .icon-btn {
+            color: inherit;
+            text-decoration: none;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.15); }
+
+        /* ===== Stats Bar (bottom) ===== */
+        .stats-bar {
+            max-width: 1400px;
+            margin: 12px auto;
+            padding: 0 12px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--on-surface-dim);
+        }
+
+        /* ===== Gallery Container ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+
+        /* ===== Masonry Gallery ===== */
+        .gallery-grid {
+            column-count: 5;
+            column-gap: 10px;
+        }
+
+        /* ===== Skeleton Loading ===== */
+        @keyframes shimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+        .skeleton-card {
+            break-inside: avoid;
+            margin-bottom: 10px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+            background-size: 800px 100%;
+            animation: shimmer 1.4s ease infinite;
+        }
+        .skeleton-card .sk-img { width: 100%; background: #e8e8e8; }
+        .skeleton-card .sk-info { padding: 10px; }
+        .skeleton-card .sk-title { height: 12px; background: #e0e0e0; border-radius: 4px; width: 70%; margin-bottom: 6px; }
+        .skeleton-card .sk-desc { height: 10px; background: #e8e8e8; border-radius: 4px; width: 50%; }
+
+        /* ===== Photo Card (bangla_script style) ===== */
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .photo-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            break-inside: avoid;
+            box-shadow: var(--elevation-1);
+            transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.25s;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            animation: cardFadeIn 0.45s ease backwards;
+        }
+        .photo-card:hover {
+            box-shadow: var(--elevation-4);
+            transform: translateY(-3px);
+        }
+
+        .photo-image {
+            width: 100%;
+            position: relative;
+            background: #eee;
+            min-height: 120px;
+            overflow: hidden;
+        }
+        .photo-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+        .photo-image img.loaded {
+            opacity: 1;
+        }
+
+        /* Category badge on card */
+        .photo-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .photo-info {
+            padding: 8px 10px;
+        }
+        .photo-info h3 {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 1px;
+            letter-spacing: 0.1px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .photo-info p {
+            font-size: 10px;
+            color: var(--on-surface-dim);
+            letter-spacing: 0.2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== Loading Indicator ===== */
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 24px;
+        }
+        .loading-indicator.visible { display: block; }
+        .circular-progress {
+            display: inline-block;
+            width: 36px; height: 36px;
+            border: 3px solid rgba(238,182,0,0.2);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== Pagination ===== */
+        .pagination-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 10px;
+            background: var(--surface);
+            border-radius: 28px;
+            box-shadow: var(--elevation-2);
+        }
+        .page-btn {
+            min-width: 36px; height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--on-surface);
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+            padding: 0 6px;
+            font-family: inherit;
+        }
+        .page-btn:hover:not(:disabled) { background: rgba(238,182,0,0.12); }
+        .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .page-btn.active { background: var(--primary); color: #fff; }
+        .page-info {
+            font-size: 12px;
+            color: var(--on-surface-dim);
+            font-weight: 500;
+            padding: 0 4px;
+        }
+
+        /* ===== Bottom Filter Bar ===== */
+        .bottom-bar {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            z-index: 200;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+            padding: 8px 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        .bottom-bar.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .filter-scroll {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 0 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-chip {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: var(--surface);
+            color: var(--on-surface);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-chip.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(238,182,0,0.3);
+        }
+
+        /* ===== Lightbox ===== */
+        .lightbox-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .lightbox-content {
+            background: var(--surface);
+            border-radius: 20px;
+            max-width: 92vw;
+            max-height: 92vh;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--elevation-4);
+        }
+        .lightbox-image-wrapper {
+            flex: 2;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 300px;
+        }
+        .lightbox-image-wrapper img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            transition: opacity 0.3s;
+        }
+        .lightbox-details {
+            flex: 0 0 280px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            overflow-y: auto;
+        }
+        .lightbox-details h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .lightbox-details .lb-desc {
+            font-size: 13px;
+            color: var(--on-surface-dim);
+            line-height: 1.5;
+            flex: 1;
+        }
+        .lightbox-details .lb-meta {
+            font-size: 11px;
+            color: rgba(0,0,0,0.4);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+        .lightbox-controls {
+            margin: 12px 0;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--on-surface-dim);
+        }
+        .btn-download {
+            background: var(--secondary);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: box-shadow 0.2s, transform 0.2s;
+            width: 100%;
+            margin-top: auto;
+        }
+        .btn-download:hover { box-shadow: 0 4px 12px rgba(3,218,198,0.4); transform: translateY(-1px); }
+        .close-btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: #fff;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.45);
+            border: none;
+            color: #fff;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 5;
+        }
+        .nav-btn:hover { background: rgba(0,0,0,0.7); }
+        .nav-btn.prev { left: 12px; }
+        .nav-btn.next { right: 12px; }
+
+        /* ===== Responsive ===== */
+        @media (min-width: 1600px) {
+            .gallery-grid { column-count: 7; }
+        }
+        @media (max-width: 1200px) {
+            .gallery-grid { column-count: 4; column-gap: 8px; }
+        }
+        @media (max-width: 768px) {
+            .app-bar { height: 48px; }
+            .app-title { font-size: 15px; }
+            .gallery-grid { column-count: 3; column-gap: 6px; }
+            .photo-card { margin-bottom: 6px; border-radius: var(--radius-sm); }
+            .photo-info { padding: 6px 8px; }
+            .photo-info h3 { font-size: 11px; }
+            .photo-info p { font-size: 9px; }
+            .photo-badge { font-size: 8px; padding: 1px 6px; top: 5px; left: 5px; }
+
+            .lightbox-content {
+                flex-direction: column;
+                width: 100%; height: 100%;
+                max-width: 100%; max-height: 100%;
+                border-radius: 0;
+            }
+            .lightbox-image-wrapper {
+                flex: 1;
+                position: static;
+            }
+            .lightbox-details {
+                flex: 0 0 auto;
+                padding: 14px 16px 70px;
+                border-top-left-radius: 16px;
+                border-top-right-radius: 16px;
+                margin-top: -12px;
+                position: relative;
+            }
+            .nav-btn {
+                top: auto; bottom: 18px;
+                background: transparent;
+                color: var(--primary);
+                border: 1.5px solid var(--primary);
+                width: 34px; height: 34px;
+                transform: none;
+                z-index: 2005;
+            }
+            .nav-btn.prev { left: 16px; }
+            .nav-btn.next { right: 16px; }
+            .btn-download {
+                position: absolute;
+                bottom: 18px; left: 50%;
+                transform: translateX(-50%);
+                width: 34px; height: 34px;
+                border-radius: 50%;
+                padding: 0;
+                font-size: 0;
+                min-width: unset;
+                z-index: 2006;
+            }
+            .btn-download .material-icons { font-size: 18px; margin: 0; }
+            .lightbox-controls { text-align: center; font-size: 11px; }
+        }
+        @media (max-width: 480px) {
+            .gallery-grid { column-count: 3; column-gap: 4px; }
+            .photo-card { margin-bottom: 4px; border-radius: 6px; }
+            .photo-info { padding: 4px 6px; }
+            .photo-info h3 { font-size: 10px; }
+            .photo-info p { font-size: 8px; }
+            body { padding-bottom: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== App Bar ===== -->
+    <header class="app-bar">
+        <div class="app-bar-content">
+            <span class="material-icons" style="font-size: 22px;">auto_awesome</span>
+            <h1 class="app-title">Gopal's Diary</h1>
+            <div class="spacer"></div>
+            <a href="home.html" class="icon-btn" aria-label="Home" title="Home">
+                <span class="material-icons">home</span>
+            </a>
+             <a href="admin/login.html" class="icon-btn" aria-label="Profile" title="Profile">
+                <span class="material-icons">account_circle</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ===== Gallery ===== -->
+    <div class="container">
+        <div class="gallery-grid" id="gallery">
+            <!-- Skeleton placeholders injected by JS -->
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="circular-progress"></div>
+            <p style="margin-top: 8px; color: #888; font-size: 13px;">ছবি লোড হচ্ছে...</p>
+        </div>
+
+        <!-- Stats Bar (bottom) -->
+        <div class="stats-bar" id="statsBar">
+            <span id="statsText">লোড হচ্ছে...</span>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-bar" id="paginationBar" style="display:none;">
+            <button class="page-btn" id="prevBtn" aria-label="Previous">
+                <span class="material-icons" style="font-size: 20px;">chevron_left</span>
+            </button>
+            <div id="pageNumbers" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;"></div>
+            <button class="page-btn" id="nextBtn" aria-label="Next">
+                <span class="material-icons" style="font-size: 20px;">chevron_right</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== Lightbox ===== -->
+    <div id="lightbox" class="lightbox-overlay">
+        <div class="lightbox-content">
+            <button class="close-btn" onclick="closeLightbox()" aria-label="Close">
+                <span class="material-icons">close</span>
+            </button>
+            <div class="lightbox-image-wrapper">
+                <img id="lightboxImage" src="" alt="Photo">
+                <button class="nav-btn prev" onclick="prevImage()" aria-label="Previous">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <button class="nav-btn next" onclick="nextImage()" aria-label="Next">
+                    <span class="material-icons">arrow_forward</span>
+                </button>
+            </div>
+            <div class="lightbox-details">
+                <h2 id="lightboxTitle">Title</h2>
+                <p class="lb-desc" id="lightboxDescription">Description</p>
+                <div class="lightbox-controls">
+                    Image <span id="imageCounter">1</span> of <span id="totalCounter">1</span>
+                </div>
+                <p class="lb-meta" id="lightboxMeta"></p>
+                <button class="btn-download" onclick="downloadImage()">
+                    <span class="material-icons">download</span> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Bottom Filter Bar ===== -->
+    <div class="bottom-bar">
+        <div class="filter-scroll">
+            <button class="filter-chip active" data-category="all">✨ All</button>
+            <button class="filter-chip" data-category="bangla">🇧🇩 বাংলা কোটস</button>
+            <button class="filter-chip" data-category="photography">📸 Photography</button>
+            <button class="filter-chip" data-category="illustrations">🎨 Illustration</button>
+            <button class="filter-chip" data-category="english">🌍 English</button>
+            <button class="filter-chip" data-category="posts">📌 Posts</button>
+        </div>
+    </div>
+
+    <!-- ===== JavaScript ===== -->
+    <script>
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const SUPABASE_URL = 'https://mwkoqxtyxdkkqlakrrvd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a29xeHR5eGRra3FsYWtycnZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2NzYzODcsImV4cCI6MjA4MjI1MjM4N30.2SvderBmI6Ick5Z91M4hrmJwKuXQZmvwWxQOpZod1kg';
+
+    const TABLE_CONFIG = {
+        'bangla_quotes_1':       { name: 'Bangla Quotes 1',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_2':       { name: 'Bangla Quotes 2',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_3':       { name: 'Bangla Quotes 3',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_4':       { name: 'Bangla Quotes 4',       category: 'bangla',        emoji: '' },
+        'photography_1':         { name: 'Photography 1',         category: 'photography',   emoji: '📸' },
+        'photography_2':         { name: 'Photography 2',         category: 'photography',   emoji: '📸' },
+        'photography_3':         { name: 'Photography 3',         category: 'photography',   emoji: '📸' },
+        'photography_4':         { name: 'Photography 4',         category: 'photography',   emoji: '📸' },
+        'english_quote_1':       { name: 'English Quotes 1',      category: 'english',       emoji: '🌍' },
+        'english_quote_2':       { name: 'English Quotes 2',      category: 'english',       emoji: '🌍' },
+        'illustration_1':        { name: 'Illustration 1',        category: 'illustrations', emoji: '🎨' },
+        'illustration_2':        { name: 'Illustration 2',        category: 'illustrations', emoji: '🎨' },
+        'dotted_illustration_1': { name: 'Dotted Illustration 1', category: 'illustrations', emoji: '🎨' },
+        'dotted_illustration_2': { name: 'Dotted Illustration 2', category: 'illustrations', emoji: '🎨' },
+        'post_site':             { name: 'Posts',                  category: 'posts',         emoji: '📌' }
+    };
+
+    const ITEMS_PER_PAGE = 80;
+
+    // ============================================
+    // STATE
+    // ============================================
+    const State = {
+        allPhotos: [],
+        filteredPhotos: [],
+        mixedPhotos: [],
+        currentPage: 1,
+        currentCategory: 'all',
+        isLoading: false,
+        tableStats: {},
+        cache: { data: null, ts: null },
+        CACHE_TTL: 5 * 60 * 1000
+    };
+
+    // ============================================
+    // IMAGE OPTIMIZER (like bangla_script.js)
+    // ============================================
+    const Img = {
+        isMobile: () => window.innerWidth <= 768,
+        optimize(url, opts = {}) {
+            if (!url) return '';
+            const { width = 800, quality = 75, format = 'webp' } = opts;
+            if (url.includes('supabase.co/storage')) {
+                const u = new URL(url);
+                u.searchParams.set('width', width);
+                u.searchParams.set('quality', quality);
+                if (format) u.searchParams.set('format', format);
+                return u.toString();
+            }
+            return url;
+        },
+        thumbnail(url) {
+            const w = this.isMobile() ? 200 : 320;
+            return this.optimize(url, { width: w, quality: 50, format: 'webp' });
+        },
+        gallery(url) {
+            const w = this.isMobile() ? 500 : 700;
+            return this.optimize(url, { width: w, quality: 70, format: 'webp' });
+        },
+        lightbox(url) {
+            const w = this.isMobile() ? 1200 : 1920;
+            return this.optimize(url, { width: w, quality: 85, format: 'webp' });
+        }
+    };
+
+    // ============================================
+    // SUPABASE REST CLIENT (no SDK needed)
+    // ============================================
+    async function supabaseGet(tableName) {
+        const url = `${SUPABASE_URL}/rest/v1/${tableName}?select=image_iid,title,description,image_url,thumbnail_url,section,created_at&order=image_iid.asc`;
+        try {
+            const resp = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!resp.ok) {
+                console.warn(`⚠️ Table "${tableName}" → HTTP ${resp.status}`);
+                return [];
+            }
+            return await resp.json();
+        } catch (err) {
+            console.warn(`⚠️ Table "${tableName}" network error:`, err.message);
+            return [];
+        }
+    }
+
+    // ============================================
+    // URL SANITIZER
+    // ============================================
+    function sanitize(url) {
+        if (!url || typeof url !== 'string') return '';
+        url = url.split('#')[0].trim();
+        url = url.replace(/i\.ibb\.co\.com/g, 'i.ibb.co');
+        url = url.replace(/\.com\.com/g, '.com');
+        url = url.replace(/([^:]\/)\/+/g, '$1');
+        if (url.startsWith('//')) url = 'https:' + url;
+        else if (url.startsWith('http://')) url = url.replace('http://', 'https://');
+        return url;
+    }
+
+    // ============================================
+    // DATA LOADING — ALL 15 TABLES
+    // ============================================
+    async function loadAllPhotos() {
+        // Cache check
+        if (State.cache.data && State.cache.ts && Date.now() - State.cache.ts < State.CACHE_TTL) {
+            console.log('📦 Using cached data');
+            return State.cache.data;
+        }
+
+        State.isLoading = true;
+        showSkeletons();
+        document.getElementById('loadingIndicator').classList.add('visible');
+
+        try {
+            const tableNames = Object.keys(TABLE_CONFIG);
+
+            // Fetch ALL tables in parallel
+            const results = await Promise.all(
+                tableNames.map(t => supabaseGet(t))
+            );
+
+            const all = [];
+            State.tableStats = {};
+
+            results.forEach((rows, i) => {
+                const tableName = tableNames[i];
+                const cfg = TABLE_CONFIG[tableName];
+                State.tableStats[tableName] = rows.length;
+
+                rows.forEach(item => {
+                    const imageUrl = sanitize(item.image_url || '');
+                    const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
+                    if (!imageUrl) return;
+
+                    all.push({
+                        id: item.image_iid || item.id,
+                        title: item.title || '',
+                        description: item.description || '',
+                        image_url: imageUrl,
+                        thumbnail_url: thumbUrl,
+                        tableName,
+                        categoryName: cfg.name,
+                        category: cfg.category,
+                        emoji: cfg.emoji,
+                        created_at: item.created_at
+                    });
+                });
+            });
+
+            // Cache
+            State.cache.data = all;
+            State.cache.ts = Date.now();
+
+            const loadedTables = Object.values(State.tableStats).filter(n => n > 0).length;
+            console.log(`✅ Loaded ${all.length} photos from ${loadedTables}/${tableNames.length} tables`);
+            console.log('📊 Per-table:', State.tableStats);
+
+            return all;
+        } catch (err) {
+            console.error('❌ Load error:', err);
+            return [];
+        } finally {
+            State.isLoading = false;
+            document.getElementById('loadingIndicator').classList.remove('visible');
+        }
+    }
+
+    // ============================================
+    // ADVANCED MIXING ALGORITHM SYSTEM
+    // ============================================
+
+    // ── 1. Core Utility ──────────────────────────────────────
+
+    /** Fisher-Yates O(n) shuffle */
+    function fisherShuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // ── 2. User Preference Tracking (localStorage) ───────────
+
+    const Prefs = {
+        KEY: 'gd_prefs_v1',
+        data: { catClicks: {}, tableClicks: {} },
+
+        load() {
+            try {
+                const raw = localStorage.getItem(this.KEY);
+                if (raw) this.data = JSON.parse(raw);
+            } catch (_) {}
+        },
+
+        save() {
+            try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (_) {}
+        },
+
+        record(tableName, category) {
+            this.data.tableClicks[tableName] = (this.data.tableClicks[tableName] || 0) + 1;
+            this.data.catClicks[category]    = (this.data.catClicks[category]    || 0) + 1;
+            this.save();
+        },
+
+        tableWeight(tn) {
+            const c = this.data.tableClicks[tn] || 0;
+            if (c === 0) return 1;
+            if (c < 5)   return 1.3;
+            if (c < 15)  return 1.8;
+            if (c < 40)  return 2.5;
+            return 4;
+        },
+
+        catWeight(cat) {
+            const c = this.data.catClicks[cat] || 0;
+            if (c === 0) return 1;
+            if (c < 10)  return 1.4;
+            if (c < 30)  return 2;
+            return 3;
+        }
+    };
+    Prefs.load();
+
+    // ── 3. Photo Scoring ──────────────────────────────────────
+
+    const _NOW      = Date.now();
+    const _WEEK_MS  = 7  * 86400000;
+    const _MONTH_MS = 30 * 86400000;
+    const _Q3MO_MS  = 90 * 86400000;
+
+    /**
+     * প্রতিটি ছবিকে score দেওয়া হয়:
+     *   Recency   : নতুন ছবি সামনে আসে (+0–+40)
+     *   Quality   : title/description থাকলে বোনাস (+0–+20)
+     *   Preference: ইউজার যা বেশি দেখে (+0–+40)
+     *   Noise     : প্রতিবার ভিন্ন মিশ্রণ (+0–+30)
+     */
+    function scorePhoto(p) {
+        let recency = 0;
+        if (p.created_at) {
+            const age = _NOW - new Date(p.created_at).getTime();
+            if      (age < _WEEK_MS)  recency = 40;
+            else if (age < _MONTH_MS) recency = 25;
+            else if (age < _Q3MO_MS)  recency = 10;
+        }
+        const quality = (p.title ? 12 : 0) + (p.description ? 8 : 0);
+        const pref    = Prefs.tableWeight(p.tableName) * 8 + Prefs.catWeight(p.category) * 5;
+        const noise   = Math.random() * 30;
+        return recency + quality + pref + noise;
+    }
+
+    // ── 4. Diversity Pass ─────────────────────────────────────
+
+    /**
+     * যদি maxRun বা তার বেশি পরপর ছবি একই key (category / tableName)
+     * থেকে আসে, সামনের ভিন্ন key-এর ছবির সাথে swap করে diversity রাখে।
+     */
+    function diversityPass(arr, key = 'category', maxRun = 3) {
+        const a = [...arr];
+        for (let i = maxRun; i < a.length; i++) {
+            const run = a.slice(i - maxRun, i).every(x => x[key] === a[i - maxRun][key]);
+            if (!run || a[i][key] !== a[i - maxRun][key]) continue;
+            let swapIdx = -1;
+            for (let j = i + 1; j < Math.min(i + 20, a.length); j++) {
+                if (a[j][key] !== a[i][key]) { swapIdx = j; break; }
+            }
+            if (swapIdx !== -1) [a[i], a[swapIdx]] = [a[swapIdx], a[i]];
+        }
+        return a;
+    }
+
+    // ── 5. Table-Level Scored Mix ─────────────────────────────
+
+    /**
+     * প্রতিটি টেবিলের ছবি score অনুযায়ী sort করে,
+     * তারপর user preference weighted round-robin interleave।
+     */
+    function scoredTableMix(photos) {
+        const tables = {};
+        photos.forEach(p => {
+            if (!tables[p.tableName]) tables[p.tableName] = [];
+            tables[p.tableName].push(p);
+        });
+
+        for (const tn of Object.keys(tables)) {
+            tables[tn] = tables[tn]
+                .map(p => ({ p, s: scorePhoto(p) }))
+                .sort((a, b) => b.s - a.s)
+                .map(x => x.p);
+        }
+
+        const tableNames   = Object.keys(tables);
+        const weightedPool = fisherShuffle(
+            tableNames.flatMap(tn => Array(Math.max(1, Math.round(Prefs.tableWeight(tn)))).fill(tn))
+        );
+
+        const idx    = {};
+        tableNames.forEach(tn => idx[tn] = 0);
+        const result = [];
+        const total  = photos.length;
+        let placed   = 0, cycle = 0;
+
+        while (placed < total) {
+            const order = cycle === 0 ? weightedPool : fisherShuffle([...tableNames]);
+            let added = 0;
+            for (const tn of order) {
+                if (idx[tn] < tables[tn].length) {
+                    result.push(tables[tn][idx[tn]++]);
+                    placed++; added++;
+                    if (placed >= total) break;
+                }
+            }
+            if (added === 0) break;
+            cycle++;
+        }
+        return result;
+    }
+
+    // ── 6. Smart Global Mix — main algorithm ──────────────────
+
+    /**
+     * সর্বোত্তম অ্যালগরিদম — সব টেবিল এবং সব ক্যাটাগরির জন্য
+     *
+     *  1. category অনুযায়ী ভাগ → প্রতিটিতে scoredTableMix
+     *  2. category preference weighted round-robin
+     *  3. category diversity pass (max 3 পরপর একই category)
+     *  4. table diversity pass (max 4 পরপর একই table)
+     */
+    function smartGlobalMix(photos) {
+        const categories = {};
+        photos.forEach(p => {
+            if (!categories[p.category]) categories[p.category] = [];
+            categories[p.category].push(p);
+        });
+
+        const catMixed = {};
+        for (const cat of Object.keys(categories)) {
+            catMixed[cat] = scoredTableMix(categories[cat]);
+        }
+
+        const catNames    = Object.keys(catMixed);
+        const catPool     = fisherShuffle(
+            catNames.flatMap(cn => Array(Math.max(1, Math.round(Prefs.catWeight(cn)))).fill(cn))
+        );
+        const catIdx     = {};
+        catNames.forEach(cn => catIdx[cn] = 0);
+
+        const result = [];
+        const total  = photos.length;
+        let placed   = 0, cycle = 0;
+
+        while (placed < total) {
+            const order = cycle === 0 ? catPool : fisherShuffle([...catNames]);
+            let added = 0;
+            for (const cn of order) {
+                if (catIdx[cn] < catMixed[cn].length) {
+                    result.push(catMixed[cn][catIdx[cn]++]);
+                    placed++; added++;
+                    if (placed >= total) break;
+                }
+            }
+            if (added === 0) break;
+            cycle++;
+        }
+
+        let out = diversityPass(result, 'category', 3);
+        out     = diversityPass(out,    'tableName', 4);
+        console.log(`🌟 smartGlobalMix: ${photos.length} photos, ${catNames.length} categories`);
+        return out;
+    }
+
+    /** একটি category filter এর জন্য — scored + table diversity */
+    function smartCategoryMix(photos) {
+        return diversityPass(scoredTableMix(photos), 'tableName', 4);
+    }
+
+    // ============================================
+    // FILTERING
+    // ============================================
+    function filterPhotos(category) {
+        State.currentCategory = category;
+        State.currentPage = 1;
+
+        if (category === 'all') {
+            State.filteredPhotos = [...State.allPhotos];
+        } else {
+            State.filteredPhotos = State.allPhotos.filter(p => p.category === category);
+        }
+
+        State.mixedPhotos = category === 'all'
+            ? smartGlobalMix(State.filteredPhotos)
+            : smartCategoryMix(State.filteredPhotos);
+
+        renderGallery();
+        updateUI();
+    }
+
+    // ============================================
+    // SKELETON LOADING (beautiful placeholders)
+    // ============================================
+    function showSkeletons() {
+        const gallery = document.getElementById('gallery');
+        const heights = [180, 240, 200, 280, 220, 160, 260, 190, 230, 250,
+                         210, 170, 300, 195, 225, 275, 205, 185, 245, 215,
+                         190, 270, 200, 235];
+        gallery.innerHTML = heights.map((h, i) => `
+            <div class="skeleton-card" style="animation-delay: ${(i % 8) * 0.06}s;">
+                <div class="sk-img" style="height:${h}px;"></div>
+                <div class="sk-info">
+                    <div class="sk-title"></div>
+                    <div class="sk-desc"></div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================
+    // PROGRESSIVE IMAGE LOADING (IntersectionObserver)
+    // ============================================
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const img = entry.target;
+            if (!img.dataset.src || !img.src.includes('data:image')) return;
+
+            const thumbSrc = img.dataset.thumbnail;
+            const gallerySrc = img.dataset.gallery;
+
+            // Step 1: Load thumbnail (fast, small)
+            loadImgWithRetry(thumbSrc).then(() => {
+                requestAnimationFrame(() => {
+                    img.src = thumbSrc;
+                    img.style.opacity = '1';
+
+                    // Step 2: If gallery-quality is different, upgrade
+                    if (gallerySrc && gallerySrc !== thumbSrc) {
+                        img.style.filter = 'blur(2px)';
+                        loadImgWithRetry(gallerySrc).then(() => {
+                            requestAnimationFrame(() => {
+                                img.src = gallerySrc;
+                                img.style.filter = 'none';
+                                img.classList.add('loaded');
+                            });
+                        }).catch(() => {
+                            img.style.filter = 'none';
+                            img.classList.add('loaded');
+                        });
+                    } else {
+                        img.style.filter = 'none';
+                        img.classList.add('loaded');
+                    }
+                });
+                observer.unobserve(img);
+            }).catch(() => {
+                // Fallback: try original URL directly
+                img.src = img.dataset.src;
+                img.style.opacity = '1';
+                img.style.filter = 'none';
+                img.classList.add('loaded');
+                observer.unobserve(img);
+            });
+        });
+    }, { rootMargin: '400px', threshold: 0.01 });
+
+    /** Load image with retry (exponential backoff) */
+    function loadImgWithRetry(src, maxRetries = 2) {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            const tryLoad = () => {
+                const i = new Image();
+                i.onload = () => resolve(i);
+                i.onerror = () => {
+                    if (++attempts <= maxRetries) {
+                        setTimeout(tryLoad, 800 * attempts);
+                    } else {
+                        reject(new Error('Image load failed'));
+                    }
+                };
+                i.src = src;
+            };
+            tryLoad();
+        });
+    }
+
+    // ============================================
+    // RENDER GALLERY (bangla_script.js card style)
+    // ============================================
+    function getPagePhotos() {
+        const start = (State.currentPage - 1) * ITEMS_PER_PAGE;
+        return State.mixedPhotos.slice(start, start + ITEMS_PER_PAGE);
+    }
+
+    function getTotalPages() {
+        return Math.ceil(State.mixedPhotos.length / ITEMS_PER_PAGE) || 1;
+    }
+
+    function renderGallery() {
+        const gallery = document.getElementById('gallery');
+        const photos = getPagePhotos();
+
+        if (photos.length === 0) {
+            gallery.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">কোনো ছবি পাওয়া যায়নি</p>';
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        photos.forEach((photo, idx) => {
+            const previewUrl = photo.thumbnail_url || photo.image_url;
+            const thumbSrc = Img.thumbnail(previewUrl);
+            let gallerySrc = Img.gallery(previewUrl);
+            if (thumbSrc === gallerySrc) gallerySrc = ''; // avoid double loading
+            const lightboxUrl = Img.lightbox(previewUrl);
+
+            const card = document.createElement('div');
+            card.className = 'photo-card';
+            card.style.animationDelay = `${Math.min(idx * 0.03, 0.6)}s`;
+
+            // Store data for lightbox
+            card.setAttribute('data-photo', JSON.stringify(photo));
+            card.setAttribute('data-index', idx);
+            card.setAttribute('data-lightbox-url', lightboxUrl);
+            card.setAttribute('data-original-url', photo.image_url);
+
+            const cfg = TABLE_CONFIG[photo.tableName];
+            const badgeText = cfg ? cfg.emoji + ' ' + cfg.name : photo.tableName;
+
+            card.innerHTML = `
+                <div class="photo-image">
+                    <span class="photo-badge">${escapeHtml(badgeText)}</span>
+                    <img data-src="${escapeHtml(previewUrl)}"
+                         data-thumbnail="${escapeHtml(thumbSrc)}"
+                         data-gallery="${escapeHtml(gallerySrc)}"
+                         alt="${escapeHtml(photo.title)}"
+                         loading="lazy"
+                         style="cursor:pointer;opacity:0;transition:opacity 0.5s ease,filter 0.5s ease;"
+                         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+                </div>
+                <div class="photo-info">
+                    <h3>${escapeHtml(photo.title)}</h3>
+                    <p>${escapeHtml(photo.description)}</p>
+                </div>
+            `;
+
+            // Lazy load observer
+            const img = card.querySelector('img');
+            imageObserver.observe(img);
+
+            // Click → open lightbox
+            card.addEventListener('click', () => {
+                const data = JSON.parse(card.getAttribute('data-photo'));
+                openLightbox(
+                    card.getAttribute('data-lightbox-url'),
+                    parseInt(card.getAttribute('data-index')),
+                    photos.length,
+                    data,
+                    card.getAttribute('data-original-url')
+                );
+            });
+
+            fragment.appendChild(card);
+        });
+
+        gallery.innerHTML = '';
+        gallery.appendChild(fragment);
+    }
+
+    // ============================================
+    // LIGHTBOX (full-featured)
+    // ============================================
+    let currentPhotos = [];
+    let currentImageIndex = 0;
+    let savedScrollY = 0;
+
+    function openLightbox(imgSrc, index, total, photoData, originalUrl) {
+        savedScrollY = window.scrollY;
+        currentPhotos = Array.from(document.querySelectorAll('.photo-card'));
+        currentImageIndex = index;
+
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightboxImage');
+        lbImg.src = imgSrc;
+        lbImg.setAttribute('data-original-url', originalUrl);
+
+        document.getElementById('lightboxTitle').textContent = photoData.title || 'Gopal\'s Diary';
+        document.getElementById('lightboxDescription').textContent = photoData.description || '';
+        document.getElementById('imageCounter').textContent = index + 1;
+        document.getElementById('totalCounter').textContent = total;
+
+        const cfg = TABLE_CONFIG[photoData.tableName];
+        document.getElementById('lightboxMeta').textContent = cfg
+            ? `${cfg.emoji} ${cfg.name}`
+            : photoData.tableName;
+
+        // Track user preference (for smarter mixing on next load)
+        if (photoData.tableName && photoData.category) {
+            Prefs.record(photoData.tableName, photoData.category);
+        }
+
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        history.pushState({ lightbox: true }, '', '#view');
+    }
+
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        if (!lb.classList.contains('active')) return;
+        lb.classList.remove('active');
+        document.body.style.overflow = '';
+        if (location.hash === '#view') history.back();
+        window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+    }
+
+    function navigateLightbox(dir) {
+        if (!currentPhotos.length) return;
+        currentImageIndex = (currentImageIndex + dir + currentPhotos.length) % currentPhotos.length;
+        const card = currentPhotos[currentImageIndex];
+        const data = JSON.parse(card.getAttribute('data-photo'));
+
+        document.getElementById('lightboxImage').src = card.getAttribute('data-lightbox-url');
+        document.getElementById('lightboxImage').setAttribute('data-original-url', card.getAttribute('data-original-url'));
+        document.getElementById('lightboxTitle').textContent = data.title || 'Gopal\'s Diary';
+        document.getElementById('lightboxDescription').textContent = data.description || '';
+        document.getElementById('imageCounter').textContent = currentImageIndex + 1;
+
+        const cfg = TABLE_CONFIG[data.tableName];
+        document.getElementById('lightboxMeta').textContent = cfg ? `${cfg.emoji} ${cfg.name}` : data.tableName;
+    }
+
+    function nextImage() { navigateLightbox(1); }
+    function prevImage() { navigateLightbox(-1); }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+    });
+
+    // Click outside to close
+    document.getElementById('lightbox').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeLightbox();
+    });
+
+    // Touch swipe
+    let touchX = 0;
+    document.getElementById('lightbox').addEventListener('touchstart', e => {
+        touchX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    document.getElementById('lightbox').addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].screenX - touchX;
+        if (dx > 50) prevImage();
+        else if (dx < -50) nextImage();
+    }, { passive: true });
+
+    // Mouse wheel navigation
+    let lastWheel = 0;
+    document.getElementById('lightbox').addEventListener('wheel', e => {
+        if (Date.now() - lastWheel < 300) return;
+        if (Math.abs(e.deltaX) > 20 || Math.abs(e.deltaY) > 20) {
+            lastWheel = Date.now();
+            (e.deltaX > 0 || e.deltaY > 0) ? nextImage() : prevImage();
+        }
+    }, { passive: true });
+
+    // Browser back button
+    window.addEventListener('popstate', () => {
+        const lb = document.getElementById('lightbox');
+        if (lb.classList.contains('active')) {
+            lb.classList.remove('active');
+            document.body.style.overflow = '';
+            window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+        }
+    });
+
+    // ============================================
+    // DOWNLOAD (with blob fallback)
+    // ============================================
+    async function downloadImage() {
+        const img = document.getElementById('lightboxImage');
+        const url = img.getAttribute('data-original-url') || img.src;
+        const title = document.getElementById('lightboxTitle').textContent || 'gopals_diary';
+        if (!url) { alert('ছবি পাওয়া যায়নি'); return; }
+
+        const btn = document.querySelector('.btn-download');
+        const origHTML = btn.innerHTML;
+        try {
+            btn.innerHTML = '<span class="material-icons" style="animation:spin 1s linear infinite;">sync</span>';
+            btn.disabled = true;
+
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('Fetch failed');
+            const blob = await resp.blob();
+
+            let fname = title.replace(/[^a-z0-9\u0980-\u09FF]/gi, '_').substring(0, 50);
+            const ext = blob.type === 'image/png' ? '.png' : blob.type === 'image/webp' ? '.webp' : '.jpg';
+            fname += ext;
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 500);
+
+            btn.innerHTML = '<span class="material-icons">check_circle</span> Done';
+            setTimeout(() => { btn.innerHTML = origHTML; btn.disabled = false; }, 2000);
+        } catch (e) {
+            console.error('Download failed:', e);
+            btn.innerHTML = origHTML;
+            btn.disabled = false;
+            window.open(url, '_blank');
+        }
+    }
+
+    // ============================================
+    // UI UPDATES
+    // ============================================
+    function updateUI() {
+        updateStats();
+        updatePagination();
+    }
+
+    function updateStats() {
+        const el = document.getElementById('statsText');
+        const totalPages = getTotalPages();
+        el.textContent = `মোট ${State.mixedPhotos.length} ছবি • পৃষ্ঠা ${State.currentPage}/${totalPages}`;
+    }
+
+    function updatePagination() {
+        const totalPages = getTotalPages();
+        const bar = document.getElementById('paginationBar');
+        bar.style.display = totalPages > 1 ? 'flex' : 'none';
+
+        document.getElementById('prevBtn').disabled = State.currentPage <= 1;
+        document.getElementById('nextBtn').disabled = State.currentPage >= totalPages;
+
+        // Smart page numbers (show first, last, current ± 2)
+        const container = document.getElementById('pageNumbers');
+        container.innerHTML = '';
+
+        const pages = new Set();
+        pages.add(1);
+        pages.add(totalPages);
+        for (let i = Math.max(1, State.currentPage - 2); i <= Math.min(totalPages, State.currentPage + 2); i++) {
+            pages.add(i);
+        }
+
+        const sorted = [...pages].sort((a, b) => a - b);
+        let last = 0;
+        sorted.forEach(p => {
+            if (last && p - last > 1) {
+                const dots = document.createElement('span');
+                dots.className = 'page-info';
+                dots.textContent = '…';
+                container.appendChild(dots);
+            }
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (p === State.currentPage ? ' active' : '');
+            btn.textContent = p;
+            btn.addEventListener('click', () => goToPage(p));
+            container.appendChild(btn);
+            last = p;
+        });
+    }
+
+    function goToPage(page) {
+        State.currentPage = page;
+        renderGallery();
+        updateUI();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================
+    // FILTER BUTTONS
+    // ============================================
+    document.querySelectorAll('.filter-chip').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filterPhotos(this.dataset.category);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    // Pagination nav buttons
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (State.currentPage > 1) goToPage(State.currentPage - 1);
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        if (State.currentPage < getTotalPages()) goToPage(State.currentPage + 1);
+    });
+
+    // ============================================
+    // UTILITY
+    // ============================================
+    function escapeHtml(text) {
+        if (!text || typeof text !== 'string') return '';
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // ============================================
+    // PWA SERVICE WORKER
+    // ============================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    async function init() {
+        console.log('🎨 Gopal\'s Diary Gallery initializing...');
+        showSkeletons();
+
+        State.allPhotos = await loadAllPhotos();
+        State.filteredPhotos = [...State.allPhotos];
+
+        // Smart global mix: recency + quality + user preference + diversity
+        State.mixedPhotos = smartGlobalMix(State.filteredPhotos);
+
+        renderGallery();
+        updateUI();
+
+        console.log('✅ Gallery ready!');
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    // ============================================
+    // SCROLL BEHAVIOR: hide header + show footer at bottom
+    // ============================================
+    (function() {
+        const appBar = document.querySelector('.app-bar');
+        const bottomBar = document.querySelector('.bottom-bar');
+        let lastScrollY = 0;
+        let ticking = false;
+
+        function onScroll() {
+            const currentY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight;
+            const winHeight = window.innerHeight;
+            const distanceToBottom = docHeight - (currentY + winHeight);
+
+            // Header: hide on scroll down, show on scroll up
+            if (currentY > lastScrollY && currentY > 80) {
+                appBar.classList.add('hidden');
+            } else {
+                appBar.classList.remove('hidden');
+            }
+
+            // Footer: show only when near bottom (within 150px)
+            if (distanceToBottom < 150) {
+                bottomBar.classList.add('visible');
+            } else {
+                bottomBar.classList.remove('visible');
+            }
+
+            lastScrollY = currentY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(onScroll);
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
+    </script>
+</body>
+</html>

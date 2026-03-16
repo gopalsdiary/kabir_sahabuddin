@@ -1,0 +1,1966 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- SEO Meta Tags -->
+	<title>Gopals Diary</title>
+	<meta name="description" content="Gopals Diary - আপনার পছন্দের বাংলা কোটস, ফটোগ্রাফি, ডটেড ইলাস্ট্রেশন, ইলাস্ট্রেশন এবং ইংলিশ কোটস। Free to use and download beautiful aesthetic content, bangla quotes, photography collections and creative illustrations.">
+
+
+	<!-- Performance: DNS Prefetch for external domains -->
+	<link rel="dns-prefetch" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co">
+	<link rel="dns-prefetch" href="https://i.ibb.co.com">
+	<link rel="preconnect" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co">
+	<link rel="preconnect" href="https://i.ibb.co.com">
+
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+	<!-- PWA Manifest and Meta Tags -->
+	<link rel="manifest" href="manifest.json">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link rel="apple-touch-icon" href="favicon.ico">
+	<meta name="theme-color" content="#ff99cc">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Gopals Diary">
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html, body {
+			width: 100%;
+			overflow-x: hidden; /* prevent accidental horizontal scroll on small screens */
+			scroll-behavior: smooth; /* smooth scrolling */
+		}
+
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: #fafafa;
+			color: #262626;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		/* Make all embeds/media scale to container */
+		img, video, iframe {
+			max-width: 100%;
+			height: auto;
+		}
+
+		/* Keep iframes nicely proportioned when used */
+		iframe {
+			aspect-ratio: 16/9;
+			width: 100%;
+			border: 0;
+		}
+
+		.profile-container {
+			max-width: 935px;
+			margin: 0 auto;
+			padding: 10px;
+		}
+
+		/* Header */
+		.profile-header {
+			display: grid;
+			grid-template-columns: 110px 1fr;
+			gap: 15px;
+			margin: 10px 0;
+			padding-bottom: 12px;
+			border-bottom: 1px solid #dbdbdb;
+		}
+
+		.profile-avatar {
+			display: flex;
+			justify-content: center;
+		}
+
+		.profile-avatar img {
+			width: 110px;
+			height: 110px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 3px solid #fff;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.profile-info {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			position: relative;
+		}
+
+		.profile-header-top {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		.profile-username {
+			font-size: 24px;
+			font-weight: 300;
+			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.verification-badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 20px;
+			height: 20px;
+			background: linear-gradient(135deg, #0095f6 0%, #0077dd 100%);
+			color: white;
+			border-radius: 50%;
+			font-size: 12px;
+			font-weight: bold;
+			border: 2px solid white;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+		}
+
+		.settings-button {
+			background: none;
+			border: none;
+			font-size: 24px;
+			cursor: pointer;
+			padding: 8px;
+			border-radius: 50%;
+			transition: background 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 44px; /* touch target size */
+			min-height: 44px; /* touch target size */
+		}
+
+		.settings-button:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
+
+		.settings-menu {
+			position: absolute;
+			top: 45px;
+			right: 0;
+			background: white;
+			border: 1px solid #dbdbdb;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			z-index: 1000;
+			display: none;
+			min-width: 200px;
+			overflow: hidden;
+		}
+
+		.settings-menu.active {
+			display: block;
+		}
+
+		.settings-menu-item {
+			display: block;
+			width: 100%;
+			padding: 12px 16px;
+			border: none;
+			background: none;
+			text-align: left;
+			cursor: pointer;
+			font-size: 14px;
+			color: #262626;
+			transition: background 0.2s ease;
+			text-decoration: none;
+		}
+
+		.settings-menu-item:hover {
+			background: #f0f0f0;
+		}
+
+		.settings-menu-item.login {
+			color: #0095f6;
+			font-weight: 600;
+		}
+
+		.profile-stats {
+			display: flex;
+			gap: 18px;
+			margin-bottom: 10px;
+			font-size: 13px;
+			align-items: center;
+		}
+
+		.stat-item {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.stat-number {
+			font-weight: 600;
+			font-size: 16px;
+		}
+
+		.btn-follow-inline {
+			margin-left: 8px;
+			padding: 5px 10px;
+			font-size: 12px;
+			width: auto;
+			min-width: auto;
+		}
+
+		.profile-bio {
+			margin-top: 5px;
+			font-size: 13px;
+			line-height: 1.4;
+		}
+
+		/* Avoid long links causing overflow on mobile */
+		.profile-bio, .profile-bio a {
+			word-break: break-word;
+			overflow-wrap: anywhere;
+		}
+
+		.profile-link {
+			color: #0095f6;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		.profile-link:hover {
+			text-decoration: underline;
+		}
+
+		/* Buttons Section */
+		.profile-buttons {
+			display: flex;
+			gap: 10px;
+			margin-top: 20px;
+			flex-wrap: wrap;
+		}
+
+		/* Center the Follow button inside the profile header only (doesn't affect other .profile-buttons uses) */
+		.profile-header .profile-buttons {
+			justify-content: center;
+		}
+
+		.btn {
+			padding: 12px 30px;
+			border: 1px solid #dbdbdb;
+			background: white;
+			color: #262626;
+			border-radius: 8px;
+			font-weight: 600;
+			cursor: pointer;
+			font-size: 14px;
+			transition: all 0.3s ease;
+			text-decoration: none;
+			display: inline-block;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.btn:hover {
+			background: #f0f0f0;
+		}
+
+		.btn-primary {
+			background: #0095f6;
+			color: white;
+			border: none;
+		}
+
+		.btn-primary:hover {
+			background: #0081d4;
+		}
+
+		.btn-orange {
+			background: #f09031;
+			color: white;
+			border: none;
+		}
+
+		.btn-orange:hover {
+			background: #ff9933;
+		}
+
+		/* Buttons section - inline display */
+		.buttons-section {
+			display: flex;
+			gap: 10px;
+			margin-top: 20px;
+			flex-wrap: wrap;
+			justify-content: center;
+			width: 100%;
+			max-width: 800px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.btn-orange {
+			background: #f09031;
+		}
+
+		.btn-pink {
+			background: #ffb3d9;
+			color: #262626;
+		}
+
+		.btn-pink:hover {
+			background: #ff99cc;
+		}
+
+		/* ===== Creations Footer Section ===== */
+		.creations-footer {
+			max-width: 800px;
+			margin: 50px auto 30px;
+			padding: 0 12px;
+		}
+		.creations-header {
+			text-align: center;
+			margin-bottom: 28px;
+		}
+		.creations-header h2 {
+			font-size: 22px;
+			font-weight: 700;
+			color: #262626;
+			margin-bottom: 6px;
+		}
+		.creations-header p {
+			font-size: 13px;
+			color: #8e8e8e;
+			line-height: 1.5;
+		}
+
+		/* Featured card (Pinterest) */
+		.featured-card {
+			background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #f0932b 100%);
+			border-radius: 16px;
+			padding: 20px 24px;
+			color: #fff;
+			text-decoration: none;
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			margin-bottom: 16px;
+			box-shadow: 0 4px 16px rgba(238, 90, 36, 0.25);
+			transition: transform 0.25s, box-shadow 0.25s;
+		}
+		.featured-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 24px rgba(238, 90, 36, 0.35);
+		}
+		.featured-card .fc-icon {
+			font-size: 32px;
+			line-height: 1;
+		}
+		.featured-card .fc-text h3 {
+			font-size: 16px;
+			font-weight: 600;
+			margin-bottom: 2px;
+		}
+		.featured-card .fc-text p {
+			font-size: 12px;
+			opacity: 0.85;
+		}
+		.featured-card .fc-arrow {
+			margin-left: auto;
+			font-size: 20px;
+			opacity: 0.7;
+		}
+
+		/* Category card */
+		.cat-card {
+			background: #fff;
+			border-radius: 14px;
+			padding: 16px;
+			margin-bottom: 12px;
+			box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+			border: 1px solid rgba(0,0,0,0.04);
+		}
+		.cat-card-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 12px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #f0f0f0;
+		}
+		.cat-icon {
+			width: 36px;
+			height: 36px;
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			flex-shrink: 0;
+		}
+		.cat-icon.bangla { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+		.cat-icon.photo { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+		.cat-icon.english { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+		.cat-icon.illust { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+		.cat-icon.dotted { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+		.cat-card-header h4 {
+			font-size: 14px;
+			font-weight: 600;
+			color: #262626;
+		}
+		.cat-card-header span {
+			font-size: 11px;
+			color: #8e8e8e;
+			margin-left: auto;
+		}
+		.cat-links {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 8px;
+		}
+		.cat-link {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 10px 12px;
+			border-radius: 10px;
+			font-size: 13px;
+			font-weight: 500;
+			text-decoration: none;
+			transition: all 0.2s;
+			border: 1px solid transparent;
+		}
+		.cat-link:active { transform: scale(0.97); }
+		.cat-link .link-num {
+			width: 20px;
+			height: 20px;
+			border-radius: 6px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 11px;
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+		/* Color variants for cat-links */
+		.cat-link.green { background: #f1f8e9; color: #33691e; }
+		.cat-link.green:hover { background: #dcedc8; border-color: #aed581; }
+		.cat-link.green .link-num { background: #c5e1a5; color: #33691e; }
+		.cat-link.blue { background: #e3f2fd; color: #0d47a1; }
+		.cat-link.blue:hover { background: #bbdefb; border-color: #64b5f6; }
+		.cat-link.blue .link-num { background: #90caf9; color: #0d47a1; }
+		.cat-link.amber { background: #fff8e1; color: #e65100; }
+		.cat-link.amber:hover { background: #ffecb3; border-color: #ffb74d; }
+		.cat-link.amber .link-num { background: #ffe082; color: #e65100; }
+		.cat-link.pink { background: #fce4ec; color: #880e4f; }
+		.cat-link.pink:hover { background: #f8bbd0; border-color: #f06292; }
+		.cat-link.pink .link-num { background: #f48fb1; color: #880e4f; }
+		.cat-link.purple { background: #f3e5f5; color: #4a148c; }
+		.cat-link.purple:hover { background: #e1bee7; border-color: #ba68c8; }
+		.cat-link.purple .link-num { background: #ce93d8; color: #4a148c; }
+
+		/* Install footer */
+		.install-footer {
+			text-align: center;
+			margin-top: 32px;
+			padding-top: 24px;
+			border-top: 1px solid #eee;
+		}
+
+		@media (max-width: 480px) {
+			.cat-links {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 6px;
+			}
+			.cat-link {
+				padding: 9px 8px;
+				font-size: 12px;
+			}
+			.featured-card {
+				padding: 16px 18px;
+			}
+			.featured-card .fc-icon { font-size: 28px; }
+			.featured-card .fc-text h3 { font-size: 14px; }
+		}
+
+		/* Highlights Section */
+		.highlights-section {
+			margin: 8px 0;
+		}
+
+		.highlights-title {
+			font-size: 12px;
+			font-weight: 600;
+			color: #999;
+			margin-bottom: 6px;
+		}
+
+		.highlights {
+			display: flex;
+			gap: 10px;
+			overflow-x: auto;
+			padding-bottom: 5px;
+		}
+
+		.highlight-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 5px;
+			cursor: pointer;
+			transition: transform 0.3s ease;
+		}
+
+		.highlight-item:hover {
+			transform: scale(1.05);
+		}
+
+		.highlight-circle {
+			width: 70px;
+			height: 70px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: 3px solid transparent;
+			background-clip: padding-box;
+			box-shadow: 0 0 0 2px #dbdbdb;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 32px;
+			transition: box-shadow 0.2s;
+		}
+		.highlight-circle:hover {
+			box-shadow: 0 0 0 2px #a855f7;
+		}
+
+		.highlight-name {
+			font-size: 11px;
+			text-align: center;
+			max-width: 80px;
+		}
+
+		/* Gallery Grid - Always 3 columns on all devices */
+		.gallery-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 4px;
+			margin: 12px 0;
+		}
+
+		@keyframes galleryFadeIn {
+			from { opacity: 0; transform: scale(0.96); }
+			to { opacity: 1; transform: scale(1); }
+		}
+
+		.gallery-item {
+			aspect-ratio: 1;
+			background: #f0f0f0;
+			border-radius: 4px;
+			overflow: hidden;
+			cursor: pointer;
+			transition: transform 0.2s ease, opacity 0.2s;
+			animation: galleryFadeIn 0.4s ease backwards;
+		}
+
+		.gallery-item:hover {
+			transform: scale(1.02);
+		}
+		.gallery-item:active {
+			transform: scale(0.97);
+		}
+
+		.gallery-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			cursor: pointer;
+			transition: opacity 0.3s;
+		}
+
+		/* Lightbox for gallery images */
+		.lightbox {
+			display: none;
+			position: fixed;
+			z-index: 1200;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.95);
+			overflow: auto;
+		}
+
+		.lightbox.active {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.lightbox-content {
+			position: relative;
+			max-width: 95%;
+			max-height: 90vh;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 30px;
+			background: white;
+			border-radius: 12px;
+			overflow: hidden;
+		}
+
+		.lightbox-image-container {
+			flex: 0 0 auto;
+			max-width: 60%;
+			max-height: 85vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #f0f0f0;
+			border-radius: 8px;
+		}
+
+		.lightbox-image {
+			max-width: 100%;
+			max-height: 85vh;
+			object-fit: contain;
+		}
+
+		.lightbox-info {
+			flex: 0 0 auto;
+			width: 300px;
+			max-height: 85vh;
+			display: flex;
+			flex-direction: column;
+			padding: 20px;
+			overflow-y: auto;
+		}
+
+		.lightbox-title {
+			font-size: 18px;
+			font-weight: 600;
+			color: #262626;
+			margin-bottom: 10px;
+			line-height: 1.4;
+		}
+
+		.lightbox-description {
+			font-size: 14px;
+			color: #65676b;
+			line-height: 1.5;
+			margin-bottom: 15px;
+		}
+
+		.lightbox-divider {
+			height: 1px;
+			background: #e5e5e5;
+			margin: 15px 0;
+		}
+
+		.lightbox-close {
+			position: absolute;
+			top: 20px;
+			right: 30px;
+			font-size: 40px;
+			font-weight: bold;
+			color: #262626;
+			cursor: pointer;
+			z-index: 1300;
+			transition: color 0.3s ease;
+			width: 50px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.lightbox-close:hover {
+			color: #8e8e8e;
+			background: rgba(0, 0, 0, 0.1);
+			border-radius: 50%;
+		}
+
+		.lightbox-nav {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 36px;
+			color: #262626;
+			cursor: pointer;
+			padding: 20px;
+			user-select: none;
+			transition: all 0.3s ease;
+			z-index: 1300;
+			width: 50px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.lightbox-nav:hover {
+			background: rgba(0, 0, 0, 0.1);
+			border-radius: 50%;
+		}
+
+		.lightbox-prev {
+			left: 10px;
+		}
+
+		.lightbox-next {
+			right: 10px;
+		}
+
+		.lightbox-counter {
+			color: #8e8e8e;
+			font-size: 12px;
+			margin-top: auto;
+			padding-top: 15px;
+			border-top: 1px solid #e5e5e5;
+		}
+
+		.lightbox-download-btn {
+			background: linear-gradient(135deg, #ff99cc 0%, #ffb3d9 100%);
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 6px;
+			cursor: pointer;
+			font-weight: 600;
+			font-size: 14px;
+			transition: all 0.3s ease;
+			width: 100%;
+			margin: 10px 0;
+		}
+
+		.lightbox-download-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 5px 15px rgba(255, 153, 204, 0.4);
+			background: linear-gradient(135deg, #ff88bb 0%, #ffa3c9 100%);
+		}
+
+		.lightbox-download-btn:active {
+			transform: translateY(0);
+		}
+
+		/* Responsive lightbox */
+		@media (max-width: 1024px) {
+			.lightbox-content {
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			.lightbox-image-container {
+				max-width: 100%;
+				max-height: 50vh;
+			}
+
+			.lightbox-info {
+				width: 100%;
+				max-height: 30vh;
+			}
+		}
+
+		/* Tabs */
+		.tabs {
+			display: flex;
+			gap: 0;
+			border-top: 1px solid #dbdbdb;
+			margin: 20px 0 0 0;
+			overflow-x: auto;
+			white-space: nowrap;
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+			justify-content: space-around;
+		}
+
+		.tabs::-webkit-scrollbar { display: none; }
+
+		.tab {
+			padding: 12px 8px;
+			font-size: 12px;
+			font-weight: 600;
+			color: #8e8e8e;
+			border-top: 2px solid transparent;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			flex: 1;
+			text-align: center;
+		}
+
+		.tab.active {
+			color: #262626;
+			border-top-color: #262626;
+		}
+		.tab:hover:not(.active) {
+			color: #555;
+		}
+
+		/* Modal for highlights */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+			overflow: auto;
+		}
+
+		.modal-content-highlight {
+			background-color: white;
+			margin: 5% auto;
+			padding: 20px;
+			border-radius: 8px;
+			width: 90%;
+			max-width: 600px;
+			max-height: 90vh;
+			overflow-y: auto;
+			position: relative;
+		}
+
+		.modal-close {
+			position: absolute;
+			top: 15px;
+			right: 20px;
+			font-size: 28px;
+			font-weight: bold;
+			color: #aaa;
+			cursor: pointer;
+		}
+
+		.modal-close:hover {
+			color: #000;
+		}
+
+		.modal-gallery {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 10px;
+			margin-top: 15px;
+		}
+
+		.modal-gallery img {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			border-radius: 8px;
+			cursor: pointer;
+		}
+
+		.modal-gallery img:hover {
+			opacity: 0.8;
+		}
+
+		.tab-content {
+			display: none;
+		}
+
+		.tab-content.active {
+			display: block;
+		}
+
+		.loading {
+			text-align: center;
+			padding: 40px;
+			color: #999;
+			font-size: 13px;
+		}
+
+		/* Smooth page load */
+		@keyframes pageIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		.profile-container {
+			animation: pageIn 0.4s ease;
+		}
+
+		@media (max-width: 768px) {
+			.profile-header {
+				grid-template-columns: 80px 1fr;
+				gap: 12px;
+				text-align: left;
+			}
+
+			.profile-header-top {
+				justify-content: flex-start;
+				margin-bottom: 4px;
+			}
+
+			.profile-avatar img {
+				width: 80px;
+				height: 80px;
+			}
+
+			.profile-stats {
+				justify-content: flex-start;
+				gap: 16px;
+				flex-wrap: wrap;
+			}
+
+			.btn-follow-inline {
+				margin-left: 0;
+				margin-top: 0;
+				width: auto;
+				max-width: none;
+				padding: 5px 14px;
+				font-size: 12px;
+				border-radius: 6px;
+			}
+
+			.gallery-grid {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 3px;
+			}
+
+			/* Make highlight modal grid single-column on tablets/phones */
+			.modal-gallery {
+				grid-template-columns: 1fr;
+			}
+
+			.modal-gallery img {
+				height: auto;
+			}
+
+			.highlights {
+				gap: 12px;
+			}
+
+			.highlight-circle {
+				width: 62px;
+				height: 62px;
+				font-size: 26px;
+			}
+
+			.lightbox-content {
+				max-width: 100%;
+				max-height: 100%;
+				border-radius: 0;
+			}
+			.lightbox-close {
+				top: 8px;
+				right: 8px;
+				font-size: 28px;
+				width: 40px;
+				height: 40px;
+				background: rgba(255,255,255,0.9);
+				border-radius: 50%;
+			}
+			.lightbox-nav {
+				padding: 12px;
+				width: 40px;
+				height: 40px;
+				font-size: 24px;
+				background: rgba(255,255,255,0.85);
+				border-radius: 50%;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.profile-container {
+				padding: 6px;
+			}
+
+			.profile-header {
+				grid-template-columns: 70px 1fr;
+				margin: 6px 0;
+				padding-bottom: 10px;
+				gap: 10px;
+			}
+
+			.profile-avatar img {
+				width: 70px;
+				height: 70px;
+			}
+
+			.profile-username {
+				font-size: 17px;
+			}
+
+			.profile-stats {
+				gap: 12px;
+				font-size: 11px;
+			}
+
+			.stat-number {
+				font-size: 15px;
+			}
+
+			.btn-follow-inline {
+				font-size: 11px;
+				padding: 5px 12px;
+				width: auto;
+				min-width: auto;
+			}
+
+			.highlight-circle {
+				width: 56px;
+				height: 56px;
+				font-size: 24px;
+			}
+
+			.highlight-name {
+				font-size: 10px;
+				max-width: 65px;
+			}
+
+			.gallery-grid {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 2px;
+			}
+
+			.profile-buttons {
+				gap: 8px;
+			}
+
+			.tabs {
+				gap: 20px;
+				margin: 16px 0 0 0;
+				justify-content: space-around;
+			}
+			.tab {
+				padding: 10px 0;
+				font-size: 11px;
+			}
+
+			.profile-bio {
+				font-size: 12px;
+			}
+		}
+
+		@media (max-width: 360px) {
+			.gallery-grid {
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1px;
+			}
+			.gallery-item {
+				border-radius: 2px;
+			}
+		}
+	</style>
+</head>
+<body>
+
+	<div class="profile-container">
+		<!-- Profile Header -->
+		<div class="profile-header">
+			<!-- Avatar -->
+			<div class="profile-avatar">
+				<img src="https://i.ibb.co.com/HDFLdgBM/gopals-diary.jpg" alt="Gopals Diary">
+			</div>
+
+			<!-- Profile Info -->
+			<div class="profile-info">
+				<div class="profile-header-top">
+					<h1 class="profile-username">
+						gopals_diary 
+						<span class="verification-badge">✓</span>
+					</h1>
+					<button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
+					<div class="settings-menu" id="settingsMenu">
+						<a href="admin/login.html" class="settings-menu-item login">🔐 Login</a>
+					</div>
+				</div>
+
+				<div class="profile-stats">
+					<div class="stat-item">
+						<span class="stat-number">203</span>
+						<span>posts</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-number">11K</span>
+						<span>followers</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-number">275</span>
+						<span>following</span>
+					</div>
+					<a href="https://instagram.com/gopals_diary" target="_blank" class="btn btn-follow-inline">Follow</a>
+				</div>
+
+				<div class="profile-bio">
+					<p><strong>#Aesthetically || (B.Sc, M.Sc)^ #Mathematics💗& LL.B</strong></p>
+					<p>Believe in the creation!</p>
+					<p>আমার, প্রিয় বল প্রিয় বল ডেকে 💗😘</p>
+					<p><a href="https://gopalsdiary.blogspot.com" class="profile-link" target="_blank">gopalsdiary.blogspot.com</a></p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Highlights Section -->
+		<div class="highlights-section">
+			<div class="highlights-title">HIGHLIGHTS</div>
+			<div class="highlights">
+				<div class="highlight-item" onclick="openHighlightModal('tea')">
+					<div class="highlight-circle">🍵</div>
+					<div class="highlight-name">Tea 💗</div>
+				</div>
+				<div class="highlight-item" onclick="openHighlightModal('book')">
+					<div class="highlight-circle">📕</div>
+					<div class="highlight-name">বই 📖</div>
+				</div>
+			<div class="highlight-item" onclick="openHighlightModal('photography')">
+				<div class="highlight-circle">📸</div>
+				<div class="highlight-name">Photography</div>
+			</div>
+			<div class="highlight-item" onclick="openHighlightModal('mydiary')">
+				<div class="highlight-circle">📔</div>
+				<div class="highlight-name">My Diary</div>
+			</div>
+			<div class="highlight-item" onclick="openHighlightModal('story11')">
+				<div class="highlight-circle">📖</div>
+				<div class="highlight-name">Story 11</div>
+			</div>
+			<div class="highlight-item" onclick="openHighlightModal('story10')">
+				<div class="highlight-circle">🏖️</div>
+				<div class="highlight-name">Story 10</div>
+			</div>
+			<div class="highlight-item" onclick="openHighlightModal('photo2')">
+				<div class="highlight-circle">🎭</div>
+				<div class="highlight-name">2: Photography</div>
+			</div>
+			</div>
+		</div>
+
+		<!-- Modals for Highlights -->
+		<div id="teaModal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('tea')">&times;</span>
+				<h3>Tea 💗</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/JjPzY2dw/20200504-162309000-i-OS.png" alt="Tea 1">
+				</div>
+			</div>
+		</div>
+
+		<div id="bookModal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('book')">&times;</span>
+				<h3>বই 📖</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/v6YQ6S0f/Screenshot-20230515-024051-Parallel-App.jpg" alt="Book 1">
+				</div>
+			</div>
+		</div>
+
+		<div id="photographyModal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('photography')">&times;</span>
+				<h3>Photography</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/v6FzWvmZ/DSC3240.jpg" alt="Photo 1">
+				</div>
+			</div>
+		</div>
+
+		<div id="mydiaryModal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('mydiary')">&times;</span>
+				<h3>My Diary</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/h3dSFg3/20210120-141139987-i-OS.jpg" alt="Diary 1">
+				</div>
+			</div>
+		</div>
+
+		<div id="story11Modal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('story11')">&times;</span>
+				<h3>Story 11</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/TBVwYmmR/1755328562-1684699982584.jpg" alt="Story 11">
+				</div>
+			</div>
+		</div>
+
+		<div id="story10Modal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('story10')">&times;</span>
+				<h3>Story 10</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/RprzwVhJ/lost-memoris-1729700907404.jpg" alt="Story 10">
+				</div>
+			</div>
+		</div>
+
+		<div id="photo2Modal" class="modal">
+			<div class="modal-content-highlight">
+				<span class="modal-close" onclick="closeHighlightModal('photo2')">&times;</span>
+				<h3>2: Photography</h3>
+				<div class="modal-gallery">
+					<img src="https://i.ibb.co.com/TM9y26SW/DSC0312.jpg" alt="Photo 2">
+				</div>
+			</div>
+		</div>
+
+		<!-- Tabs -->
+		<div class="tabs">
+			<div class="tab active" data-section="POSTS">📷 POSTS</div>
+			<a href=".//story/story.html" class="tab" style="text-decoration: none; color: inherit;">📌 STORY</a>
+			<a href="pinterest.html" class="tab" style="text-decoration: none; color: inherit;">📌 PINTEREST</a>
+			<div class="tab" data-section="REELS">🎬 REELS</div>
+			<div class="tab" data-section="SAVED">❤️ SAVED</div>
+			<div class="tab" data-section="TAGGED">👤 TAGGED</div>
+
+		</div>
+
+		<!-- Gallery Grids for each section -->
+		<div class="tab-content active" id="postsGrid">
+			<div class="gallery-grid" id="galleryGrid-POSTS">
+				<div class="loading">loading...</div>
+			</div>
+		</div>
+
+		<div class="tab-content" id="reelsGrid">
+			<div class="gallery-grid" id="galleryGrid-REELS">
+				<div class="loading">loading...</div>
+			</div>
+		</div>
+
+		<div class="tab-content" id="savedGrid">
+			<div class="gallery-grid" id="galleryGrid-SAVED">
+				<div class="loading">loading...</div>
+			</div>
+		</div>
+
+		<div class="tab-content" id="taggedGrid">
+			<div class="gallery-grid" id="galleryGrid-TAGGED">
+				<div class="loading">loading...</div>
+			</div>
+		</div>
+		
+
+		<!-- Lightbox for viewing images -->
+		<div id="lightbox" class="lightbox">
+			<span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+			<span class="lightbox-nav lightbox-prev" onclick="prevImage()">&#10094;</span>
+			<div class="lightbox-content">
+				<div class="lightbox-image-container">
+					<img id="lightboxImage" class="lightbox-image" src="" alt="Image">
+				</div>
+				<div class="lightbox-info">
+					<div class="lightbox-title" id="lightboxTitle">Description</div>
+					<div class="lightbox-description" id="lightboxDescription">Description</div>
+					<div class="lightbox-divider"></div>
+					<button class="lightbox-download-btn" onclick="downloadImage()">⬇️ Download</button>
+					<div class="lightbox-counter">
+						<span id="imageCounter">1</span> / <span id="totalCounter">1</span>
+					</div>
+				</div>
+			</div>
+			<span class="lightbox-nav lightbox-next" onclick="nextImage()">&#10095;</span>
+		</div>
+	</div>
+
+	<!-- ===== Creations Footer ===== -->
+	<div class="creations-footer">
+		<div class="creations-header">
+			<h2>✨ All Creations</h2>
+			<p>Free to use and share with attribution</p>
+			<p>বাংলা কোটস, ফটোগ্রাফি, ইলাস্ট্রেশন — সব ফ্রি</p>
+		</div>
+
+		<!-- Featured: Pinterest Mixed -->
+		<a href="index.html" class="featured-card external-link">
+			<span class="fc-icon">📌</span>
+			<div class="fc-text">
+				<h3>Pinterest Gallery</h3>
+				<p>সব ক্যাটাগরি মিক্স করে দেখুন</p>
+			</div>
+			<span class="fc-arrow">→</span>
+		</a>
+
+		<!-- Bangla Quotes -->
+		<div class="cat-card">
+			<div class="cat-card-header">
+				<div class="cat-icon bangla">🇧🇩</div>
+				<h4>বাংলা কোটস</h4>
+				<span>4 collections</span>
+			</div>
+			<div class="cat-links">
+				<a href="files/bangla_quotes_1.html" class="cat-link green external-link"><span class="link-num">1</span> Bangla Quotes</a>
+				<a href="files/bangla_quotes_2.html" class="cat-link green external-link"><span class="link-num">2</span> Bangla Quotes</a>
+				<a href="files/bangla_quotes_3.html" class="cat-link green external-link"><span class="link-num">3</span> Bangla Quotes</a>
+				<a href="files/bangla_quotes_4.html" class="cat-link green external-link"><span class="link-num">4</span> Bangla Quotes</a>
+			</div>
+		</div>
+
+		<!-- Photography -->
+		<div class="cat-card">
+			<div class="cat-card-header">
+				<div class="cat-icon photo">📸</div>
+				<h4>Photography</h4>
+				<span>4 collections</span>
+			</div>
+			<div class="cat-links">
+				<a href="files/photography_1.html" class="cat-link blue external-link"><span class="link-num">1</span> Photography</a>
+				<a href="files/photography_2.html" class="cat-link blue external-link"><span class="link-num">2</span> Photography</a>
+				<a href="files/photography_3.html" class="cat-link blue external-link"><span class="link-num">3</span> Photography</a>
+				<a href="files/photography_4.html" class="cat-link blue external-link"><span class="link-num">4</span> Photography</a>
+			</div>
+		</div>
+
+		<!-- English Quotes -->
+		<div class="cat-card">
+			<div class="cat-card-header">
+				<div class="cat-icon english">🌍</div>
+				<h4>English Quotes</h4>
+				<span>2 collections</span>
+			</div>
+			<div class="cat-links">
+				<a href="files/english_quotes_1.html" class="cat-link amber external-link"><span class="link-num">1</span> English Quotes</a>
+				<a href="files/english_quotes_2.html" class="cat-link amber external-link"><span class="link-num">2</span> English Quotes</a>
+			</div>
+		</div>
+
+		<!-- Illustration -->
+		<div class="cat-card">
+			<div class="cat-card-header">
+				<div class="cat-icon illust">🎨</div>
+				<h4>Illustration</h4>
+				<span>2 collections</span>
+			</div>
+			<div class="cat-links">
+				<a href="files/illustration_1.html" class="cat-link pink external-link"><span class="link-num">1</span> Illustration</a>
+				<a href="files/illustration_2.html" class="cat-link pink external-link"><span class="link-num">2</span> Illustration</a>
+			</div>
+		</div>
+
+		<!-- Dotted Illustration -->
+		<div class="cat-card">
+			<div class="cat-card-header">
+				<div class="cat-icon dotted">✏️</div>
+				<h4>Dotted Illustration</h4>
+				<span>2 collections</span>
+			</div>
+			<div class="cat-links">
+				<a href="files/dotted_illustration_1.html" class="cat-link purple external-link"><span class="link-num">1</span> Dotted Illust.</a>
+				<a href="files/dotted_illustration_2.html" class="cat-link purple external-link"><span class="link-num">2</span> Dotted Illust.</a>
+			</div>
+		</div>
+
+		<!-- Install App -->
+		<div class="install-footer">
+			<button id="installBtn" class="btn btn-primary" style="display: none; width: 100%; max-width: 300px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px;">
+				📱 Install App
+			</button>
+		</div>
+	</div>
+
+	<script>
+		// ============================================
+		// PWA: Service Worker Registration & Install
+		// ============================================
+		let deferredPrompt;
+		const installBtn = document.getElementById('installBtn');
+
+		// Register Service Worker
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('sw.js')
+				.then(registration => {
+					console.log('✓ Service Worker registered:', registration);
+				})
+				.catch(error => {
+					console.log('✗ Service Worker registration failed:', error);
+				});
+		}
+
+		// Utility: detect installed state
+		function isAppInstalled() {
+			return (
+				window.matchMedia && window.matchMedia('(display-mode: standalone)').matches ||
+				window.navigator.standalone === true
+			);
+		}
+
+		// Update Install UI based on availability/state
+		function updateInstallUI() {
+			if (!installBtn) return;
+			if (isAppInstalled()) {
+				installBtn.style.display = 'none';
+				return;
+			}
+			// Show button only when native prompt is available
+			if (deferredPrompt) {
+				installBtn.textContent = '📱 Install App';
+				installBtn.style.display = 'block';
+			} else {
+				installBtn.style.display = 'none';
+			}
+		}
+
+		// Removed fallback guidance. Button will appear only when install is supported.
+
+		// Listen for beforeinstallprompt event
+		window.addEventListener('beforeinstallprompt', (e) => {
+			// Prevent the mini-infobar from appearing on mobile
+			e.preventDefault();
+			// Stash the event for later use
+			deferredPrompt = e;
+			console.log('✓ Install prompt available');
+			updateInstallUI();
+		});
+
+		// Handle install button click
+		if (installBtn) {
+			installBtn.addEventListener('click', async () => {
+				if (!deferredPrompt) return;
+				// Show the install prompt
+				deferredPrompt.prompt();
+				// Wait for the user to respond
+				const { outcome } = await deferredPrompt.userChoice;
+				console.log(`User response to the install prompt: ${outcome}`);
+				// Clear the deferredPrompt for re-use
+				deferredPrompt = null;
+				updateInstallUI();
+			});
+		}
+
+		// Listen for app installed event
+		window.addEventListener('appinstalled', () => {
+			console.log('✓ App installed successfully');
+			updateInstallUI();
+		});
+
+		// Keep UI in sync on load/visibility changes
+		window.addEventListener('DOMContentLoaded', updateInstallUI);
+		document.addEventListener('visibilitychange', () => {
+			if (!document.hidden) updateInstallUI();
+		});
+
+		// ============================================
+		// Force External Browser Opening for FB/Instagram In-App Browsers
+		// ============================================
+		function isInAppBrowser() {
+			const ua = navigator.userAgent || navigator.vendor || window.opera;
+			return (ua.indexOf('FBAN') > -1) || 
+				   (ua.indexOf('FBAV') > -1) || 
+				   (ua.indexOf('Instagram') > -1) ||
+				   (ua.indexOf('FB_IAB') > -1) ||
+				   (ua.indexOf('FB4A') > -1);
+		}
+
+		function getFullUrl(relativePath) {
+			if (relativePath.startsWith('http')) {
+				return relativePath;
+			}
+			const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+			return baseUrl + relativePath;
+		}
+
+		function openInExternalBrowser(url) {
+			const fullUrl = getFullUrl(url);
+			
+			// Multiple methods to force external browser opening
+			// Method 1: Try Intent URL for Android
+			if (/android/i.test(navigator.userAgent)) {
+				const intentUrl = 'intent://' + fullUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;end;';
+				window.location.href = intentUrl;
+				
+				// Fallback after delay
+				setTimeout(() => {
+					window.location.href = fullUrl;
+				}, 500);
+			} 
+			// Method 2: For iOS - use different approach
+			else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+				// Create a temporary link and click it
+				const tempLink = document.createElement('a');
+				tempLink.href = fullUrl;
+				tempLink.target = '_blank';
+				tempLink.rel = 'noopener noreferrer';
+				document.body.appendChild(tempLink);
+				tempLink.click();
+				document.body.removeChild(tempLink);
+				
+				// Additional fallback
+				setTimeout(() => {
+					window.open(fullUrl, '_system');
+				}, 100);
+			}
+			// Method 3: Generic fallback
+			else {
+				window.open(fullUrl, '_blank');
+			}
+		}
+
+		// Initialize when DOM is ready
+		document.addEventListener('DOMContentLoaded', function() {
+			if (isInAppBrowser()) {
+				console.log('🔍 In-App Browser Detected: FB/Instagram');
+				
+				// Add click handlers to all external links
+				const externalLinks = document.querySelectorAll('.external-link');
+				externalLinks.forEach(link => {
+					link.addEventListener('click', function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+						openInExternalBrowser(this.href);
+					});
+				});
+			}
+		});
+
+		// Supabase Configuration
+		const SUPABASE_URL = 'https://mwkoqxtyxdkkqlakrrvd.supabase.co';
+		const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a29xeHR5eGRra3FsYWtycnZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2NzYzODcsImV4cCI6MjA4MjI1MjM4N30.2SvderBmI6Ick5Z91M4hrmJwKuXQZmvwWxQOpZod1kg';
+		const TABLE_NAME = 'post_site';
+
+		// SupabaseClient class
+		class SupabaseClient {
+			constructor(url, key) {
+				this.url = url;
+				this.key = key;
+				this.cache = null;
+				this.cacheTime = null;
+				this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+			}
+
+			async getPostsBySections() {
+				try {
+					// Check cache first
+					const now = Date.now();
+					if (this.cache && this.cacheTime && (now - this.cacheTime) < this.CACHE_DURATION) {
+						console.log('✓ Using cached posts');
+						return this.cache;
+					}
+
+					// Fetch only necessary columns (performance optimization)
+					const url = `${this.url}/rest/v1/${TABLE_NAME}?select=image_iid,title,description,image_url,thumbnail_url,section&order=created_at.desc`;
+					console.log('Fetching posts...');
+					
+					const response = await fetch(url, {
+						headers: {
+							'apikey': this.key,
+							'Authorization': `Bearer ${this.key}`,
+							'Content-Type': 'application/json',
+							'Accept': 'application/json'
+						},
+						mode: 'cors'
+					});
+
+					if (!response.ok) {
+						const errorText = await response.text();
+						console.error('API Error:', response.status, errorText);
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+
+					const posts = await response.json();
+					console.log('Posts fetched:', posts.length, 'items');
+					
+					// Group posts by section
+					const sections = {
+						'POSTS': [],
+						'REELS': [],
+						'SAVED': [],
+						'TAGGED': []
+					};
+
+					posts.forEach(post => {
+						const section = post.section ? post.section.toUpperCase().trim() : 'TAGGED';
+						// If section doesn't match known sections, put in TAGGED
+						if (sections.hasOwnProperty(section)) {
+							sections[section].push(post);
+						} else {
+							sections['TAGGED'].push(post);
+						}
+					});
+
+					console.log('Organized sections:', sections);
+					
+					// Cache the results
+					this.cache = sections;
+					this.cacheTime = Date.now();
+					
+					return sections;
+				} catch (error) {
+					console.error('Error fetching posts:', error);
+					return {
+						'POSTS': [],
+						'REELS': [],
+						'SAVED': [],
+						'TAGGED': []
+					};
+				}
+			}
+		}
+
+		const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+		// Load and organize posts
+		async function loadPosts() {
+			const sections = await supabase.getPostsBySections();
+			
+			// Render each section
+			Object.keys(sections).forEach(section => {
+				renderGallery(section, sections[section]);
+			});
+		}
+
+		// Render gallery for a section
+		function renderGallery(section, posts) {
+			const gridId = `galleryGrid-${section}`;
+			const grid = document.getElementById(gridId);
+			
+			if (!grid) return;
+
+			if (posts.length === 0) {
+				grid.innerHTML = '<div class="loading">এই বিভাগে কোন পোস্ট নেই</div>';
+				return;
+			}
+
+			// Store posts data globally
+			currentPostsData = posts;
+
+			grid.innerHTML = posts.map((post, index) => {
+				const escapedTitle = (post.title || '').replace(/"/g, '&quot;');
+				const postDataJson = JSON.stringify(post);
+				const thumbnailUrl = post.thumbnail_url || post.image_url;
+				
+				return `
+					<div class="gallery-item" title="${escapedTitle}">
+						<img src="${thumbnailUrl}" alt="${escapedTitle}" data-post-index="${index}" data-total="${posts.length}" data-post='${postDataJson}' class="gallery-image" loading="lazy" onerror="this.style.backgroundColor='#e0e0e0'; this.style.background='linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%)';">
+					</div>
+				`;
+			}).join('');
+
+			// Add click event listeners
+			grid.querySelectorAll('.gallery-image').forEach((img, idx) => {
+				img.addEventListener('click', function() {
+					const index = parseInt(this.getAttribute('data-post-index'));
+					const total = parseInt(this.getAttribute('data-total'));
+					const postDataJson = this.getAttribute('data-post');
+					const postData = JSON.parse(postDataJson);
+					const thumbnailUrl = postData.thumbnail_url || postData.image_url;
+					openLightbox(thumbnailUrl, index, total, postData);
+				});
+			});
+		}
+
+		// Lightbox variables
+		let currentLightboxImages = [];
+		let currentImageIndex = 0;
+		let currentPostsData = [];
+
+		// Open lightbox
+		function openLightbox(imageSrc, index, total, postData) {
+			const lightbox = document.getElementById('lightbox');
+			const lightboxImage = document.getElementById('lightboxImage');
+			const lightboxTitle = document.getElementById('lightboxTitle');
+			const lightboxDescription = document.getElementById('lightboxDescription');
+			const imageCounter = document.getElementById('imageCounter');
+			const totalCounter = document.getElementById('totalCounter');
+
+			lightboxImage.src = imageSrc;
+			lightboxTitle.textContent = postData.title || 'শিরোনাম নেই';
+			lightboxDescription.textContent = postData.description || 'বিবরণ নেই';
+			currentImageIndex = index;
+			currentLightboxImages = Array.from(document.querySelectorAll('.tab-content.active .gallery-item img'));
+			
+			imageCounter.textContent = index + 1;
+			totalCounter.textContent = total;
+			
+			lightbox.classList.add('active');
+			document.body.style.overflow = 'hidden';
+		}
+
+		// Close lightbox
+		function closeLightbox() {
+			const lightbox = document.getElementById('lightbox');
+			lightbox.classList.remove('active');
+			document.body.style.overflow = 'auto';
+		}
+
+		// Next image in lightbox
+		function nextImage() {
+			if (currentLightboxImages.length === 0) return;
+			
+			currentImageIndex = (currentImageIndex + 1) % currentLightboxImages.length;
+			const nextPostData = currentPostsData[currentImageIndex];
+			const nextImageSrc = nextPostData.thumbnail_url || nextPostData.image_url;
+			const lightboxImage = document.getElementById('lightboxImage');
+			const lightboxTitle = document.getElementById('lightboxTitle');
+			const lightboxDescription = document.getElementById('lightboxDescription');
+			const imageCounter = document.getElementById('imageCounter');
+			
+			lightboxImage.src = nextImageSrc;
+			lightboxTitle.textContent = nextPostData.title || 'শিরোনাম নেই';
+			lightboxDescription.textContent = nextPostData.description || 'বিবরণ নেই';
+			imageCounter.textContent = currentImageIndex + 1;
+		}
+
+		// Previous image in lightbox
+		function prevImage() {
+			if (currentLightboxImages.length === 0) return;
+			
+			currentImageIndex = (currentImageIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+			const prevPostData = currentPostsData[currentImageIndex];
+			const prevImageSrc = prevPostData.thumbnail_url || prevPostData.image_url;
+			const lightboxImage = document.getElementById('lightboxImage');
+			const lightboxTitle = document.getElementById('lightboxTitle');
+			const lightboxDescription = document.getElementById('lightboxDescription');
+			const imageCounter = document.getElementById('imageCounter');
+			
+			lightboxImage.src = prevImageSrc;
+			lightboxTitle.textContent = prevPostData.title || 'শিরোনাম নেই';
+			lightboxDescription.textContent = prevPostData.description || 'বিবরণ নেই';
+			imageCounter.textContent = currentImageIndex + 1;
+		}
+
+		// Close lightbox on ESC key
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				closeLightbox();
+			}
+			if (event.key === 'ArrowRight') {
+				nextImage();
+			}
+			if (event.key === 'ArrowLeft') {
+				prevImage();
+			}
+		});
+
+		// Close lightbox when clicking outside
+		document.getElementById('lightbox').addEventListener('click', function(event) {
+			if (event.target === this) {
+				closeLightbox();
+			}
+		});
+
+		// Download image function - Simple and Direct
+		function downloadImage() {
+			// Get the original image_url from current post data for download
+			const currentPost = currentPostsData[currentImageIndex];
+			const imageUrl = currentPost.image_url;
+			const imageTitle = document.getElementById('lightboxTitle').textContent || 'image';
+			
+			if (!imageUrl) {
+				alert('ছবি পাওয়া যায়নি');
+				return;
+			}
+			
+			try {
+				// Extract file extension from URL
+				let filename = imageTitle;
+				const urlParts = imageUrl.split('.');
+				let extension = '.jpg';
+				
+				if (urlParts.length > 1) {
+					const possibleExt = urlParts[urlParts.length - 1].split(/[?#]/)[0];
+					if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(possibleExt.toLowerCase())) {
+						extension = '.' + possibleExt;
+					}
+				}
+				
+				if (!filename.includes('.')) {
+					filename = filename + extension;
+				}
+				
+				// Use XMLHttpRequest for better CORS handling
+				const xhr = new XMLHttpRequest();
+				xhr.open('GET', imageUrl, true);
+				xhr.responseType = 'blob';
+				
+				xhr.onload = function() {
+					if (this.status === 200) {
+						const blob = this.response;
+						const blobUrl = URL.createObjectURL(blob);
+						
+						const link = document.createElement('a');
+						link.href = blobUrl;
+						link.download = filename;
+						link.style.display = 'none';
+						document.body.appendChild(link);
+						link.click();
+						
+						setTimeout(() => {
+							document.body.removeChild(link);
+							URL.revokeObjectURL(blobUrl);
+						}, 100);
+					} else {
+						console.error('Download failed with status:', this.status);
+						downloadViaDirectLink(imageUrl, filename);
+					}
+				};
+				
+				xhr.onerror = function() {
+					console.error('XHR error');
+					downloadViaDirectLink(imageUrl, filename);
+				};
+				
+				xhr.send();
+				
+			} catch (error) {
+				console.error('Download error:', error);
+				const imageUrl = document.getElementById('lightboxImage').src;
+				const imageTitle = document.getElementById('lightboxTitle').textContent || 'image';
+				downloadViaDirectLink(imageUrl, imageTitle);
+			}
+		}
+		
+		// Fallback: Direct link download
+		function downloadViaDirectLink(url, filename) {
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = filename;
+			link.setAttribute('crossorigin', 'anonymous');
+			link.style.display = 'none';
+			document.body.appendChild(link);
+			link.click();
+			
+			setTimeout(() => {
+				document.body.removeChild(link);
+			}, 100);
+		}
+
+		// Tab switching
+		document.querySelectorAll('.tab').forEach(tab => {
+			tab.addEventListener('click', function() {
+				const section = this.getAttribute('data-section');
+				
+				// Update active tab
+				document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+				this.classList.add('active');
+				
+				// Update active tab content
+				document.querySelectorAll('.tab-content').forEach(content => {
+					content.classList.remove('active');
+				});
+				
+				const sectionMap = {
+					'POSTS': 'postsGrid',
+					'REELS': 'reelsGrid',
+					'SAVED': 'savedGrid',
+					'TAGGED': 'taggedGrid'
+				};
+				
+				const contentId = sectionMap[section];
+				if (contentId) {
+					document.getElementById(contentId).classList.add('active');
+				}
+			});
+		});
+
+		// Highlight Modal Functions
+		function openHighlightModal(type) {
+			const modalMap = {
+				'tea': 'teaModal',
+				'book': 'bookModal',
+				'photography': 'photographyModal',
+				'mydiary': 'mydiaryModal',
+				'story11': 'story11Modal',
+				'story10': 'story10Modal',
+				'photo2': 'photo2Modal'
+			};
+			const modalId = modalMap[type];
+			if (modalId) {
+				document.getElementById(modalId).style.display = 'block';
+			}
+		}
+
+		function closeHighlightModal(type) {
+			const modalMap = {
+				'tea': 'teaModal',
+				'book': 'bookModal',
+				'photography': 'photographyModal',
+				'mydiary': 'mydiaryModal',
+				'story11': 'story11Modal',
+				'story10': 'story10Modal',
+				'photo2': 'photo2Modal'
+			};
+			const modalId = modalMap[type];
+			if (modalId) {
+				document.getElementById(modalId).style.display = 'none';
+			}
+		}
+
+		// Close modal when clicking outside
+		window.addEventListener('click', function(event) {
+			const teaModal = document.getElementById('teaModal');
+			const bookModal = document.getElementById('bookModal');
+			const photographyModal = document.getElementById('photographyModal');
+			const mydiaryModal = document.getElementById('mydiaryModal');
+			const story11Modal = document.getElementById('story11Modal');
+			const story10Modal = document.getElementById('story10Modal');
+			const photo2Modal = document.getElementById('photo2Modal');
+			
+			if (event.target === teaModal) {
+				teaModal.style.display = 'none';
+			}
+			if (event.target === bookModal) {
+				bookModal.style.display = 'none';
+			}
+			if (event.target === photographyModal) {
+				photographyModal.style.display = 'none';
+			}
+			if (event.target === mydiaryModal) {
+				mydiaryModal.style.display = 'none';
+			}
+			if (event.target === story11Modal) {
+				story11Modal.style.display = 'none';
+			}
+			if (event.target === story10Modal) {
+				story10Modal.style.display = 'none';
+			}
+			if (event.target === photo2Modal) {
+				photo2Modal.style.display = 'none';
+			}
+		});
+
+		// Load posts when page loads with performance optimization
+		document.addEventListener('DOMContentLoaded', () => {
+			// Load posts immediately (priority)
+			loadPosts();
+			
+			// Add image lazy loading observer
+			if ('IntersectionObserver' in window) {
+				const imageObserver = new IntersectionObserver((entries, observer) => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							const img = entry.target;
+							if (img.dataset.src) {
+								img.src = img.dataset.src;
+								img.removeAttribute('data-src');
+								observer.unobserve(img);
+							}
+						}
+					});
+				}, {
+					rootMargin: '50px'
+				});
+
+				// Observe all images with data-src
+				document.querySelectorAll('img[data-src]').forEach(img => {
+					imageObserver.observe(img);
+				});
+			}
+		});
+
+		// Settings Menu Toggle
+		function toggleSettingsMenu() {
+			const settingsMenu = document.getElementById('settingsMenu');
+			settingsMenu.classList.toggle('active');
+		}
+
+		// Close settings menu when clicking outside
+		document.addEventListener('click', function(event) {
+			const settingsMenu = document.getElementById('settingsMenu');
+			const settingsButton = document.querySelector('.settings-button');
+			
+			if (!settingsMenu.contains(event.target) && !settingsButton.contains(event.target)) {
+				settingsMenu.classList.remove('active');
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Admin Login - Gopals Diary</title>
+	<style>
+		:root {
+			--bg: #f6f7f9;
+			--panel: #ffffff;
+			--text: #222;
+			--muted: #6b7280;
+			--primary: #0095f6;
+			--primary-hover: #0080d8;
+			--danger: #dc2626;
+			--border: #e5e7eb;
+		}
+
+		* { box-sizing: border-box; }
+		html, body {
+			height: 100%;
+		}
+		body {
+			margin: 0;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+			background: var(--bg);
+			color: var(--text);
+			display: grid;
+			place-items: center;
+			padding: 24px;
+		}
+		.card {
+			width: 100%;
+			max-width: 420px;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+			padding: 28px;
+		}
+		h1 {
+			margin: 0 0 4px;
+			font-size: 22px;
+		}
+		p.muted {
+			margin: 0 0 20px;
+			color: var(--muted);
+			font-size: 14px;
+		}
+		label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+		input[type="email"], input[type="password"] {
+			width: 100%;
+			padding: 11px 12px;
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			font-size: 14px;
+			transition: border-color .15s, box-shadow .15s;
+		}
+		input:focus {
+			outline: none;
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px rgba(0,149,246,.15);
+		}
+		button[type="submit"] {
+			width: 100%;
+			margin-top: 16px;
+			background: var(--primary);
+			color: #fff;
+			border: none;
+			border-radius: 6px;
+			padding: 11px 14px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: background .2s, transform .02s;
+		}
+		button[type="submit"]:hover { background: var(--primary-hover); }
+		button[type="submit"]:active { transform: translateY(1px); }
+		.row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-top: 10px;
+		}
+		.helper { font-size: 12px; color: var(--muted); }
+		.error {
+			margin-top: 12px;
+			font-size: 13px;
+			color: var(--danger);
+			background: #fee2e2;
+			border: 1px solid #fecaca;
+			padding: 10px 12px;
+			border-radius: 6px;
+			display: none;
+		}
+		.success {
+			margin-top: 12px;
+			font-size: 13px;
+			color: #065f46;
+			background: #ecfdf5;
+			border: 1px solid #a7f3d0;
+			padding: 10px 12px;
+			border-radius: 6px;
+			display: none;
+		}
+		.brand {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 12px;
+		}
+		.brand img {
+			height: 48px;
+			width: 148px;
+			border-radius: 6px;
+			margin-bottom: 6px;
+		}
+	</style>
+</head>
+<body>
+	<div class="card">
+		<div class="brand">
+			<img src="/admin/gopalsdiary.png" alt="Logo" style="box-shadow:0 50px 50px #0001;object-fit:cover;background:#fff;border:1px solid #eee;" onerror="this.style.display='none'" />
+			<h1></h1>
+		</div>
+		<p class="muted">Sign in with your email and password to access the dashboard.</p>
+
+		<form id="loginForm" novalidate>
+			<label for="email">Email</label>
+			<input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+
+			<label for="password">Password</label>
+			<input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+
+			<div class="row">
+				<span class="helper">Only authorized users can access the admin panel.</span>
+			</div>
+
+			<button id="submitBtn" type="submit">Sign in</button>
+			<div id="errorBox" class="error"></div>
+			<div id="successBox" class="success">Login successful. Redirecting…</div>
+		</form>
+	</div>
+
+	<!-- Supabase JS v2 -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script>
+		// Prevent script from running multiple times
+		if (!window.loginScriptLoaded) {
+			window.loginScriptLoaded = true;
+
+			// Your Supabase project settings
+			const SUPABASE_URL = 'https://mwkoqxtyxdkkqlakrrvd.supabase.co';
+			const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a29xeHR5eGRra3FsYWtycnZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2NzYzODcsImV4cCI6MjA4MjI1MjM4N30.2SvderBmI6Ick5Z91M4hrmJwKuXQZmvwWxQOpZod1kg';
+
+			// Create client (reuse if already exists)
+			if (!window.supabaseClient) {
+				window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+			}
+			const supabase = window.supabaseClient;
+
+			// Helpers
+			const errorBox = document.getElementById('errorBox');
+			const successBox = document.getElementById('successBox');
+			const submitBtn = document.getElementById('submitBtn');
+			const form = document.getElementById('loginForm');
+
+		// ── Brute-force rate limiting (client-side) ───────────────────
+		const RATE_LIMIT_KEY  = 'gopals_login_attempts';
+		const LOCKOUT_KEY     = 'gopals_login_lockout';
+		const MAX_ATTEMPTS    = 5;
+		const LOCKOUT_MINUTES = 10;
+
+		function getRateLimit() {
+			return {
+				attempts: parseInt(sessionStorage.getItem(RATE_LIMIT_KEY) || '0', 10),
+				lockedUntil: parseInt(sessionStorage.getItem(LOCKOUT_KEY) || '0', 10)
+			};
+		}
+
+		function bumpAttempt() {
+			let { attempts } = getRateLimit();
+			attempts += 1;
+			sessionStorage.setItem(RATE_LIMIT_KEY, String(attempts));
+			if (attempts >= MAX_ATTEMPTS) {
+				const lockedUntil = Date.now() + LOCKOUT_MINUTES * 60 * 1000;
+				sessionStorage.setItem(LOCKOUT_KEY, String(lockedUntil));
+			}
+			return attempts;
+		}
+
+		function resetAttempts() {
+			sessionStorage.removeItem(RATE_LIMIT_KEY);
+			sessionStorage.removeItem(LOCKOUT_KEY);
+		}
+
+		function isLockedOut() {
+			const { lockedUntil } = getRateLimit();
+			if (lockedUntil && Date.now() < lockedUntil) return true;
+			if (lockedUntil && Date.now() >= lockedUntil) {
+				resetAttempts(); // lockout expired
+			}
+			return false;
+		}
+
+		function showError(msg) {
+			errorBox.textContent = msg;
+			errorBox.style.display = 'block';
+			successBox.style.display = 'none';
+		}
+
+		function showSuccess(msg) {
+			successBox.textContent = msg;
+			successBox.style.display = 'block';
+			errorBox.style.display = 'none';
+		}
+
+		function isTokenExpired(token) {
+			try {
+				const payload = JSON.parse(atob(token.split('.')[1]));
+				const expMs = payload.exp * 1000;
+				return Date.now() >= (expMs - 30000); // 30s early
+			} catch (_) {
+				return true;
+			}
+		}
+
+		// If already authenticated, go straight to dashboard
+		(function autoRedirectIfLoggedIn() {
+			const token   = localStorage.getItem('supabase_access_token');
+			const session = localStorage.getItem('supabase_session');
+			if (token && session && !isTokenExpired(token)) {
+				window.location.href = 'admin_dashboard.html';
+			}
+		})();
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			errorBox.style.display = 'none';
+			successBox.style.display = 'none';
+
+			// Client-side lockout check
+			if (isLockedOut()) {
+				const { lockedUntil } = getRateLimit();
+				const mins = Math.ceil((lockedUntil - Date.now()) / 60000);
+				showError(`Too many failed attempts. Try again in ${mins} minute(s).`);
+				return;
+			}
+
+			submitBtn.disabled = true;
+			submitBtn.textContent = 'Signing in…';
+
+			const email    = document.getElementById('email').value.trim();
+			const password = document.getElementById('password').value;
+
+			if (!email || !password) {
+				showError('Email and password are required.');
+				submitBtn.disabled = false;
+				submitBtn.textContent = 'Sign in';
+				return;
+			}
+
+			// Basic email format check
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+				showError('Please enter a valid email address.');
+				submitBtn.disabled = false;
+				submitBtn.textContent = 'Sign in';
+				return;
+			}
+
+			try {
+				const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+				if (error) throw error;
+
+				const session = data.session;
+				if (!session?.access_token) {
+					throw new Error('No session returned from Supabase.');
+				}
+
+				// Success: reset rate limit counter
+				resetAttempts();
+
+				// Persist for dashboard guard (matches `admin_dashboard.html` expectations)
+				localStorage.setItem('supabase_access_token', session.access_token);
+				localStorage.setItem('supabase_user', JSON.stringify(session.user));
+				localStorage.setItem('supabase_session', JSON.stringify(session));
+
+				showSuccess('Login successful. Redirecting…');
+				setTimeout(() => {
+					window.location.href = 'admin_dashboard.html';
+				}, 600);
+			} catch (err) {
+				// Failed attempt: bump counter
+				const attempts = bumpAttempt();
+				const remaining = MAX_ATTEMPTS - attempts;
+				let msg = err?.message || 'Login failed. Please try again.';
+				if (remaining > 0) {
+					msg += ` (${remaining} attempt${remaining !== 1 ? 's' : ''} remaining)`;
+				} else {
+					msg = `Too many failed attempts. You are locked out for ${LOCKOUT_MINUTES} minutes.`;
+				}
+				console.warn('[Login] Auth failed:', err?.message);
+				showError(msg);
+			} finally {
+				submitBtn.disabled = false;
+				submitBtn.textContent = 'Sign in';
+			}
+		});
+		}
+	</script>
+</body>
+</html>
