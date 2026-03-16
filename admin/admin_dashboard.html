@@ -37,57 +37,93 @@
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
-            background: var(--primary-color);
-            color: #fff;
+            background: #fff;
+            color: var(--text-color);
             position: fixed;
             padding: 20px;
             overflow-y: auto;
+            border-right: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000;
         }
 
         .sidebar h2 {
             margin-bottom: 30px;
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: 800;
             text-align: center;
-            color: #fff;
+            color: var(--primary-color);
+            padding: 10px;
+            background: linear-gradient(135deg, #000, #444);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .sidebar-section {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
         }
 
         .sidebar-section h3 {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            color: #888;
+            color: #999;
             margin-bottom: 15px;
-            letter-spacing: 1px;
+            padding-left: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
         }
 
-        .sidebar button {
+        .sidebar button.table-btn {
             width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            background: transparent;
-            border: none;
-            color: #bbb;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.05);
+            color: #555;
             text-align: left;
             cursor: pointer;
-            border-radius: 6px;
-            transition: 0.3s;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .sidebar button:hover {
-            background: #333;
-            color: #fff;
+        .sidebar button.table-btn:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
-        .sidebar button.active {
+        .sidebar button.table-btn.active {
             background: var(--accent-color);
             color: #fff;
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.3);
+            border: none;
+        }
+
+        #logoutBtn {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #fff5f5, #fff0f0);
+            color: #ff4d4f !important;
+            border: 1px solid #ffa39e !important;
+            justify-content: center;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #logoutBtn:hover {
+            background: linear-gradient(135deg, #ff4d4f, #f5222d) !important;
+            color: #fff !important;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 77, 79, 0.2);
+            border-color: transparent !important;
         }
 
         /* Main Content */
@@ -379,29 +415,38 @@
 
             .sidebar {
                 width: 100%;
-                height: auto;
-                position: relative;
-                padding: 15px;
-                display: none;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                padding: 20px;
+                display: block;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0,0,0,0.1);
             }
 
             .sidebar.active {
-                display: block;
+                left: 0;
             }
 
             .sidebar h2 {
                 font-size: 20px;
-                margin-bottom: 15px;
+                margin-top: 50px;
+                margin-bottom: 25px;
             }
 
             .main-content {
                 margin-left: 0;
             }
 
+            .container {
+                padding: 15px;
+            }
+
             .top-bar {
                 flex-direction: column;
                 gap: 15px;
-                align-items: flex-start;
+                align-items: stretch;
             }
 
             .search-box {
@@ -410,28 +455,35 @@
 
             .menu-toggle {
                 display: block;
+                z-index: 1001;
+                position: relative;
             }
 
             .header-actions {
-                gap: 10px;
-            }
-
-            #userEmail {
-                display: none;
+                gap: 8px;
             }
 
             .photos-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+
+            .photo-card {
+                border-radius: 12px;
             }
 
             .photo-image {
-                height: 120px;
+                height: 140px;
+            }
+
+            .photo-title {
+                font-size: 14px;
             }
 
             .bulk-actions {
                 left: 0;
-                padding: 15px 20px;
+                padding: 12px 15px;
+                border-radius: 20px 20px 0 0;
             }
         }
     </style>
@@ -439,7 +491,7 @@
 
 <body>
 
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h2>Kobir Lyrics</h2>
 
         <div class="sidebar-section">
@@ -461,7 +513,7 @@
         <header>
             <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
                 <button class="menu-toggle" id="menuToggle">☰</button>
-                <h1 id="sectionTitle">📷 Manage Bangla Quotes 1</h1>
+                <h1 id="sectionTitle">📷 Manage</h1>
             </div>
             <div class="header-actions">
                 <a href="thumbnail.html" class="btn btn-secondary" style="text-decoration:none;">🖼️ <span
@@ -579,7 +631,7 @@
         const ITEMS_PER_PAGE = 50;
 
         let currentTable = 'kabirdatabase';
-        let currentSection = 'bangla_quotes_1';
+        let currentSection = 'all';
         let allPhotos = [];
         let currentPage = 1;
 
@@ -606,12 +658,11 @@
                 const session = JSON.parse(sessionJson);
                 document.getElementById('userEmail').textContent = session.user.email;
 
-                // Load categories and auto-select the first one if currentSection is default
-                const sections = await loadSidebarCategories();
-                if (sections && sections.length > 0) {
-                    currentSection = sections[0];
-                    document.getElementById('sectionTitle').textContent = "📷 Manage " + (sectionNames[currentSection] || formatSectionId(currentSection));
-                }
+                // Load categories
+                await loadSidebarCategories();
+                
+                // Set default title for 'all'
+                document.getElementById('sectionTitle').textContent = "📷 Manage All";
 
                 loadPhotos();
             } catch (e) {
@@ -637,11 +688,16 @@
                     sidebarDiv.innerHTML = '<p style="padding:10px; font-size:13px; color:#888;">No categories found.</p>';
                     return [];
                 } else {
-                    sidebarDiv.innerHTML = uniqueSections.map(sectionId => {
+                    const allBtnIsActive = currentSection === 'all' ? 'active' : '';
+                    let buttonsHtml = `<button class="table-btn ${allBtnIsActive}" onclick="selectSection('all', this)">✨ All Items</button>`;
+                    
+                    buttonsHtml += uniqueSections.map(sectionId => {
                         const displayName = sectionNames[sectionId] || formatSectionId(sectionId);
                         const isActive = sectionId === currentSection ? 'active' : '';
                         return `<button class="table-btn ${isActive}" onclick="selectSection('${sectionId}', this)">${displayName}</button>`;
                     }).join('');
+                    
+                    sidebarDiv.innerHTML = buttonsHtml;
                     titleEl.textContent = '📁 Categories';
                     return uniqueSections;
                 }
@@ -713,8 +769,14 @@
             currentTable = 'kabirdatabase';
             currentSection = section;
             currentPage = 1;
-            document.getElementById('sectionTitle').textContent = "📷 Manage " + (sectionNames[section] || section);
+            const displayName = section === 'all' ? 'All' : (sectionNames[section] || formatSectionId(section));
+            document.getElementById('sectionTitle').textContent = "📷 Manage " + displayName;
+            
+            // "Add New" button should ideally point to a specific section, 
+            // but we'll keep it active or hide it for "All" based on preference.
+            // Let's show it but user will need to pick a section in add_item.html
             document.getElementById('addNewBtn').style.display = 'block';
+            
             document.querySelectorAll('.table-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
             loadPhotos();
@@ -736,7 +798,7 @@
             loader.classList.add('active');
             try {
                 let query = kbClient.from(currentTable).select('*');
-                if (currentSection) query = query.eq('section', currentSection);
+                if (currentSection && currentSection !== 'all') query = query.eq('section', currentSection);
                 const { data, error } = await query.order('created_at', { ascending: false });
                 if (error) throw error;
                 allPhotos = data || [];

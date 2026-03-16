@@ -17,28 +17,28 @@ const CONFIG = {
     RETRY_DELAY: 1000
 };
 
-// Table configuration
-const TABLE_CONFIG = {
-    'photography_1': { name: 'Photography 1', category: 'photography', weight: 1.5 },
-    'photography_2': { name: 'Photography 2', category: 'photography', weight: 1.5 },
-    'photography_3': { name: 'Photography 3', category: 'photography', weight: 1.5 },
-    'photography_4': { name: 'Photography 4', category: 'photography', weight: 1.5 },
-    'dotted_illustration_1': { name: 'Dotted Illustration 1', category: 'illustrations', weight: 1 },
-    'dotted_illustration_2': { name: 'Dotted Illustration 2', category: 'illustrations', weight: 1 },
-    'illustration_1': { name: 'Illustration 1', category: 'illustrations', weight: 1 },
-    'illustration_2': { name: 'Illustration 2', category: 'illustrations', weight: 1 },
-    'bangla_quotes_1': { name: 'Bangla Quotes 1', category: 'bangla', weight: 1 },
-    'bangla_quotes_2': { name: 'Bangla Quotes 2', category: 'bangla', weight: 1 },
-    'bangla_quotes_3': { name: 'Bangla Quotes 3', category: 'bangla', weight: 1 },
-    'bangla_quotes_4': { name: 'Bangla Quotes 4', category: 'bangla', weight: 1 },
-    'english_quote_1': { name: 'English Quotes 1', category: 'english', weight: 1 },
-    'english_quote_2': { name: 'English Quotes 2', category: 'english', weight: 1 },
-    'post_site': { name: 'Posts', category: 'photography', weight: 1.2 },
-    'dotted_illustration_1': { name: 'Dotted Illustration 1', category: 'illustrations', weight: 1 },
-    'dotted_illustration_2': { name: 'Dotted Illustration 2', category: 'illustrations', weight: 1 },
-    'illustration_1': { name: 'Illustration 1', category: 'illustrations', weight: 1 },
-    'illustration_2': { name: 'Illustration 2', category: 'illustrations', weight: 1 }
+// Section configuration (previously tables)
+const SECTION_CONFIG = {
+    'bangla_quotes_1':   { name: 'Bengla Quotes 1',   category: 'bangla',      weight: 1 },
+    'bangla_quotes_2':   { name: 'Bengla Quotes 2',   category: 'bangla',      weight: 1 },
+    'bangla_quotes_3':   { name: 'Bengla Quotes 3',   category: 'bangla',      weight: 1 },
+    'bangla_quotes_4':   { name: 'Bengla Quotes 4',   category: 'bangla',      weight: 1 },
+    'photography_1':     { name: 'Photography 1',     category: 'photography', weight: 1.5 },
+    'photography_2':     { name: 'Photography 2',     category: 'photography', weight: 1.5 },
+    'photography_3':     { name: 'Photography 3',     category: 'photography', weight: 1.5 },
+    'photography_4':     { name: 'Photography 4',     category: 'photography', weight: 1.5 },
+    'illustration_1':    { name: 'Illustration 1',    category: 'illustrations', weight: 1.2 },
+    'illustration_2':    { name: 'Illustration 2',    category: 'illustrations', weight: 1.2 },
+    'english_quote_1':   { name: 'English Quotes 1',  category: 'english',     weight: 1 },
+    'english_quote_2':   { name: 'English Quotes 2',  category: 'english',     weight: 1 },
+    'story_1':           { name: 'Story 1',           category: 'stories',     weight: 1.3 },
+    'story_2':           { name: 'Story 2',           category: 'stories',     weight: 1.3 },
+    'story_3':           { name: 'Story 3',           category: 'stories',     weight: 1.3 },
+    'others':            { name: 'Others',            category: 'others',      weight: 0.8 }
 };
+
+// Map old table names to sections for backward compatibility
+const TABLE_CONFIG = SECTION_CONFIG;
 
 // ===========================================
 // Supabase Client Initialization
@@ -518,70 +518,58 @@ async function loadClickCounts() {
 /**
  * Load data from a table
  */
-async function fetchTableData(tableName) {
+/**
+ * Load all data from the primary database table
+ */
+async function fetchAllData() {
     try {
         const { data, error } = await supabaseClient
-            .from(tableName)
-            .select('*');
+            .from('kabirdatabase')
+            .select('*')
+            .order('created_at', { ascending: false });
 
         if (error) {
-            console.warn(`Table ${tableName} warning:`, error.message);
+            console.error('Database fetch error:', error.message);
             return [];
         }
 
         if (!data || data.length === 0) return [];
 
-        const tableConfig = TABLE_CONFIG[tableName];
-
         return data.map(item => {
-            let imageUrl = item.image_url || item.image || item.img;
-            let thumbnailUrl = item.thumbnail_url || imageUrl; // Use thumbnail if available, fallback to image_url
+            let imageUrl = sanitizeImageUrl(item.image_url);
+            let thumbnailUrl = sanitizeImageUrl(item.thumbnail_url || item.image_url);
+            
+            const section = item.section || 'others';
+            const config = SECTION_CONFIG[section] || SECTION_CONFIG['others'];
 
-            // Sanitize URLs
-            const originalImageUrl = imageUrl;
-            const originalThumbnailUrl = thumbnailUrl;
-
-            imageUrl = sanitizeImageUrl(imageUrl);
-            thumbnailUrl = sanitizeImageUrl(thumbnailUrl);
-
-            // Log if URL was changed
-            if (originalImageUrl !== imageUrl) {
-                console.log('Sanitized image URL:', originalImageUrl, '->', imageUrl);
-            }
-            if (originalThumbnailUrl !== thumbnailUrl && originalThumbnailUrl !== originalImageUrl) {
-                console.log('Sanitized thumbnail URL:', originalThumbnailUrl, '->', thumbnailUrl);
-            }
-
-            // Try multiple ID fields
-            const photoId = item.iid || item.id || item.photo_id || item.ID || item.image_iid;
-            const imageIid = item.image_iid || item.iid || item.id || photoId;
-            const tableImageIid = `${tableName}-${imageIid}`;
-
-            // Create clean object without spreading original (to avoid using malformed URLs)
+            const imageIid = item.image_iid || item.iid || item.id;
+            
             return {
-                id: photoId,
-                image_url: imageUrl,          // Full quality for download (sanitized)
-                thumbnail_url: thumbnailUrl,  // Smaller size for preview (sanitized)
+                id: imageIid,
+                image_url: imageUrl,
+                thumbnail_url: thumbnailUrl,
                 image_iid: imageIid,
-                table_image_iid: tableImageIid,
-                tableName: tableName,
-                categoryName: tableConfig?.name || tableName,
-                category: tableConfig?.category || 'other',
-                weight: tableConfig?.weight || 1,
-                // Click counts are intentionally hidden/disabled client-side
+                table_image_iid: `kabirdatabase-${imageIid}`,
+                tableName: 'kabirdatabase',
+                section: section,
+                categoryName: config.name,
+                category: config.category,
+                weight: config.weight || 1,
                 clicks: 0,
-                // Copy other fields if needed
-                title: item.title,
-                description: item.description,
-                tags: item.tags
+                title: item.title || '',
+                description: item.description || '',
+                created_at: item.created_at
             };
         }).filter(item => item.image_url && item.id);
     } catch (error) {
-        console.warn(`Fetch ${tableName} error:`, error);
+        console.warn('fetchAllData error:', error);
         return [];
     }
 }
 
+/**
+ * Load all data
+ */
 /**
  * Load all data
  */
@@ -598,32 +586,23 @@ async function loadAllPhotos() {
     updateLoadingUI(true);
 
     try {
-        // Click counts are intentionally disabled client-side
-        AppState.clickCounts = {};
-
-        // Load data from all tables together
-        const promises = Object.keys(TABLE_CONFIG).map(tableName =>
-            fetchTableData(tableName)
-        );
-
-        const results = await Promise.all(promises);
-        const allPhotos = results.flat();
+        const allPhotos = await fetchAllData();
 
         // Save to cache
         AppState.cache.data = allPhotos;
         AppState.cache.timestamp = Date.now();
 
-        // Statistics - প্রতিটি টেবিল থেকে কতগুলো ছবি আছে
-        const tableStats = {};
+        // Statistics
+        const sectionStats = {};
         const categoryStats = {};
 
         allPhotos.forEach(photo => {
-            tableStats[photo.tableName] = (tableStats[photo.tableName] || 0) + 1;
+            sectionStats[photo.section] = (sectionStats[photo.section] || 0) + 1;
             categoryStats[photo.category] = (categoryStats[photo.category] || 0) + 1;
         });
 
-        console.log(`📊 Loaded ${allPhotos.length} photos from ${Object.keys(tableStats).length} tables`);
-        console.log('📁 Table Distribution:', tableStats);
+        console.log(`📊 Loaded ${allPhotos.length} photos from kabirdatabase`);
+        console.log('📁 Section Distribution:', sectionStats);
         console.log('📂 Category Distribution:', categoryStats);
 
         return allPhotos;

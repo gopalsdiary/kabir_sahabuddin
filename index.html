@@ -615,7 +615,8 @@
             <button class="filter-chip" data-category="photography">📸 Photography</button>
             <button class="filter-chip" data-category="illustrations">🎨 Illustration</button>
             <button class="filter-chip" data-category="english">🌍 English</button>
-            <button class="filter-chip" data-category="posts">📌 Posts</button>
+            <button class="filter-chip" data-category="stories">📖 Stories</button>
+            <button class="filter-chip" data-category="others">✨ Others</button>
         </div>
     </div>
 
@@ -628,21 +629,20 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
 
     const TABLE_CONFIG = {
-        'bangla_quotes_1':       { name: 'Bangla Quotes 1',       category: 'bangla',        emoji: '' },
-        'bangla_quotes_2':       { name: 'Bangla Quotes 2',       category: 'bangla',        emoji: '' },
-        'bangla_quotes_3':       { name: 'Bangla Quotes 3',       category: 'bangla',        emoji: '' },
-        'bangla_quotes_4':       { name: 'Bangla Quotes 4',       category: 'bangla',        emoji: '' },
-        'photography_1':         { name: 'Photography 1',         category: 'photography',   emoji: '📸' },
-        'photography_2':         { name: 'Photography 2',         category: 'photography',   emoji: '📸' },
-        'photography_3':         { name: 'Photography 3',         category: 'photography',   emoji: '📸' },
-        'photography_4':         { name: 'Photography 4',         category: 'photography',   emoji: '📸' },
-        'english_quote_1':       { name: 'English Quotes 1',      category: 'english',       emoji: '🌍' },
-        'english_quote_2':       { name: 'English Quotes 2',      category: 'english',       emoji: '🌍' },
-        'illustration_1':        { name: 'Illustration 1',        category: 'illustrations', emoji: '🎨' },
-        'illustration_2':        { name: 'Illustration 2',        category: 'illustrations', emoji: '🎨' },
-        'dotted_illustration_1': { name: 'Dotted Illustration 1', category: 'illustrations', emoji: '🎨' },
-        'dotted_illustration_2': { name: 'Dotted Illustration 2', category: 'illustrations', emoji: '🎨' },
-        'post_site':             { name: 'Posts',                  category: 'posts',         emoji: '📌' }
+        'bangla_quotes_1':   { name: 'বাংলা কোটস ১',   category: 'bangla',      emoji: '' },
+        'bangla_quotes_2':   { name: 'বাংলা কোটস ২',   category: 'bangla',      emoji: '' },
+        'bangla_quotes_3':   { name: 'বাংলা কোটস ৩',   category: 'bangla',      emoji: '' },
+        'bangla_quotes_4':   { name: 'বাংলা কোটস ৪',   category: 'bangla',      emoji: '' },
+        'photography_1':     { name: 'ফটো ১',     category: 'photography', emoji: '📸' },
+        'photography_2':     { name: 'ফটো ২',     category: 'photography', emoji: '📸' },
+        'illustration_1':    { name: 'ইলাস্ট্রেশন ১',  category: 'illustrations', emoji: '🎨' },
+        'illustration_2':    { name: 'ইলাস্ট্রেশন ২',  category: 'illustrations', emoji: '🎨' },
+        'english_quote_1':   { name: 'English 1',    category: 'english',     emoji: '🌍' },
+        'english_quote_2':   { name: 'English 2',    category: 'english',     emoji: '🌍' },
+        'story_1':           { name: 'গল্প ১',         category: 'stories',      emoji: '📖' },
+        'story_2':           { name: 'গল্প ২',         category: 'stories',      emoji: '📖' },
+        'story_3':           { name: 'গল্প ৩',         category: 'stories',      emoji: '📖' },
+        'others':            { name: 'অন্যান্য',       category: 'others',       emoji: '✨' }
     };
 
     const ITEMS_PER_PAGE = 80;
@@ -735,7 +735,6 @@
     // DATA LOADING — ALL 15 TABLES
     // ============================================
     async function loadAllPhotos() {
-        // Cache check
         if (State.cache.data && State.cache.ts && Date.now() - State.cache.ts < State.CACHE_TTL) {
             console.log('📦 Using cached data');
             return State.cache.data;
@@ -746,49 +745,50 @@
         document.getElementById('loadingIndicator').classList.add('visible');
 
         try {
-            const tableNames = Object.keys(TABLE_CONFIG);
+            const url = `${SUPABASE_URL}/rest/v1/kabirdatabase?select=*&order=created_at.desc`;
+            const resp = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
-            // Fetch ALL tables in parallel
-            const results = await Promise.all(
-                tableNames.map(t => supabaseGet(t))
-            );
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
 
             const all = [];
             State.tableStats = {};
 
-            results.forEach((rows, i) => {
-                const tableName = tableNames[i];
-                const cfg = TABLE_CONFIG[tableName];
-                State.tableStats[tableName] = rows.length;
+            data.forEach(item => {
+                const section = item.section || 'others';
+                const cfg = TABLE_CONFIG[section] || TABLE_CONFIG['others'];
+                
+                const imageUrl = sanitize(item.image_url || '');
+                const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
+                if (!imageUrl) return;
 
-                rows.forEach(item => {
-                    const imageUrl = sanitize(item.image_url || '');
-                    const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
-                    if (!imageUrl) return;
+                State.tableStats[section] = (State.tableStats[section] || 0) + 1;
 
-                    all.push({
-                        id: item.image_iid || item.id,
-                        title: item.title || '',
-                        description: item.description || '',
-                        image_url: imageUrl,
-                        thumbnail_url: thumbUrl,
-                        tableName,
-                        categoryName: cfg.name,
-                        category: cfg.category,
-                        emoji: cfg.emoji,
-                        created_at: item.created_at
-                    });
+                all.push({
+                    id: item.image_iid || item.id,
+                    title: item.title || '',
+                    description: item.description || '',
+                    image_url: imageUrl,
+                    thumbnail_url: thumbUrl,
+                    tableName: 'kabirdatabase',
+                    section: section,
+                    categoryName: cfg.name,
+                    category: cfg.category,
+                    emoji: cfg.emoji,
+                    created_at: item.created_at
                 });
             });
 
-            // Cache
             State.cache.data = all;
             State.cache.ts = Date.now();
 
-            const loadedTables = Object.values(State.tableStats).filter(n => n > 0).length;
-            console.log(`✅ Loaded ${all.length} photos from ${loadedTables}/${tableNames.length} tables`);
-            console.log('📊 Per-table:', State.tableStats);
-
+            console.log(`✅ Loaded ${all.length} photos from kabirdatabase`);
             return all;
         } catch (err) {
             console.error('❌ Load error:', err);
