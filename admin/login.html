@@ -168,7 +168,7 @@
 	<div class="blob blob-2"></div>
 	<div class="card">
 		<div class="brand">
-			<img src="/admin/kobirlyrics.png" alt="Logo" style="box-shadow:0 50px 50px #0001;object-fit:cover;background:#fff;border:1px solid #eee;" onerror="this.style.display='none'" />
+			<img src="kobirlyrics.png" alt="Logo" style="box-shadow:0 50px 50px #0001;object-fit:cover;background:#fff;border:1px solid #eee;" onerror="this.style.display='none'" />
 			<h1>Admin Login</h1>
 		</div>
 		<p class="muted">Sign in with your email and password to access the dashboard.</p>
@@ -198,20 +198,9 @@
 
 	<!-- Supabase JS v2 -->
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="auth.js"></script>
 	<script>
-		// Prevent script from running multiple times
-		if (!window.loginScriptLoaded) {
-			window.loginScriptLoaded = true;
-
-			// Your Supabase project settings
-			const SUPABASE_URL = 'https://vbfckjroisrhplrpqzkd.supabase.co';
-			const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
-
-			// Create client (reuse if already exists)
-			if (!window.supabaseClient) {
-				window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-			}
-			const supabase = window.supabaseClient;
+		const supabaseClient = window.kbSupabaseClient;
 
 			// Helpers
 			const errorBox = document.getElementById('errorBox');
@@ -323,7 +312,7 @@
 			}
 
 			try {
-				const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+				const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 				if (error) throw error;
 
 				const session = data.session;
@@ -360,7 +349,6 @@
 				submitBtn.textContent = 'Sign in';
 			}
 		});
-		}
 	</script>
 </body>
 </html>

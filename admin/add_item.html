@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Item - Kobir Lyrics</title>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary-color: #000;
+            --accent-color: #3498db;
+            --bg-color: #f4f4f4;
+            --card-bg: #fff;
+            --text-color: #333;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .card { background: var(--card-bg); padding: 40px; border-radius: 20px; box-shadow: var(--shadow); width: 100%; max-width: 600px; }
+        .card h1 { margin-bottom: 20px; font-size: 24px; text-align: center; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 14px; }
+        .form-group textarea { height: 100px; resize: vertical; }
+
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; width: 100%; }
+        .btn-primary { background: var(--primary-color); color: #fff; }
+        .btn-secondary { background: #eee; color: #333; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+        
+        #uploadStatus { margin-top: 15px; text-align: center; font-size: 14px; color: var(--accent-color); }
+        
+        .back-link { position: fixed; top: 20px; left: 20px; background: #fff; padding: 10px 15px; border-radius: 8px; box-shadow: var(--shadow); text-decoration: none; color: #333; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <a href="admin_dashboard.html" class="back-link">← Back to Dashboard</a>
+
+    <div class="card">
+        <h1>✨ Add New Item</h1>
+        <form id="addPhotoForm">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="photoTitle" placeholder="Item title" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="photoDescription" placeholder="Description"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Section</label>
+                <select id="photoSection" required>
+                    <option value="bangla_quotes_1">Bangla Quotes 1</option>
+                    <option value="bangla_quotes_2">Bangla Quotes 2</option>
+                    <option value="bangla_quotes_3">Bangla Quotes 3</option>
+                    <option value="bangla_quotes_4">Bangla Quotes 4</option>
+                    <option value="photography_1">Photography 1</option>
+                    <option value="photography_2">Photography 2</option>
+                    <option value="illustration_1">Illustration 1</option>
+                    <option value="illustration_2">Illustration 2</option>
+                    <option value="english_quote_1">English Quote 1</option>
+                    <option value="english_quote_2">English Quote 2</option>
+                    <option value="story_1">Story 1</option>
+                    <option value="story_2">Story 2</option>
+                    <option value="story_3">Story 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Image File (Auto-generates Thumbnail)</label>
+                <input type="file" id="photoFile" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>OR Direct Image URL</label>
+                <input type="url" id="photoUrl" placeholder="https://example.com/image.jpg">
+            </div>
+            <div id="uploadStatus"></div>
+            <button type="submit" class="btn btn-primary" id="saveBtn">Save Item</button>
+            <a href="admin_dashboard.html" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        const kbClient = window.kbSupabaseClient;
+        const IMGBB_API_KEY = '03cd19c7e6990d72a74e764559101b63';
+
+        window.onload = () => {
+            const token = localStorage.getItem('supabase_access_token');
+            if (!token || isTokenExpired(token)) {
+                window.location.href = 'login.html';
+                return;
+            }
+        };
+
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('key', IMGBB_API_KEY);
+            const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (!data.success) throw new Error('ImgBB Upload failed');
+            return data.data.url;
+        }
+
+        async function createThumbnail(file) {
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > 600) { h *= 600/w; w = 600; }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(resolve, 'image/jpeg', 0.7);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        document.getElementById('addPhotoForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            const status = document.getElementById('uploadStatus');
+            try {
+                btn.disabled = true; status.textContent = '⏳ Processing...';
+                const file = document.getElementById('photoFile').files[0];
+                const directUrl = document.getElementById('photoUrl').value.trim();
+                let url = directUrl, thumb = directUrl;
+
+                if (file) {
+                    status.textContent = '📤 Uploading Main Image...';
+                    url = await uploadToImgBB(file);
+                    status.textContent = '📤 Generating & Uploading Thumbnail...';
+                    const tBlob = await createThumbnail(file);
+                    thumb = await uploadToImgBB(new File([tBlob], 'thumb.jpg', {type:'image/jpeg'}));
+                }
+                
+                if (!url) throw new Error('Please select an image file or provide a URL.');
+
+                status.textContent = '💾 Saving to Database...';
+                const { error } = await kbClient.from('kabirdatabase').insert([{
+                    title: document.getElementById('photoTitle').value,
+                    description: document.getElementById('photoDescription').value,
+                    section: document.getElementById('photoSection').value,
+                    image_url: url,
+                    thumbnail_url: thumb
+                }]);
+                
+                if (error) throw error;
+                
+                status.textContent = '✅ Item added successfully!';
+                setTimeout(() => window.location.href = 'admin_dashboard.html', 1500);
+            } catch (err) { 
+                alert(err.message); 
+                status.textContent = ''; 
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
