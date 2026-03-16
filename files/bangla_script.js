@@ -444,7 +444,7 @@ function openLightbox(lightboxImageSrc, index, total, photoData, originalUrl) {
     lightboxImage.src = lightboxImageSrc;
     lightboxImage.setAttribute('data-original-url', originalUrl); // Store for download
 
-    lightboxTitle.textContent = photoData.title || 'gopals_diary';
+    lightboxTitle.textContent = photoData.title || 'kobir_lyrics';
     lightboxDescription.textContent = photoData.description || '-';
     currentImageIndex = index;
 
@@ -497,7 +497,7 @@ function nextImage() {
 
     lightboxImage.src = nextLightboxUrl;
     lightboxImage.setAttribute('data-original-url', nextOriginalUrl);
-    lightboxTitle.textContent = photoData.title || 'gopals_diary';
+    lightboxTitle.textContent = photoData.title || 'kobir_lyrics';
     lightboxDescription.textContent = photoData.description || '-';
     imageCounter.textContent = currentImageIndex + 1;
 }
@@ -519,7 +519,7 @@ function prevImage() {
 
     lightboxImage.src = prevLightboxUrl;
     lightboxImage.setAttribute('data-original-url', prevOriginalUrl);
-    lightboxTitle.textContent = photoData.title || 'gopals_diary';
+    lightboxTitle.textContent = photoData.title || 'kobir_lyrics';
     lightboxDescription.textContent = photoData.description || '-';
     imageCounter.textContent = currentImageIndex + 1;
 }

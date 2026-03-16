@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gopal's Diary</title>
-    <meta name="description" content="Gopals Diary — Free to download and use beautiful aesthetic content.">
+    <title>Kobir Lyrics</title>
+    <meta name="description" content="Kobir Lyrics — Free to download and use beautiful aesthetic content.">
     <meta name="theme-color" content="#eeb600">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -538,7 +538,7 @@
     <header class="app-bar">
         <div class="app-bar-content">
             <span class="material-icons" style="font-size: 22px;">auto_awesome</span>
-            <h1 class="app-title">Gopal's Diary</h1>
+            <h1 class="app-title">Kobir Lyrics</h1>
             <div class="spacer"></div>
             <a href="home.html" class="icon-btn" aria-label="Home" title="Home">
                 <span class="material-icons">home</span>
@@ -1218,7 +1218,7 @@
         lbImg.src = imgSrc;
         lbImg.setAttribute('data-original-url', originalUrl);
 
-        document.getElementById('lightboxTitle').textContent = photoData.title || 'Gopal\'s Diary';
+        document.getElementById('lightboxTitle').textContent = photoData.title || 'Kobir Lyrics';
         document.getElementById('lightboxDescription').textContent = photoData.description || '';
         document.getElementById('imageCounter').textContent = index + 1;
         document.getElementById('totalCounter').textContent = total;
@@ -1255,7 +1255,7 @@
 
         document.getElementById('lightboxImage').src = card.getAttribute('data-lightbox-url');
         document.getElementById('lightboxImage').setAttribute('data-original-url', card.getAttribute('data-original-url'));
-        document.getElementById('lightboxTitle').textContent = data.title || 'Gopal\'s Diary';
+        document.getElementById('lightboxTitle').textContent = data.title || 'Kobir Lyrics';
         document.getElementById('lightboxDescription').textContent = data.description || '';
         document.getElementById('imageCounter').textContent = currentImageIndex + 1;
 
@@ -1315,7 +1315,7 @@
     async function downloadImage() {
         const img = document.getElementById('lightboxImage');
         const url = img.getAttribute('data-original-url') || img.src;
-        const title = document.getElementById('lightboxTitle').textContent || 'gopals_diary';
+        const title = document.getElementById('lightboxTitle').textContent || 'kobir_lyrics';
         if (!url) { alert('ছবি পাওয়া যায়নি'); return; }
 
         const btn = document.querySelector('.btn-download');
@@ -1448,7 +1448,7 @@
     // INITIALIZATION
     // ============================================
     async function init() {
-        console.log('🎨 Gopal\'s Diary Gallery initializing...');
+        console.log('🎨 Kobir Lyrics Gallery initializing...');
         showSkeletons();
 
         State.allPhotos = await loadAllPhotos();

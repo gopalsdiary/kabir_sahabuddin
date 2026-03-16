@@ -8,7 +8,7 @@ TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{TITLE}} - Gopals Diary</title>
+    <title>{{TITLE}} - Kobir Lyrics</title>
     <!-- Google Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -20,7 +20,7 @@ TEMPLATE = """<!DOCTYPE html>
     <header class="app-bar">
         <div class="app-bar-content">
             <span class="material-icons" style="margin-right: 20px; cursor: pointer;">menu</span>
-            <h1 class="app-title">Gopals Diary</h1>
+            <h1 class="app-title">Kobir Lyrics</h1>
             <div class="spacer"></div>
             <!-- Home Navigation -->
             <a href="../index.html" class="icon-button" aria-label="Home">

@@ -1,11 +1,11 @@
 {
-    "name": "gallery_app",
-    "short_name": "gallery_app",
+    "name": "Kobir Lyrics",
+    "short_name": "Kobir Lyrics",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Kobir Lyrics — Free to download and use beautiful aesthetic content.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

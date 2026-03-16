@@ -1,5 +1,5 @@
 /**
- * Pinterest Gallery Algorithm - Gopal's Diary
+ * Pinterest Gallery Algorithm - Kobir Lyrics
  * Advanced gallery management with sophisticated algorithms
  */
 
@@ -77,7 +77,7 @@ const AppState = {
  */
 function loadUserPreferences() {
     try {
-        const stored = localStorage.getItem('gopals_diary_preferences');
+        const stored = localStorage.getItem('kobir_lyrics_preferences');
         if (stored) {
             const prefs = JSON.parse(stored);
             AppState.userPreferences = prefs.tableClicks || {};
@@ -99,7 +99,7 @@ function saveUserPreferences() {
             tableClicks: AppState.userPreferences,
             lastUpdated: Date.now()
         };
-        localStorage.setItem('gopals_diary_preferences', JSON.stringify(prefs));
+        localStorage.setItem('kobir_lyrics_preferences', JSON.stringify(prefs));
     } catch (error) {
         console.warn('Failed to save user preferences:', error);
     }
@@ -1032,7 +1032,7 @@ async function downloadImage() {
 
         // Extract filename from URL or create one
         const urlPath = new URL(imageUrl).pathname;
-        let filename = urlPath.split('/').pop() || `gopals_diary_${Date.now()}.jpg`;
+        let filename = urlPath.split('/').pop() || `kobir_lyrics_${Date.now()}.jpg`;
 
         // Clean filename and ensure it has an extension
         filename = filename.split('?')[0]; // Remove query parameters
