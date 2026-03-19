@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kobir-lyrics-v1';
+const CACHE_NAME = 'kobir-lyrics-v3';
 const ASSETS = [
   '/',
   '/index.html',
@@ -7,9 +7,7 @@ const ASSETS = [
   '/favicon.ico',
   '/files/bangla_style.css',
   '/files/gallery.html',
-  '/files/gallery_script.js',
-  '/icons/Icon-192.png',
-  '/icons/Icon-512.png'
+  '/files/gallery_script.js'
 ];
 
 // Install: Cache essential assets

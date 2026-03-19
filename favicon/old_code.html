@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kobir Lyrics</title>
-    <meta name="description" content="Kobir Lyrics — Free to download and use beautiful aesthetic content.">
+    <title>Gopal's Diary</title>
+    <meta name="description" content="Gopals Diary — Free to download and use beautiful aesthetic content.">
     <meta name="theme-color" content="#eeb600">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -14,8 +14,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Performance -->
-    <link rel="dns-prefetch" href="https://vbfckjroisrhplrpqzkd.supabase.co">
-    <link rel="preconnect" href="https://vbfckjroisrhplrpqzkd.supabase.co" crossorigin>
+    <link rel="dns-prefetch" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co">
+    <link rel="preconnect" href="https://mwkoqxtyxdkkqlakrrvd.supabase.co" crossorigin>
     <link rel="dns-prefetch" href="https://i.ibb.co">
     <link rel="preconnect" href="https://i.ibb.co" crossorigin>
 
@@ -655,7 +655,7 @@
     <header class="app-bar">
         <div class="app-bar-content">
             <span class="material-icons" style="font-size: 22px;">auto_awesome</span>
-            <h1 class="app-title">Kobir Lyrics</h1>
+            <h1 class="app-title">Gopal's Diary</h1>
             <div class="spacer"></div>
             <a href="home.html" class="icon-btn" aria-label="Home" title="Home">
                 <span class="material-icons">home</span>
@@ -735,8 +735,7 @@
             <button class="filter-chip" data-category="photography">📸 Photography</button>
             <button class="filter-chip" data-category="illustrations">🎨 Illustration</button>
             <button class="filter-chip" data-category="english">🌍 English</button>
-            <button class="filter-chip" data-category="stories">📖 Stories</button>
-            <button class="filter-chip" data-category="others">✨ Others</button>
+            <button class="filter-chip" data-category="posts">📌 Posts</button>
         </div>
     </div>
 
@@ -745,24 +744,25 @@
     // ============================================
     // CONFIGURATION
     // ============================================
-    const SUPABASE_URL = 'https://vbfckjroisrhplrpqzkd.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
+    const SUPABASE_URL = 'https://mwkoqxtyxdkkqlakrrvd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13a29xeHR5eGRra3FsYWtycnZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2NzYzODcsImV4cCI6MjA4MjI1MjM4N30.2SvderBmI6Ick5Z91M4hrmJwKuXQZmvwWxQOpZod1kg';
 
     const TABLE_CONFIG = {
-        'bangla_quotes_1':   { name: 'বাংলা কোটস ১',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_2':   { name: 'বাংলা কোটস ২',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_3':   { name: 'বাংলা কোটস ৩',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_4':   { name: 'বাংলা কোটস ৪',   category: 'bangla',      emoji: '' },
-        'photography_1':     { name: 'ফটো ১',     category: 'photography', emoji: '📸' },
-        'photography_2':     { name: 'ফটো ২',     category: 'photography', emoji: '📸' },
-        'illustration_1':    { name: 'ইলাস্ট্রেশন ১',  category: 'illustrations', emoji: '🎨' },
-        'illustration_2':    { name: 'ইলাস্ট্রেশন ২',  category: 'illustrations', emoji: '🎨' },
-        'english_quote_1':   { name: 'English 1',    category: 'english',     emoji: '🌍' },
-        'english_quote_2':   { name: 'English 2',    category: 'english',     emoji: '🌍' },
-        'story_1':           { name: 'গল্প ১',         category: 'stories',      emoji: '📖' },
-        'story_2':           { name: 'গল্প ২',         category: 'stories',      emoji: '📖' },
-        'story_3':           { name: 'গল্প ৩',         category: 'stories',      emoji: '📖' },
-        'others':            { name: 'অন্যান্য',       category: 'others',       emoji: '✨' }
+        'bangla_quotes_1':       { name: 'Bangla Quotes 1',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_2':       { name: 'Bangla Quotes 2',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_3':       { name: 'Bangla Quotes 3',       category: 'bangla',        emoji: '' },
+        'bangla_quotes_4':       { name: 'Bangla Quotes 4',       category: 'bangla',        emoji: '' },
+        'photography_1':         { name: 'Photography 1',         category: 'photography',   emoji: '📸' },
+        'photography_2':         { name: 'Photography 2',         category: 'photography',   emoji: '📸' },
+        'photography_3':         { name: 'Photography 3',         category: 'photography',   emoji: '📸' },
+        'photography_4':         { name: 'Photography 4',         category: 'photography',   emoji: '📸' },
+        'english_quote_1':       { name: 'English Quotes 1',      category: 'english',       emoji: '🌍' },
+        'english_quote_2':       { name: 'English Quotes 2',      category: 'english',       emoji: '🌍' },
+        'illustration_1':        { name: 'Illustration 1',        category: 'illustrations', emoji: '🎨' },
+        'illustration_2':        { name: 'Illustration 2',        category: 'illustrations', emoji: '🎨' },
+        'dotted_illustration_1': { name: 'Dotted Illustration 1', category: 'illustrations', emoji: '🎨' },
+        'dotted_illustration_2': { name: 'Dotted Illustration 2', category: 'illustrations', emoji: '🎨' },
+        'post_site':             { name: 'Posts',                  category: 'posts',         emoji: '📌' }
     };
 
     const ITEMS_PER_PAGE = 80;
@@ -855,6 +855,7 @@
     // DATA LOADING — ALL 15 TABLES
     // ============================================
     async function loadAllPhotos() {
+        // Cache check
         if (State.cache.data && State.cache.ts && Date.now() - State.cache.ts < State.CACHE_TTL) {
             console.log('📦 Using cached data');
             return State.cache.data;
@@ -865,50 +866,49 @@
         document.getElementById('loadingIndicator').classList.add('visible');
 
         try {
-            const url = `${SUPABASE_URL}/rest/v1/kabirdatabase?select=*&order=created_at.desc`;
-            const resp = await fetch(url, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const tableNames = Object.keys(TABLE_CONFIG);
 
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const data = await resp.json();
+            // Fetch ALL tables in parallel
+            const results = await Promise.all(
+                tableNames.map(t => supabaseGet(t))
+            );
 
             const all = [];
             State.tableStats = {};
 
-            data.forEach(item => {
-                const section = item.section || 'others';
-                const cfg = TABLE_CONFIG[section] || TABLE_CONFIG['others'];
-                
-                const imageUrl = sanitize(item.image_url || '');
-                const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
-                if (!imageUrl) return;
+            results.forEach((rows, i) => {
+                const tableName = tableNames[i];
+                const cfg = TABLE_CONFIG[tableName];
+                State.tableStats[tableName] = rows.length;
 
-                State.tableStats[section] = (State.tableStats[section] || 0) + 1;
+                rows.forEach(item => {
+                    const imageUrl = sanitize(item.image_url || '');
+                    const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
+                    if (!imageUrl) return;
 
-                all.push({
-                    id: item.image_iid || item.id,
-                    title: item.title || '',
-                    description: item.description || '',
-                    image_url: imageUrl,
-                    thumbnail_url: thumbUrl,
-                    tableName: 'kabirdatabase',
-                    section: section,
-                    categoryName: cfg.name,
-                    category: cfg.category,
-                    emoji: cfg.emoji,
-                    created_at: item.created_at
+                    all.push({
+                        id: item.image_iid || item.id,
+                        title: item.title || '',
+                        description: item.description || '',
+                        image_url: imageUrl,
+                        thumbnail_url: thumbUrl,
+                        tableName,
+                        categoryName: cfg.name,
+                        category: cfg.category,
+                        emoji: cfg.emoji,
+                        created_at: item.created_at
+                    });
                 });
             });
 
+            // Cache
             State.cache.data = all;
             State.cache.ts = Date.now();
 
-            console.log(`✅ Loaded ${all.length} photos from kabirdatabase`);
+            const loadedTables = Object.values(State.tableStats).filter(n => n > 0).length;
+            console.log(`✅ Loaded ${all.length} photos from ${loadedTables}/${tableNames.length} tables`);
+            console.log('📊 Per-table:', State.tableStats);
+
             return all;
         } catch (err) {
             console.error('❌ Load error:', err);
@@ -1518,7 +1518,7 @@
     async function downloadImage() {
         const img = document.getElementById('lightboxImage');
         const url = img.getAttribute('data-original-url') || img.src;
-        const title = document.getElementById('lightboxTitle').textContent || 'kobir_lyrics';
+        const title = document.getElementById('lightboxTitle').textContent || 'gopals_diary';
         if (!url) { alert('ছবি পাওয়া যায়নি'); return; }
 
         const btn = document.querySelector('.btn-download');
@@ -1651,7 +1651,7 @@
     // INITIALIZATION
     // ============================================
     async function init() {
-        console.log('🎨 Kobir Lyrics Gallery initializing...');
+        console.log('🎨 Gopal\'s Diary Gallery initializing...');
         showSkeletons();
 
         State.allPhotos = await loadAllPhotos();
