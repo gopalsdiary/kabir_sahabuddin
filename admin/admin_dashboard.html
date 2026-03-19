@@ -863,7 +863,8 @@
                 if (file) {
                     url = await uploadToImgBB(file);
                     const tBlob = await createThumbnail(file);
-                    thumb = await uploadToImgBB(new File([tBlob], 'thumb.jpg', { type: 'image/jpeg' }));
+                    const thumbFilename = `thumb-${file.name.replace(/\.[^/.]+$/, "")}.jpg`;
+                    thumb = await uploadToImgBB(new File([tBlob], thumbFilename, { type: 'image/jpeg' }));
                 }
 
                 const upData = {

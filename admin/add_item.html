@@ -228,7 +228,8 @@
                     url = await uploadToImgBB(processedFile);
                     overlayText.textContent = '📤 Generating & Uploading Thumbnail...';
                     const tBlob = await createThumbnail(processedFile);
-                    thumb = await uploadToImgBB(new File([tBlob], 'thumb.jpg', {type:'image/jpeg'}));
+                    const thumbFilename = `thumb-${processedFile.name}`;
+                    thumb = await uploadToImgBB(new File([tBlob], thumbFilename, {type:'image/jpeg'}));
                 }
                 
                 if (!url) throw new Error('Please select an image file or provide a URL.');
