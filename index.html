@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,17 +35,27 @@
             --bg: #f5f5f5;
             --surface: #ffffff;
             --on-surface: #1a1a1a;
-            --on-surface-dim: rgba(0,0,0,0.6);
-            --elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-            --elevation-2: 0 3px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.08);
-            --elevation-4: 0 6px 12px rgba(0,0,0,0.12), 0 4px 6px rgba(0,0,0,0.08);
+            --on-surface-dim: rgba(0, 0, 0, 0.6);
+            --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+            --elevation-2: 0 3px 6px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+            --elevation-4: 0 6px 12px rgba(0, 0, 0, 0.12), 0 4px 6px rgba(0, 0, 0, 0.08);
             --radius: 12px;
             --radius-sm: 8px;
         }
 
         /* ===== Reset ===== */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -69,9 +80,11 @@
             padding: 0 12px;
             transition: transform 0.3s ease;
         }
+
         .app-bar.hidden {
             transform: translateY(-100%);
         }
+
         .app-bar-content {
             width: 100%;
             max-width: 1400px;
@@ -80,17 +93,23 @@
             align-items: center;
             gap: 12px;
         }
+
         .app-title {
             font-size: 18px;
             font-weight: 500;
             letter-spacing: 0.15px;
             white-space: nowrap;
         }
-        .spacer { flex: 1; }
+
+        .spacer {
+            flex: 1;
+        }
+
         .icon-btn {
             color: inherit;
             text-decoration: none;
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
             background: transparent;
@@ -100,7 +119,10 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .icon-btn:hover { background: rgba(255,255,255,0.15); }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
 
         /* ===== Stats Bar (bottom) ===== */
         .stats-bar {
@@ -110,6 +132,35 @@
             text-align: center;
             font-size: 12px;
             color: var(--on-surface-dim);
+        }
+
+        /* ===== Site View Counter ===== */
+        .site-view-bar {
+            max-width: 1400px;
+            margin: 8px auto 20px auto;
+            padding: 10px 16px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--on-surface-dim);
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--elevation-1);
+        }
+
+        .site-view-bar .material-icons {
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        .site-view-count {
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 15px;
         }
 
         /* ===== Gallery Container ===== */
@@ -127,9 +178,15 @@
 
         /* ===== Skeleton Loading ===== */
         @keyframes shimmer {
-            0% { background-position: -400px 0; }
-            100% { background-position: 400px 0; }
+            0% {
+                background-position: -400px 0;
+            }
+
+            100% {
+                background-position: 400px 0;
+            }
         }
+
         .skeleton-card {
             break-inside: avoid;
             margin-bottom: 10px;
@@ -139,23 +196,51 @@
             background-size: 800px 100%;
             animation: shimmer 1.4s ease infinite;
         }
-        .skeleton-card .sk-img { width: 100%; background: #e8e8e8; }
-        .skeleton-card .sk-info { padding: 10px; }
-        .skeleton-card .sk-title { height: 12px; background: #e0e0e0; border-radius: 4px; width: 70%; margin-bottom: 6px; }
-        .skeleton-card .sk-desc { height: 10px; background: #e8e8e8; border-radius: 4px; width: 50%; }
+
+        .skeleton-card .sk-img {
+            width: 100%;
+            background: #e8e8e8;
+        }
+
+        .skeleton-card .sk-info {
+            padding: 10px;
+        }
+
+        .skeleton-card .sk-title {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            width: 70%;
+            margin-bottom: 6px;
+        }
+
+        .skeleton-card .sk-desc {
+            height: 10px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            width: 50%;
+        }
 
         /* ===== Photo Card (bangla_script style) ===== */
         @keyframes cardFadeIn {
-            from { opacity: 0; transform: translateY(16px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
+
         .photo-card {
             background: var(--surface);
             border-radius: var(--radius);
             margin-bottom: 10px;
             break-inside: avoid;
             box-shadow: var(--elevation-1);
-            transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.25s;
+            transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s;
             overflow: hidden;
             cursor: pointer;
             position: relative;
@@ -163,6 +248,7 @@
             flex-direction: column;
             animation: cardFadeIn 0.45s ease backwards;
         }
+
         .photo-card:hover {
             box-shadow: var(--elevation-4);
             transform: translateY(-3px);
@@ -175,6 +261,7 @@
             min-height: 120px;
             overflow: hidden;
         }
+
         .photo-image img {
             width: 100%;
             height: auto;
@@ -182,6 +269,7 @@
             opacity: 0;
             transition: opacity 0.5s ease, filter 0.5s ease;
         }
+
         .photo-image img.loaded {
             opacity: 1;
         }
@@ -191,7 +279,7 @@
             position: absolute;
             top: 8px;
             left: 8px;
-            background: rgba(0,0,0,0.55);
+            background: rgba(0, 0, 0, 0.55);
             color: #fff;
             font-size: 9px;
             font-weight: 500;
@@ -207,6 +295,7 @@
         .photo-info {
             padding: 8px 10px;
         }
+
         .photo-info h3 {
             font-size: 12px;
             font-weight: 500;
@@ -216,6 +305,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .photo-info p {
             font-size: 10px;
             color: var(--on-surface-dim);
@@ -231,16 +321,26 @@
             text-align: center;
             padding: 24px;
         }
-        .loading-indicator.visible { display: block; }
+
+        .loading-indicator.visible {
+            display: block;
+        }
+
         .circular-progress {
             display: inline-block;
-            width: 36px; height: 36px;
-            border: 3px solid rgba(238,182,0,0.2);
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(238, 182, 0, 0.2);
             border-top: 3px solid var(--primary);
             border-radius: 50%;
             animation: spin 0.9s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* ===== Pagination ===== */
         .pagination-bar {
@@ -255,8 +355,10 @@
             border-radius: 28px;
             box-shadow: var(--elevation-2);
         }
+
         .page-btn {
-            min-width: 36px; height: 36px;
+            min-width: 36px;
+            height: 36px;
             border: none;
             background: transparent;
             color: var(--on-surface);
@@ -271,9 +373,21 @@
             padding: 0 6px;
             font-family: inherit;
         }
-        .page-btn:hover:not(:disabled) { background: rgba(238,182,0,0.12); }
-        .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-        .page-btn.active { background: var(--primary); color: #fff; }
+
+        .page-btn:hover:not(:disabled) {
+            background: rgba(238, 182, 0, 0.12);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
         .page-info {
             font-size: 12px;
             color: var(--on-surface-dim);
@@ -284,22 +398,26 @@
         /* ===== Bottom Filter Bar ===== */
         .bottom-bar {
             position: fixed;
-            left: 0; right: 0; bottom: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 200;
-            background: rgba(255,255,255,0.92);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(0,0,0,0.06);
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
             padding: 8px 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
             transform: translateY(100%);
             opacity: 0;
         }
+
         .bottom-bar.visible {
             transform: translateY(0);
             opacity: 1;
         }
+
         .filter-scroll {
             display: flex;
             gap: 6px;
@@ -310,11 +428,15 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        .filter-scroll::-webkit-scrollbar { display: none; }
+
+        .filter-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
         .filter-chip {
             flex-shrink: 0;
             padding: 7px 16px;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             background: var(--surface);
             color: var(--on-surface);
             border-radius: 20px;
@@ -325,17 +447,23 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .filter-chip:hover { border-color: var(--primary); color: var(--primary); }
+
+        .filter-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
         .filter-chip.active {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(238,182,0,0.3);
+            box-shadow: 0 2px 8px rgba(238, 182, 0, 0.3);
         }
 
         /* ===== Lightbox ===== */
         .lightbox-overlay {
-            position: fixed; inset: 0;
+            position: fixed;
+            inset: 0;
             background: rgba(10, 10, 10, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -347,7 +475,11 @@
             align-items: center;
             justify-content: center;
         }
-        .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .lightbox-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         .lightbox-content {
             background: rgba(255, 255, 255, 0.03);
@@ -359,14 +491,16 @@
             flex-direction: row;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transform: scale(0.98);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+
         .lightbox-overlay.active .lightbox-content {
             transform: scale(1);
         }
+
         .lightbox-image-wrapper {
             flex: 1;
             background: transparent;
@@ -376,13 +510,15 @@
             position: relative;
             min-height: 300px;
         }
+
         .lightbox-image-wrapper img {
             max-width: 100%;
             max-height: 94vh;
             object-fit: contain;
             transition: opacity 0.3s;
-            filter: drop-shadow(0 12px 32px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.3));
         }
+
         .lightbox-details {
             flex: 0 0 320px;
             padding: 30px;
@@ -392,9 +528,10 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             overflow-y: auto;
-            color: rgba(255,255,255,0.9);
-            border-left: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255, 255, 255, 0.9);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
         }
+
         .lightbox-details h2 {
             font-size: 22px;
             font-weight: 600;
@@ -403,12 +540,14 @@
             color: #fff;
             letter-spacing: 0.3px;
         }
+
         .lightbox-details .lb-desc {
             font-size: 14px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
             flex: 1;
         }
+
         .lightbox-meta-row {
             display: flex;
             align-items: center;
@@ -417,10 +556,12 @@
             margin-bottom: 8px;
             flex-wrap: wrap;
         }
-        .lightbox-controls, .lightbox-details .lb-meta {
+
+        .lightbox-controls,
+        .lightbox-details .lb-meta {
             font-size: 12px;
             font-weight: 500;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 6px 14px;
@@ -431,6 +572,7 @@
             margin: 0;
             backdrop-filter: blur(8px);
         }
+
         .btn-download {
             background: var(--primary);
             color: #1a1a1a;
@@ -450,19 +592,23 @@
             width: 100%;
             margin-top: 20px;
         }
-        .btn-download:hover { 
+
+        .btn-download:hover {
             background: #ffc400;
-            box-shadow: 0 8px 24px rgba(238, 182, 0, 0.4); 
-            transform: translateY(-2px); 
+            box-shadow: 0 8px 24px rgba(238, 182, 0, 0.4);
+            transform: translateY(-2px);
         }
+
         .close-btn {
             position: absolute;
-            top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1);
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
-            width: 44px; height: 44px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 10;
@@ -472,19 +618,22 @@
             font-size: 24px;
             transition: all 0.2s;
         }
+
         .close-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             transform: scale(1.05);
         }
+
         .nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
-            width: 52px; height: 52px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -493,29 +642,71 @@
             transition: all 0.2s;
             z-index: 5;
         }
-        .nav-btn:hover { 
-            background: rgba(255,255,255,0.2);
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-50%) scale(1.1);
         }
-        .nav-btn.prev { left: 20px; }
-        .nav-btn.next { right: 20px; }
+
+        .nav-btn.prev {
+            left: 20px;
+        }
+
+        .nav-btn.next {
+            right: 20px;
+        }
 
         /* ===== Responsive ===== */
         @media (min-width: 1600px) {
-            .gallery-grid { column-count: 7; }
+            .gallery-grid {
+                column-count: 7;
+            }
         }
+
         @media (max-width: 1200px) {
-            .gallery-grid { column-count: 4; column-gap: 8px; }
+            .gallery-grid {
+                column-count: 4;
+                column-gap: 8px;
+            }
         }
+
         @media (max-width: 768px) {
-            .app-bar { height: 48px; }
-            .app-title { font-size: 15px; }
-            .gallery-grid { column-count: 3; column-gap: 6px; }
-            .photo-card { margin-bottom: 6px; border-radius: var(--radius-sm); }
-            .photo-info { padding: 6px 8px; }
-            .photo-info h3 { font-size: 11px; }
-            .photo-info p { font-size: 9px; }
-            .photo-badge { font-size: 8px; padding: 1px 6px; top: 5px; left: 5px; }
+            .app-bar {
+                height: 48px;
+            }
+
+            .app-title {
+                font-size: 15px;
+            }
+
+            .gallery-grid {
+                column-count: 3;
+                column-gap: 6px;
+            }
+
+            .photo-card {
+                margin-bottom: 6px;
+                border-radius: var(--radius-sm);
+            }
+
+            .photo-info {
+                padding: 6px 8px;
+            }
+
+            .photo-info h3 {
+                font-size: 11px;
+            }
+
+            .photo-info p {
+                font-size: 9px;
+            }
+
+            .photo-badge {
+                font-size: 8px;
+                padding: 1px 6px;
+                top: 5px;
+                left: 5px;
+            }
 
             .lightbox-content {
                 flex-direction: column;
@@ -529,6 +720,7 @@
                 background: transparent;
                 border: none;
             }
+
             .lightbox-image-wrapper {
                 position: absolute;
                 inset: 0;
@@ -541,6 +733,7 @@
                 z-index: 1;
                 transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             }
+
             .lightbox-image-wrapper img {
                 height: 100%;
                 max-height: 100%;
@@ -548,10 +741,13 @@
                 object-fit: contain;
                 filter: none;
             }
+
             .lightbox-details {
                 position: absolute;
-                bottom: 0; left: 0;
-                width: 100%; height: auto;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
                 max-height: 70vh;
                 padding: 24px 20px calc(56px + env(safe-area-inset-bottom, 20px)) 20px;
                 background: rgba(20, 20, 20, 0.85);
@@ -566,58 +762,107 @@
                 transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
                 touch-action: pan-y;
                 cursor: pointer;
-                border: 1px solid rgba(255,255,255,0.08);
+                border: 1px solid rgba(255, 255, 255, 0.08);
                 border-bottom: none;
             }
+
             .lightbox-details::before {
                 content: '';
                 display: block;
-                width: 44px; height: 5px;
-                background: rgba(255,255,255,0.3);
+                width: 44px;
+                height: 5px;
+                background: rgba(255, 255, 255, 0.3);
                 border-radius: 3px;
                 margin: 0 auto 16px auto;
                 flex-shrink: 0;
             }
+
             .lightbox-details.expanded {
                 transform: translateY(0);
                 cursor: default;
             }
-            .lightbox-details h2 { margin-bottom: 4px; margin-top: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 18px; }
-            .lightbox-details .lb-desc { margin: 0; white-space: normal; overflow: visible; font-size: 14px; opacity: 0; transition: opacity 0.3s; }
-            .lightbox-details.expanded .lb-desc { opacity: 1; margin-bottom: 16px; }
-            .lightbox-meta-row { margin-top: 8px; margin-bottom: 4px; gap: 8px; }
-            .lightbox-controls, .lightbox-details .lb-meta { font-size: 11px; padding: 5px 12px; }
-            
+
+            .lightbox-details h2 {
+                margin-bottom: 4px;
+                margin-top: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 18px;
+            }
+
+            .lightbox-details .lb-desc {
+                margin: 0;
+                white-space: normal;
+                overflow: visible;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .lightbox-details.expanded .lb-desc {
+                opacity: 1;
+                margin-bottom: 16px;
+            }
+
+            .lightbox-meta-row {
+                margin-top: 8px;
+                margin-bottom: 4px;
+                gap: 8px;
+            }
+
+            .lightbox-controls,
+            .lightbox-details .lb-meta {
+                font-size: 11px;
+                padding: 5px 12px;
+            }
+
             .nav-btn {
-                top: auto; 
+                top: auto;
                 bottom: 24px;
                 transform: none;
-                background: rgba(255,255,255,0.15);
+                background: rgba(255, 255, 255, 0.15);
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
-                border: 1px solid rgba(255,255,255,0.2);
+                border: 1px solid rgba(255, 255, 255, 0.2);
                 color: #fff;
-                width: 48px; height: 48px;
+                width: 48px;
+                height: 48px;
                 z-index: 2005;
             }
-            .nav-btn:hover { transform: none; background: rgba(255,255,255,0.25); }
-            .nav-btn.prev { left: 24px; }
-            .nav-btn.next { right: 24px; }
-            
+
+            .nav-btn:hover {
+                transform: none;
+                background: rgba(255, 255, 255, 0.25);
+            }
+
+            .nav-btn.prev {
+                left: 24px;
+            }
+
+            .nav-btn.next {
+                right: 24px;
+            }
+
             .close-btn {
-                top: 20px; right: 20px;
-                width: 40px; height: 40px;
-                background: rgba(0,0,0,0.3);
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                background: rgba(0, 0, 0, 0.3);
                 border: none;
             }
 
             .btn-download {
                 position: absolute;
-                bottom: 20px; left: 50%;
+                bottom: 20px;
+                left: 50%;
                 transform: translateX(-50%);
-                width: 44px; height: 44px;
+                width: 44px;
+                height: 44px;
                 border-radius: 50%;
-                padding: 0; font-size: 0;
+                padding: 0;
+                font-size: 0;
                 z-index: 2006;
                 box-shadow: 0 4px 16px rgba(238, 182, 0, 0.4);
                 background: var(--primary);
@@ -625,20 +870,40 @@
                 margin: 0;
                 border: none;
             }
-            .btn-download .material-icons { margin: 0; font-size: 20px; }
-            .btn-download:hover { transform: translateX(-50%) translateY(-2px); }
+
+            .btn-download .material-icons {
+                margin: 0;
+                font-size: 20px;
+            }
+
+            .btn-download:hover {
+                transform: translateX(-50%) translateY(-2px);
+            }
 
             /* UI Hidden states */
-            .lightbox-overlay.ui-hidden .lightbox-details { transform: translateY(100%) !important; }
+            .lightbox-overlay.ui-hidden .lightbox-details {
+                transform: translateY(100%) !important;
+            }
+
             .lightbox-overlay.ui-hidden .close-btn,
             .lightbox-overlay.ui-hidden .nav-btn,
-            .lightbox-overlay.ui-hidden .btn-download { opacity: 0; pointer-events: none; }
+            .lightbox-overlay.ui-hidden .btn-download {
+                opacity: 0;
+                pointer-events: none;
+            }
+
             .lightbox-overlay:not(.ui-hidden) .close-btn,
             .lightbox-overlay:not(.ui-hidden) .nav-btn,
-            .lightbox-overlay:not(.ui-hidden) .btn-download { opacity: 1; transition: opacity 0.3s; }
-            
-            .lightbox-overlay.ui-hidden .lightbox-image-wrapper { transform: scale(1.02); }
+            .lightbox-overlay:not(.ui-hidden) .btn-download {
+                opacity: 1;
+                transition: opacity 0.3s;
+            }
+
+            .lightbox-overlay.ui-hidden .lightbox-image-wrapper {
+                transform: scale(1.02);
+            }
         }
+
         /* ===== PWA Install Promo ===== */
         .install-prompt {
             position: fixed;
@@ -651,14 +916,20 @@
             color: #000;
             padding: 16px;
             border-radius: 20px;
-            box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
             display: none;
             z-index: 9999;
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s;
             opacity: 0;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .install-prompt.visible { display: block; transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .install-prompt.visible {
+            display: block;
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         .install-content {
             display: flex;
             align-items: center;
@@ -667,14 +938,26 @@
             position: relative;
             padding-right: 28px;
         }
+
         .install-app-icon {
             width: 44px;
             height: 44px;
             border-radius: 12px;
             object-fit: cover;
         }
-        .install-text h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-        .install-text p { font-size: 11px; color: #666; line-height: 1.3; }
+
+        .install-text h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .install-text p {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.3;
+        }
+
         .btn-install-now {
             width: 100%;
             background: #e6b000;
@@ -687,7 +970,11 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-install-now:active { background: #d4a200; }
+
+        .btn-install-now:active {
+            background: #d4a200;
+        }
+
         .btn-close-install {
             position: absolute;
             top: -4px;
@@ -701,17 +988,41 @@
             align-items: center;
             justify-content: center;
         }
-        .btn-close-install:hover { color: #333; }
+
+        .btn-close-install:hover {
+            color: #333;
+        }
+
         @media (max-width: 480px) {
-            .gallery-grid { column-count: 3; column-gap: 4px; }
-            .photo-card { margin-bottom: 4px; border-radius: 6px; }
-            .photo-info { padding: 4px 6px; }
-            .photo-info h3 { font-size: 10px; }
-            .photo-info p { font-size: 8px; }
-            body { padding-bottom: 70px; }
+            .gallery-grid {
+                column-count: 3;
+                column-gap: 4px;
+            }
+
+            .photo-card {
+                margin-bottom: 4px;
+                border-radius: 6px;
+            }
+
+            .photo-info {
+                padding: 4px 6px;
+            }
+
+            .photo-info h3 {
+                font-size: 10px;
+            }
+
+            .photo-info p {
+                font-size: 8px;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ===== App Bar ===== -->
@@ -723,7 +1034,7 @@
             <a href="home.html" class="icon-btn" aria-label="Home" title="Home">
                 <span class="material-icons">home</span>
             </a>
-             <a href="admin/login.html" class="icon-btn" aria-label="Profile" title="Profile">
+            <a href="admin/login.html" class="icon-btn" aria-label="Profile" title="Profile">
                 <span class="material-icons">account_circle</span>
             </a>
         </div>
@@ -744,6 +1055,12 @@
         <!-- Stats Bar (bottom) -->
         <div class="stats-bar" id="statsBar">
             <span id="statsText">লোড হচ্ছে...</span>
+        </div>
+
+        <!-- Site View Counter -->
+        <div class="site-view-bar" id="siteViewBar" style="display:none;">
+            <span class="material-icons">visibility</span>
+            <span>সর্বমোট <span class="site-view-count" id="siteViewCount">...</span> টি ছবি দেখেছে</span>
         </div>
 
         <!-- Pagination -->
@@ -820,424 +1137,424 @@
 
     <!-- ===== JavaScript ===== -->
     <script>
-    // ============================================
-    // CONFIGURATION
-    // ============================================
-    const SUPABASE_URL = 'https://vbfckjroisrhplrpqzkd.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://vbfckjroisrhplrpqzkd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
 
-    const TABLE_CONFIG = {
-        'bangla_quotes_1':   { name: 'বাংলা কোটস ১',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_2':   { name: 'বাংলা কোটস ২',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_3':   { name: 'বাংলা কোটস ৩',   category: 'bangla',      emoji: '' },
-        'bangla_quotes_4':   { name: 'বাংলা কোটস ৪',   category: 'bangla',      emoji: '' },
-        'photography_1':     { name: 'ফটো ১',     category: 'photography', emoji: '📸' },
-        'photography_2':     { name: 'ফটো ২',     category: 'photography', emoji: '📸' },
-        'illustration_1':    { name: 'ইলাস্ট্রেশন ১',  category: 'illustrations', emoji: '🎨' },
-        'illustration_2':    { name: 'ইলাস্ট্রেশন ২',  category: 'illustrations', emoji: '🎨' },
-        'english_quote_1':   { name: 'English 1',    category: 'english',     emoji: '🌍' },
-        'english_quote_2':   { name: 'English 2',    category: 'english',     emoji: '🌍' },
-        'story_1':           { name: 'গল্প ১',         category: 'stories',      emoji: '📖' },
-        'story_2':           { name: 'গল্প ২',         category: 'stories',      emoji: '📖' },
-        'story_3':           { name: 'গল্প ৩',         category: 'stories',      emoji: '📖' },
-        'others':            { name: 'অন্যান্য',       category: 'others',       emoji: '✨' }
-    };
+        const TABLE_CONFIG = {
+            'bangla_quotes_1': { name: 'বাংলা কোটস ১', category: 'bangla', emoji: '' },
+            'bangla_quotes_2': { name: 'বাংলা কোটস ২', category: 'bangla', emoji: '' },
+            'bangla_quotes_3': { name: 'বাংলা কোটস ৩', category: 'bangla', emoji: '' },
+            'bangla_quotes_4': { name: 'বাংলা কোটস ৪', category: 'bangla', emoji: '' },
+            'photography_1': { name: 'ফটো ১', category: 'photography', emoji: '📸' },
+            'photography_2': { name: 'ফটো ২', category: 'photography', emoji: '📸' },
+            'illustration_1': { name: 'ইলাস্ট্রেশন ১', category: 'illustrations', emoji: '🎨' },
+            'illustration_2': { name: 'ইলাস্ট্রেশন ২', category: 'illustrations', emoji: '🎨' },
+            'english_quote_1': { name: 'English 1', category: 'english', emoji: '🌍' },
+            'english_quote_2': { name: 'English 2', category: 'english', emoji: '🌍' },
+            'story_1': { name: 'গল্প ১', category: 'stories', emoji: '📖' },
+            'story_2': { name: 'গল্প ২', category: 'stories', emoji: '📖' },
+            'story_3': { name: 'গল্প ৩', category: 'stories', emoji: '📖' },
+            'others': { name: 'অন্যান্য', category: 'others', emoji: '✨' }
+        };
 
-    const ITEMS_PER_PAGE = 80;
+        const ITEMS_PER_PAGE = 80;
 
-    // ============================================
-    // STATE
-    // ============================================
-    const State = {
-        allPhotos: [],
-        filteredPhotos: [],
-        mixedPhotos: [],
-        currentPage: 1,
-        currentCategory: 'all',
-        isLoading: false,
-        tableStats: {},
-        cache: { data: null, ts: null },
-        CACHE_TTL: 5 * 60 * 1000
-    };
+        // ============================================
+        // STATE
+        // ============================================
+        const State = {
+            allPhotos: [],
+            filteredPhotos: [],
+            mixedPhotos: [],
+            currentPage: 1,
+            currentCategory: 'all',
+            isLoading: false,
+            tableStats: {},
+            cache: { data: null, ts: null },
+            CACHE_TTL: 5 * 60 * 1000
+        };
 
-    // ============================================
-    // IMAGE OPTIMIZER (like bangla_script.js)
-    // ============================================
-    const Img = {
-        isMobile: () => window.innerWidth <= 768,
-        optimize(url, opts = {}) {
-            if (!url) return '';
-            const { width = 800, quality = 75, format = 'webp' } = opts;
-            if (url.includes('supabase.co/storage')) {
-                const u = new URL(url);
-                u.searchParams.set('width', width);
-                u.searchParams.set('quality', quality);
-                if (format) u.searchParams.set('format', format);
-                return u.toString();
-            }
-            return url;
-        },
-        thumbnail(url) {
-            const w = this.isMobile() ? 200 : 320;
-            return this.optimize(url, { width: w, quality: 50, format: 'webp' });
-        },
-        gallery(url) {
-            const w = this.isMobile() ? 500 : 700;
-            return this.optimize(url, { width: w, quality: 70, format: 'webp' });
-        },
-        lightbox(url) {
-            const w = this.isMobile() ? 1200 : 1920;
-            return this.optimize(url, { width: w, quality: 85, format: 'webp' });
-        }
-    };
-
-    // ============================================
-    // SUPABASE REST CLIENT (no SDK needed)
-    // ============================================
-    async function supabaseGet(tableName) {
-        const url = `${SUPABASE_URL}/rest/v1/${tableName}?select=image_iid,title,description,image_url,thumbnail_url,section,created_at&order=image_iid.asc`;
-        try {
-            const resp = await fetch(url, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json'
+        // ============================================
+        // IMAGE OPTIMIZER (like bangla_script.js)
+        // ============================================
+        const Img = {
+            isMobile: () => window.innerWidth <= 768,
+            optimize(url, opts = {}) {
+                if (!url) return '';
+                const { width = 800, quality = 75, format = 'webp' } = opts;
+                if (url.includes('supabase.co/storage')) {
+                    const u = new URL(url);
+                    u.searchParams.set('width', width);
+                    u.searchParams.set('quality', quality);
+                    if (format) u.searchParams.set('format', format);
+                    return u.toString();
                 }
-            });
-            if (!resp.ok) {
-                console.warn(`⚠️ Table "${tableName}" → HTTP ${resp.status}`);
+                return url;
+            },
+            thumbnail(url) {
+                const w = this.isMobile() ? 200 : 320;
+                return this.optimize(url, { width: w, quality: 50, format: 'webp' });
+            },
+            gallery(url) {
+                const w = this.isMobile() ? 500 : 700;
+                return this.optimize(url, { width: w, quality: 70, format: 'webp' });
+            },
+            lightbox(url) {
+                const w = this.isMobile() ? 1200 : 1920;
+                return this.optimize(url, { width: w, quality: 85, format: 'webp' });
+            }
+        };
+
+        // ============================================
+        // SUPABASE REST CLIENT (no SDK needed)
+        // ============================================
+        async function supabaseGet(tableName) {
+            const url = `${SUPABASE_URL}/rest/v1/${tableName}?select=image_iid,title,description,image_url,thumbnail_url,section,created_at&order=image_iid.asc`;
+            try {
+                const resp = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!resp.ok) {
+                    console.warn(`⚠️ Table "${tableName}" → HTTP ${resp.status}`);
+                    return [];
+                }
+                return await resp.json();
+            } catch (err) {
+                console.warn(`⚠️ Table "${tableName}" network error:`, err.message);
                 return [];
             }
-            return await resp.json();
-        } catch (err) {
-            console.warn(`⚠️ Table "${tableName}" network error:`, err.message);
-            return [];
-        }
-    }
-
-    // ============================================
-    // URL SANITIZER
-    // ============================================
-    function sanitize(url) {
-        if (!url || typeof url !== 'string') return '';
-        url = url.split('#')[0].trim();
-        url = url.replace(/i\.ibb\.co\.com/g, 'i.ibb.co');
-        url = url.replace(/\.com\.com/g, '.com');
-        url = url.replace(/([^:]\/)\/+/g, '$1');
-        if (url.startsWith('//')) url = 'https:' + url;
-        else if (url.startsWith('http://')) url = url.replace('http://', 'https://');
-        return url;
-    }
-
-    // ============================================
-    // DATA LOADING — ALL 15 TABLES
-    // ============================================
-    async function loadAllPhotos() {
-        if (State.cache.data && State.cache.ts && Date.now() - State.cache.ts < State.CACHE_TTL) {
-            console.log('📦 Using cached data');
-            return State.cache.data;
         }
 
-        State.isLoading = true;
-        showSkeletons();
-        document.getElementById('loadingIndicator').classList.add('visible');
-
-        try {
-            const url = `${SUPABASE_URL}/rest/v1/kabirdatabase?select=*&order=created_at.desc`;
-            const resp = await fetch(url, {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const data = await resp.json();
-
-            const all = [];
-            State.tableStats = {};
-
-            data.forEach(item => {
-                const section = item.section || 'others';
-                const cfg = TABLE_CONFIG[section] || TABLE_CONFIG['others'];
-                
-                const imageUrl = sanitize(item.image_url || '');
-                const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
-                if (!imageUrl) return;
-
-                State.tableStats[section] = (State.tableStats[section] || 0) + 1;
-
-                all.push({
-                    id: item.image_iid || item.id,
-                    title: item.title || '',
-                    description: item.description || '',
-                    image_url: imageUrl,
-                    thumbnail_url: thumbUrl,
-                    tableName: 'kabirdatabase',
-                    section: section,
-                    categoryName: cfg.name,
-                    category: cfg.category,
-                    emoji: cfg.emoji,
-                    created_at: item.created_at
-                });
-            });
-
-            State.cache.data = all;
-            State.cache.ts = Date.now();
-
-            console.log(`✅ Loaded ${all.length} photos from kabirdatabase`);
-            return all;
-        } catch (err) {
-            console.error('❌ Load error:', err);
-            return [];
-        } finally {
-            State.isLoading = false;
-            document.getElementById('loadingIndicator').classList.remove('visible');
+        // ============================================
+        // URL SANITIZER
+        // ============================================
+        function sanitize(url) {
+            if (!url || typeof url !== 'string') return '';
+            url = url.split('#')[0].trim();
+            url = url.replace(/i\.ibb\.co\.com/g, 'i.ibb.co');
+            url = url.replace(/\.com\.com/g, '.com');
+            url = url.replace(/([^:]\/)\/+/g, '$1');
+            if (url.startsWith('//')) url = 'https:' + url;
+            else if (url.startsWith('http://')) url = url.replace('http://', 'https://');
+            return url;
         }
-    }
 
-    // ============================================
-    // ADVANCED MIXING ALGORITHM SYSTEM
-    // ============================================
+        // ============================================
+        // DATA LOADING — ALL 15 TABLES
+        // ============================================
+        async function loadAllPhotos() {
+            if (State.cache.data && State.cache.ts && Date.now() - State.cache.ts < State.CACHE_TTL) {
+                console.log('📦 Using cached data');
+                return State.cache.data;
+            }
 
-    // ── 1. Core Utility ──────────────────────────────────────
+            State.isLoading = true;
+            showSkeletons();
+            document.getElementById('loadingIndicator').classList.add('visible');
 
-    /** Fisher-Yates O(n) shuffle */
-    function fisherShuffle(arr) {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
-
-    // ── 2. User Preference Tracking (localStorage) ───────────
-
-    const Prefs = {
-        KEY: 'gd_prefs_v1',
-        data: { catClicks: {}, tableClicks: {} },
-
-        load() {
             try {
-                const raw = localStorage.getItem(this.KEY);
-                if (raw) this.data = JSON.parse(raw);
-            } catch (_) {}
-        },
+                const url = `${SUPABASE_URL}/rest/v1/kabirdatabase?select=*&order=created_at.desc`;
+                const resp = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-        save() {
-            try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (_) {}
-        },
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
 
-        record(tableName, category) {
-            this.data.tableClicks[tableName] = (this.data.tableClicks[tableName] || 0) + 1;
-            this.data.catClicks[category]    = (this.data.catClicks[category]    || 0) + 1;
-            this.save();
-        },
+                const all = [];
+                State.tableStats = {};
 
-        tableWeight(tn) {
-            const c = this.data.tableClicks[tn] || 0;
-            if (c === 0) return 1;
-            if (c < 5)   return 1.3;
-            if (c < 15)  return 1.8;
-            if (c < 40)  return 2.5;
-            return 4;
-        },
+                data.forEach(item => {
+                    const section = item.section || 'others';
+                    const cfg = TABLE_CONFIG[section] || TABLE_CONFIG['others'];
 
-        catWeight(cat) {
-            const c = this.data.catClicks[cat] || 0;
-            if (c === 0) return 1;
-            if (c < 10)  return 1.4;
-            if (c < 30)  return 2;
-            return 3;
-        }
-    };
-    Prefs.load();
+                    const imageUrl = sanitize(item.image_url || '');
+                    const thumbUrl = sanitize(item.thumbnail_url || item.image_url || '');
+                    if (!imageUrl) return;
 
-    // ── 3. Photo Scoring ──────────────────────────────────────
+                    State.tableStats[section] = (State.tableStats[section] || 0) + 1;
 
-    const _NOW      = Date.now();
-    const _WEEK_MS  = 7  * 86400000;
-    const _MONTH_MS = 30 * 86400000;
-    const _Q3MO_MS  = 90 * 86400000;
+                    all.push({
+                        id: item.image_iid || item.id,
+                        title: item.title || '',
+                        description: item.description || '',
+                        image_url: imageUrl,
+                        thumbnail_url: thumbUrl,
+                        tableName: 'kabirdatabase',
+                        section: section,
+                        categoryName: cfg.name,
+                        category: cfg.category,
+                        emoji: cfg.emoji,
+                        created_at: item.created_at
+                    });
+                });
 
-    /**
-     * প্রতিটি ছবিকে score দেওয়া হয়:
-     *   Recency   : নতুন ছবি সামনে আসে (+0–+40)
-     *   Quality   : title/description থাকলে বোনাস (+0–+20)
-     *   Preference: ইউজার যা বেশি দেখে (+0–+40)
-     *   Noise     : প্রতিবার ভিন্ন মিশ্রণ (+0–+30)
-     */
-    function scorePhoto(p) {
-        let recency = 0;
-        if (p.created_at) {
-            const age = _NOW - new Date(p.created_at).getTime();
-            if      (age < _WEEK_MS)  recency = 40;
-            else if (age < _MONTH_MS) recency = 25;
-            else if (age < _Q3MO_MS)  recency = 10;
-        }
-        const quality = (p.title ? 12 : 0) + (p.description ? 8 : 0);
-        const pref    = Prefs.tableWeight(p.tableName) * 8 + Prefs.catWeight(p.category) * 5;
-        const noise   = Math.random() * 30;
-        return recency + quality + pref + noise;
-    }
+                State.cache.data = all;
+                State.cache.ts = Date.now();
 
-    // ── 4. Diversity Pass ─────────────────────────────────────
-
-    /**
-     * যদি maxRun বা তার বেশি পরপর ছবি একই key (category / tableName)
-     * থেকে আসে, সামনের ভিন্ন key-এর ছবির সাথে swap করে diversity রাখে।
-     */
-    function diversityPass(arr, key = 'category', maxRun = 3) {
-        const a = [...arr];
-        for (let i = maxRun; i < a.length; i++) {
-            const run = a.slice(i - maxRun, i).every(x => x[key] === a[i - maxRun][key]);
-            if (!run || a[i][key] !== a[i - maxRun][key]) continue;
-            let swapIdx = -1;
-            for (let j = i + 1; j < Math.min(i + 20, a.length); j++) {
-                if (a[j][key] !== a[i][key]) { swapIdx = j; break; }
+                console.log(`✅ Loaded ${all.length} photos from kabirdatabase`);
+                return all;
+            } catch (err) {
+                console.error('❌ Load error:', err);
+                return [];
+            } finally {
+                State.isLoading = false;
+                document.getElementById('loadingIndicator').classList.remove('visible');
             }
-            if (swapIdx !== -1) [a[i], a[swapIdx]] = [a[swapIdx], a[i]];
-        }
-        return a;
-    }
-
-    // ── 5. Table-Level Scored Mix ─────────────────────────────
-
-    /**
-     * প্রতিটি টেবিলের ছবি score অনুযায়ী sort করে,
-     * তারপর user preference weighted round-robin interleave।
-     */
-    function scoredTableMix(photos) {
-        const tables = {};
-        photos.forEach(p => {
-            if (!tables[p.tableName]) tables[p.tableName] = [];
-            tables[p.tableName].push(p);
-        });
-
-        for (const tn of Object.keys(tables)) {
-            tables[tn] = tables[tn]
-                .map(p => ({ p, s: scorePhoto(p) }))
-                .sort((a, b) => b.s - a.s)
-                .map(x => x.p);
         }
 
-        const tableNames   = Object.keys(tables);
-        const weightedPool = fisherShuffle(
-            tableNames.flatMap(tn => Array(Math.max(1, Math.round(Prefs.tableWeight(tn)))).fill(tn))
-        );
+        // ============================================
+        // ADVANCED MIXING ALGORITHM SYSTEM
+        // ============================================
 
-        const idx    = {};
-        tableNames.forEach(tn => idx[tn] = 0);
-        const result = [];
-        const total  = photos.length;
-        let placed   = 0, cycle = 0;
+        // ── 1. Core Utility ──────────────────────────────────────
 
-        while (placed < total) {
-            const order = cycle === 0 ? weightedPool : fisherShuffle([...tableNames]);
-            let added = 0;
-            for (const tn of order) {
-                if (idx[tn] < tables[tn].length) {
-                    result.push(tables[tn][idx[tn]++]);
-                    placed++; added++;
-                    if (placed >= total) break;
+        /** Fisher-Yates O(n) shuffle */
+        function fisherShuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // ── 2. User Preference Tracking (localStorage) ───────────
+
+        const Prefs = {
+            KEY: 'gd_prefs_v1',
+            data: { catClicks: {}, tableClicks: {} },
+
+            load() {
+                try {
+                    const raw = localStorage.getItem(this.KEY);
+                    if (raw) this.data = JSON.parse(raw);
+                } catch (_) { }
+            },
+
+            save() {
+                try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (_) { }
+            },
+
+            record(tableName, category) {
+                this.data.tableClicks[tableName] = (this.data.tableClicks[tableName] || 0) + 1;
+                this.data.catClicks[category] = (this.data.catClicks[category] || 0) + 1;
+                this.save();
+            },
+
+            tableWeight(tn) {
+                const c = this.data.tableClicks[tn] || 0;
+                if (c === 0) return 1;
+                if (c < 5) return 1.3;
+                if (c < 15) return 1.8;
+                if (c < 40) return 2.5;
+                return 4;
+            },
+
+            catWeight(cat) {
+                const c = this.data.catClicks[cat] || 0;
+                if (c === 0) return 1;
+                if (c < 10) return 1.4;
+                if (c < 30) return 2;
+                return 3;
+            }
+        };
+        Prefs.load();
+
+        // ── 3. Photo Scoring ──────────────────────────────────────
+
+        const _NOW = Date.now();
+        const _WEEK_MS = 7 * 86400000;
+        const _MONTH_MS = 30 * 86400000;
+        const _Q3MO_MS = 90 * 86400000;
+
+        /**
+         * প্রতিটি ছবিকে score দেওয়া হয়:
+         *   Recency   : নতুন ছবি সামনে আসে (+0–+40)
+         *   Quality   : title/description থাকলে বোনাস (+0–+20)
+         *   Preference: ইউজার যা বেশি দেখে (+0–+40)
+         *   Noise     : প্রতিবার ভিন্ন মিশ্রণ (+0–+30)
+         */
+        function scorePhoto(p) {
+            let recency = 0;
+            if (p.created_at) {
+                const age = _NOW - new Date(p.created_at).getTime();
+                if (age < _WEEK_MS) recency = 40;
+                else if (age < _MONTH_MS) recency = 25;
+                else if (age < _Q3MO_MS) recency = 10;
+            }
+            const quality = (p.title ? 12 : 0) + (p.description ? 8 : 0);
+            const pref = Prefs.tableWeight(p.tableName) * 8 + Prefs.catWeight(p.category) * 5;
+            const noise = Math.random() * 30;
+            return recency + quality + pref + noise;
+        }
+
+        // ── 4. Diversity Pass ─────────────────────────────────────
+
+        /**
+         * যদি maxRun বা তার বেশি পরপর ছবি একই key (category / tableName)
+         * থেকে আসে, সামনের ভিন্ন key-এর ছবির সাথে swap করে diversity রাখে।
+         */
+        function diversityPass(arr, key = 'category', maxRun = 3) {
+            const a = [...arr];
+            for (let i = maxRun; i < a.length; i++) {
+                const run = a.slice(i - maxRun, i).every(x => x[key] === a[i - maxRun][key]);
+                if (!run || a[i][key] !== a[i - maxRun][key]) continue;
+                let swapIdx = -1;
+                for (let j = i + 1; j < Math.min(i + 20, a.length); j++) {
+                    if (a[j][key] !== a[i][key]) { swapIdx = j; break; }
                 }
+                if (swapIdx !== -1) [a[i], a[swapIdx]] = [a[swapIdx], a[i]];
             }
-            if (added === 0) break;
-            cycle++;
-        }
-        return result;
-    }
-
-    // ── 6. Smart Global Mix — main algorithm ──────────────────
-
-    /**
-     * সর্বোত্তম অ্যালগরিদম — সব টেবিল এবং সব ক্যাটাগরির জন্য
-     *
-     *  1. category অনুযায়ী ভাগ → প্রতিটিতে scoredTableMix
-     *  2. category preference weighted round-robin
-     *  3. category diversity pass (max 3 পরপর একই category)
-     *  4. table diversity pass (max 4 পরপর একই table)
-     */
-    function smartGlobalMix(photos) {
-        const categories = {};
-        photos.forEach(p => {
-            if (!categories[p.category]) categories[p.category] = [];
-            categories[p.category].push(p);
-        });
-
-        const catMixed = {};
-        for (const cat of Object.keys(categories)) {
-            catMixed[cat] = scoredTableMix(categories[cat]);
+            return a;
         }
 
-        const catNames    = Object.keys(catMixed);
-        const catPool     = fisherShuffle(
-            catNames.flatMap(cn => Array(Math.max(1, Math.round(Prefs.catWeight(cn)))).fill(cn))
-        );
-        const catIdx     = {};
-        catNames.forEach(cn => catIdx[cn] = 0);
+        // ── 5. Table-Level Scored Mix ─────────────────────────────
 
-        const result = [];
-        const total  = photos.length;
-        let placed   = 0, cycle = 0;
+        /**
+         * প্রতিটি টেবিলের ছবি score অনুযায়ী sort করে,
+         * তারপর user preference weighted round-robin interleave।
+         */
+        function scoredTableMix(photos) {
+            const tables = {};
+            photos.forEach(p => {
+                if (!tables[p.tableName]) tables[p.tableName] = [];
+                tables[p.tableName].push(p);
+            });
 
-        while (placed < total) {
-            const order = cycle === 0 ? catPool : fisherShuffle([...catNames]);
-            let added = 0;
-            for (const cn of order) {
-                if (catIdx[cn] < catMixed[cn].length) {
-                    result.push(catMixed[cn][catIdx[cn]++]);
-                    placed++; added++;
-                    if (placed >= total) break;
+            for (const tn of Object.keys(tables)) {
+                tables[tn] = tables[tn]
+                    .map(p => ({ p, s: scorePhoto(p) }))
+                    .sort((a, b) => b.s - a.s)
+                    .map(x => x.p);
+            }
+
+            const tableNames = Object.keys(tables);
+            const weightedPool = fisherShuffle(
+                tableNames.flatMap(tn => Array(Math.max(1, Math.round(Prefs.tableWeight(tn)))).fill(tn))
+            );
+
+            const idx = {};
+            tableNames.forEach(tn => idx[tn] = 0);
+            const result = [];
+            const total = photos.length;
+            let placed = 0, cycle = 0;
+
+            while (placed < total) {
+                const order = cycle === 0 ? weightedPool : fisherShuffle([...tableNames]);
+                let added = 0;
+                for (const tn of order) {
+                    if (idx[tn] < tables[tn].length) {
+                        result.push(tables[tn][idx[tn]++]);
+                        placed++; added++;
+                        if (placed >= total) break;
+                    }
                 }
+                if (added === 0) break;
+                cycle++;
             }
-            if (added === 0) break;
-            cycle++;
+            return result;
         }
 
-        let out = diversityPass(result, 'category', 3);
-        out     = diversityPass(out,    'tableName', 4);
-        console.log(`🌟 smartGlobalMix: ${photos.length} photos, ${catNames.length} categories`);
-        return out;
-    }
+        // ── 6. Smart Global Mix — main algorithm ──────────────────
 
-    /** একটি category filter এর জন্য — scored + table diversity */
-    function smartCategoryMix(photos) {
-        return diversityPass(scoredTableMix(photos), 'tableName', 4);
-    }
+        /**
+         * সর্বোত্তম অ্যালগরিদম — সব টেবিল এবং সব ক্যাটাগরির জন্য
+         *
+         *  1. category অনুযায়ী ভাগ → প্রতিটিতে scoredTableMix
+         *  2. category preference weighted round-robin
+         *  3. category diversity pass (max 3 পরপর একই category)
+         *  4. table diversity pass (max 4 পরপর একই table)
+         */
+        function smartGlobalMix(photos) {
+            const categories = {};
+            photos.forEach(p => {
+                if (!categories[p.category]) categories[p.category] = [];
+                categories[p.category].push(p);
+            });
 
-    // ============================================
-    // FILTERING
-    // ============================================
-    function filterPhotos(category) {
-        State.currentCategory = category;
-        State.currentPage = 1;
+            const catMixed = {};
+            for (const cat of Object.keys(categories)) {
+                catMixed[cat] = scoredTableMix(categories[cat]);
+            }
 
-        if (category === 'all') {
-            State.filteredPhotos = [...State.allPhotos];
-        } else {
-            State.filteredPhotos = State.allPhotos.filter(p => p.category === category);
+            const catNames = Object.keys(catMixed);
+            const catPool = fisherShuffle(
+                catNames.flatMap(cn => Array(Math.max(1, Math.round(Prefs.catWeight(cn)))).fill(cn))
+            );
+            const catIdx = {};
+            catNames.forEach(cn => catIdx[cn] = 0);
+
+            const result = [];
+            const total = photos.length;
+            let placed = 0, cycle = 0;
+
+            while (placed < total) {
+                const order = cycle === 0 ? catPool : fisherShuffle([...catNames]);
+                let added = 0;
+                for (const cn of order) {
+                    if (catIdx[cn] < catMixed[cn].length) {
+                        result.push(catMixed[cn][catIdx[cn]++]);
+                        placed++; added++;
+                        if (placed >= total) break;
+                    }
+                }
+                if (added === 0) break;
+                cycle++;
+            }
+
+            let out = diversityPass(result, 'category', 3);
+            out = diversityPass(out, 'tableName', 4);
+            console.log(`🌟 smartGlobalMix: ${photos.length} photos, ${catNames.length} categories`);
+            return out;
         }
 
-        State.mixedPhotos = category === 'all'
-            ? smartGlobalMix(State.filteredPhotos)
-            : smartCategoryMix(State.filteredPhotos);
+        /** একটি category filter এর জন্য — scored + table diversity */
+        function smartCategoryMix(photos) {
+            return diversityPass(scoredTableMix(photos), 'tableName', 4);
+        }
 
-        renderGallery();
-        updateUI();
-    }
+        // ============================================
+        // FILTERING
+        // ============================================
+        function filterPhotos(category) {
+            State.currentCategory = category;
+            State.currentPage = 1;
 
-    // ============================================
-    // SKELETON LOADING (beautiful placeholders)
-    // ============================================
-    function showSkeletons() {
-        const gallery = document.getElementById('gallery');
-        const heights = [180, 240, 200, 280, 220, 160, 260, 190, 230, 250,
-                         210, 170, 300, 195, 225, 275, 205, 185, 245, 215,
-                         190, 270, 200, 235];
-        gallery.innerHTML = heights.map((h, i) => `
+            if (category === 'all') {
+                State.filteredPhotos = [...State.allPhotos];
+            } else {
+                State.filteredPhotos = State.allPhotos.filter(p => p.category === category);
+            }
+
+            State.mixedPhotos = category === 'all'
+                ? smartGlobalMix(State.filteredPhotos)
+                : smartCategoryMix(State.filteredPhotos);
+
+            renderGallery();
+            updateUI();
+        }
+
+        // ============================================
+        // SKELETON LOADING (beautiful placeholders)
+        // ============================================
+        function showSkeletons() {
+            const gallery = document.getElementById('gallery');
+            const heights = [180, 240, 200, 280, 220, 160, 260, 190, 230, 250,
+                210, 170, 300, 195, 225, 275, 205, 185, 245, 215,
+                190, 270, 200, 235];
+            gallery.innerHTML = heights.map((h, i) => `
             <div class="skeleton-card" style="animation-delay: ${(i % 8) * 0.06}s;">
                 <div class="sk-img" style="height:${h}px;"></div>
                 <div class="sk-info">
@@ -1246,120 +1563,120 @@
                 </div>
             </div>
         `).join('');
-    }
+        }
 
-    // ============================================
-    // PROGRESSIVE IMAGE LOADING (IntersectionObserver)
-    // ============================================
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const img = entry.target;
-            if (!img.dataset.src || !img.src.includes('data:image')) return;
+        // ============================================
+        // PROGRESSIVE IMAGE LOADING (IntersectionObserver)
+        // ============================================
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const img = entry.target;
+                if (!img.dataset.src || !img.src.includes('data:image')) return;
 
-            const thumbSrc = img.dataset.thumbnail;
-            const gallerySrc = img.dataset.gallery;
+                const thumbSrc = img.dataset.thumbnail;
+                const gallerySrc = img.dataset.gallery;
 
-            // Step 1: Load thumbnail (fast, small)
-            loadImgWithRetry(thumbSrc).then(() => {
-                requestAnimationFrame(() => {
-                    img.src = thumbSrc;
-                    img.style.opacity = '1';
+                // Step 1: Load thumbnail (fast, small)
+                loadImgWithRetry(thumbSrc).then(() => {
+                    requestAnimationFrame(() => {
+                        img.src = thumbSrc;
+                        img.style.opacity = '1';
 
-                    // Step 2: If gallery-quality is different, upgrade
-                    if (gallerySrc && gallerySrc !== thumbSrc) {
-                        img.style.filter = 'blur(2px)';
-                        loadImgWithRetry(gallerySrc).then(() => {
-                            requestAnimationFrame(() => {
-                                img.src = gallerySrc;
+                        // Step 2: If gallery-quality is different, upgrade
+                        if (gallerySrc && gallerySrc !== thumbSrc) {
+                            img.style.filter = 'blur(2px)';
+                            loadImgWithRetry(gallerySrc).then(() => {
+                                requestAnimationFrame(() => {
+                                    img.src = gallerySrc;
+                                    img.style.filter = 'none';
+                                    img.classList.add('loaded');
+                                });
+                            }).catch(() => {
                                 img.style.filter = 'none';
                                 img.classList.add('loaded');
                             });
-                        }).catch(() => {
+                        } else {
                             img.style.filter = 'none';
                             img.classList.add('loaded');
-                        });
-                    } else {
-                        img.style.filter = 'none';
-                        img.classList.add('loaded');
-                    }
+                        }
+                    });
+                    observer.unobserve(img);
+                }).catch(() => {
+                    // Fallback: try original URL directly
+                    img.src = img.dataset.src;
+                    img.style.opacity = '1';
+                    img.style.filter = 'none';
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
                 });
-                observer.unobserve(img);
-            }).catch(() => {
-                // Fallback: try original URL directly
-                img.src = img.dataset.src;
-                img.style.opacity = '1';
-                img.style.filter = 'none';
-                img.classList.add('loaded');
-                observer.unobserve(img);
             });
-        });
-    }, { rootMargin: '400px', threshold: 0.01 });
+        }, { rootMargin: '400px', threshold: 0.01 });
 
-    /** Load image with retry (exponential backoff) */
-    function loadImgWithRetry(src, maxRetries = 2) {
-        return new Promise((resolve, reject) => {
-            let attempts = 0;
-            const tryLoad = () => {
-                const i = new Image();
-                i.onload = () => resolve(i);
-                i.onerror = () => {
-                    if (++attempts <= maxRetries) {
-                        setTimeout(tryLoad, 800 * attempts);
-                    } else {
-                        reject(new Error('Image load failed'));
-                    }
+        /** Load image with retry (exponential backoff) */
+        function loadImgWithRetry(src, maxRetries = 2) {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const tryLoad = () => {
+                    const i = new Image();
+                    i.onload = () => resolve(i);
+                    i.onerror = () => {
+                        if (++attempts <= maxRetries) {
+                            setTimeout(tryLoad, 800 * attempts);
+                        } else {
+                            reject(new Error('Image load failed'));
+                        }
+                    };
+                    i.src = src;
                 };
-                i.src = src;
-            };
-            tryLoad();
-        });
-    }
-
-    // ============================================
-    // RENDER GALLERY (bangla_script.js card style)
-    // ============================================
-    function getPagePhotos() {
-        const start = (State.currentPage - 1) * ITEMS_PER_PAGE;
-        return State.mixedPhotos.slice(start, start + ITEMS_PER_PAGE);
-    }
-
-    function getTotalPages() {
-        return Math.ceil(State.mixedPhotos.length / ITEMS_PER_PAGE) || 1;
-    }
-
-    function renderGallery() {
-        const gallery = document.getElementById('gallery');
-        const photos = getPagePhotos();
-
-        if (photos.length === 0) {
-            gallery.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">কোনো ছবি পাওয়া যায়নি</p>';
-            return;
+                tryLoad();
+            });
         }
 
-        const fragment = document.createDocumentFragment();
+        // ============================================
+        // RENDER GALLERY (bangla_script.js card style)
+        // ============================================
+        function getPagePhotos() {
+            const start = (State.currentPage - 1) * ITEMS_PER_PAGE;
+            return State.mixedPhotos.slice(start, start + ITEMS_PER_PAGE);
+        }
 
-        photos.forEach((photo, idx) => {
-            const previewUrl = photo.thumbnail_url || photo.image_url;
-            const thumbSrc = Img.thumbnail(previewUrl);
-            let gallerySrc = Img.gallery(previewUrl);
-            if (thumbSrc === gallerySrc) gallerySrc = ''; // avoid double loading
-            const lightboxUrl = Img.lightbox(previewUrl);
+        function getTotalPages() {
+            return Math.ceil(State.mixedPhotos.length / ITEMS_PER_PAGE) || 1;
+        }
 
-            const card = document.createElement('div');
-            card.className = 'photo-card';
-            card.style.animationDelay = `${Math.min(idx * 0.03, 0.6)}s`;
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const photos = getPagePhotos();
 
-            // Store data for lightbox
-            card.setAttribute('data-photo', JSON.stringify(photo));
-            card.setAttribute('data-index', idx);
-            card.setAttribute('data-lightbox-url', lightboxUrl);
-            card.setAttribute('data-original-url', photo.image_url);
+            if (photos.length === 0) {
+                gallery.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">কোনো ছবি পাওয়া যায়নি</p>';
+                return;
+            }
 
-            const cfg = TABLE_CONFIG[photo.tableName];
-            const badgeText = cfg ? cfg.emoji + ' ' + cfg.name : photo.tableName;
+            const fragment = document.createDocumentFragment();
 
-            card.innerHTML = `
+            photos.forEach((photo, idx) => {
+                const previewUrl = photo.thumbnail_url || photo.image_url;
+                const thumbSrc = Img.thumbnail(previewUrl);
+                let gallerySrc = Img.gallery(previewUrl);
+                if (thumbSrc === gallerySrc) gallerySrc = ''; // avoid double loading
+                const lightboxUrl = Img.lightbox(previewUrl);
+
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.style.animationDelay = `${Math.min(idx * 0.03, 0.6)}s`;
+
+                // Store data for lightbox
+                card.setAttribute('data-photo', JSON.stringify(photo));
+                card.setAttribute('data-index', idx);
+                card.setAttribute('data-lightbox-url', lightboxUrl);
+                card.setAttribute('data-original-url', photo.image_url);
+
+                const cfg = TABLE_CONFIG[photo.tableName];
+                const badgeText = cfg ? cfg.emoji + ' ' + cfg.name : photo.tableName;
+
+                card.innerHTML = `
                 <div class="photo-image">
                     <span class="photo-badge">${escapeHtml(badgeText)}</span>
                     <img data-src="${escapeHtml(previewUrl)}"
@@ -1376,468 +1693,568 @@
                 </div>
             `;
 
-            // Lazy load observer
-            const img = card.querySelector('img');
-            imageObserver.observe(img);
+                // Lazy load observer
+                const img = card.querySelector('img');
+                imageObserver.observe(img);
 
-            // Click → open lightbox
-            card.addEventListener('click', () => {
-                const data = JSON.parse(card.getAttribute('data-photo'));
-                openLightbox(
-                    card.getAttribute('data-lightbox-url'),
-                    parseInt(card.getAttribute('data-index')),
-                    photos.length,
-                    data,
-                    card.getAttribute('data-original-url')
-                );
+                // Click → open lightbox
+                card.addEventListener('click', () => {
+                    const data = JSON.parse(card.getAttribute('data-photo'));
+                    openLightbox(
+                        card.getAttribute('data-lightbox-url'),
+                        parseInt(card.getAttribute('data-index')),
+                        photos.length,
+                        data,
+                        card.getAttribute('data-original-url')
+                    );
+                });
+
+                fragment.appendChild(card);
             });
 
-            fragment.appendChild(card);
-        });
-
-        gallery.innerHTML = '';
-        gallery.appendChild(fragment);
-    }
-
-    // ============================================
-    // LIGHTBOX (full-featured)
-    // ============================================
-    let currentPhotos = [];
-    let currentImageIndex = 0;
-    let savedScrollY = 0;
-
-    function updateLightboxText(data, idx, totalStr) {
-        const t = data.title && data.title !== '-' ? data.title.trim() : '';
-        const d = data.description && data.description !== '-' ? data.description.trim() : '';
-        const titleEl = document.getElementById('lightboxTitle');
-        const descEl = document.getElementById('lightboxDescription');
-
-        if (t) { titleEl.textContent = t; titleEl.style.display = 'block'; }
-        else { titleEl.textContent = ''; titleEl.style.display = 'none'; }
-
-        if (d) { descEl.textContent = d; descEl.style.display = 'block'; }
-        else { descEl.textContent = ''; descEl.style.display = 'none'; }
-
-        const details = document.querySelector('.lightbox-details');
-        if (details) details.style.setProperty('--reveal-height', t ? '115px' : '85px');
-
-        document.getElementById('imageCounter').textContent = idx + 1;
-        if (totalStr) document.getElementById('totalCounter').textContent = totalStr;
-
-        const cfg = TABLE_CONFIG[data.tableName];
-        document.getElementById('lightboxMeta').textContent = cfg ? `${cfg.emoji} ${cfg.name}` : data.tableName;
-    }
-
-    function openLightbox(imgSrc, index, total, photoData, originalUrl) {
-        savedScrollY = window.scrollY;
-        currentPhotos = Array.from(document.querySelectorAll('.photo-card'));
-        currentImageIndex = index;
-
-        const lb = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightboxImage');
-        lbImg.src = imgSrc;
-        lbImg.setAttribute('data-original-url', originalUrl);
-
-        updateLightboxText(photoData, index, total);
-
-        // Track user preference (for smarter mixing on next load)
-        if (photoData.tableName && photoData.category) {
-            Prefs.record(photoData.tableName, photoData.category);
+            gallery.innerHTML = '';
+            gallery.appendChild(fragment);
         }
 
-        lb.classList.remove('ui-hidden');
-        const details = document.querySelector('.lightbox-details');
-        if (details) details.classList.remove('expanded');
+        // ============================================
+        // LIGHTBOX (full-featured)
+        // ============================================
+        let currentPhotos = [];
+        let currentImageIndex = 0;
+        let savedScrollY = 0;
 
-        lb.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        history.pushState({ lightbox: true }, '', '#view');
-    }
+        function updateLightboxText(data, idx, totalStr) {
+            const t = data.title && data.title !== '-' ? data.title.trim() : '';
+            const d = data.description && data.description !== '-' ? data.description.trim() : '';
+            const titleEl = document.getElementById('lightboxTitle');
+            const descEl = document.getElementById('lightboxDescription');
 
-    function closeLightbox() {
-        const lb = document.getElementById('lightbox');
-        if (!lb.classList.contains('active')) return;
-        lb.classList.remove('active');
-        document.body.style.overflow = '';
-        if (location.hash === '#view') history.back();
-        window.scrollTo({ top: savedScrollY, behavior: 'instant' });
-    }
+            if (t) { titleEl.textContent = t; titleEl.style.display = 'block'; }
+            else { titleEl.textContent = ''; titleEl.style.display = 'none'; }
 
-    function navigateLightbox(dir) {
-        if (!currentPhotos.length) return;
-        currentImageIndex = (currentImageIndex + dir + currentPhotos.length) % currentPhotos.length;
-        const card = currentPhotos[currentImageIndex];
-        const data = JSON.parse(card.getAttribute('data-photo'));
+            if (d) { descEl.textContent = d; descEl.style.display = 'block'; }
+            else { descEl.textContent = ''; descEl.style.display = 'none'; }
 
-        document.getElementById('lightboxImage').src = card.getAttribute('data-lightbox-url');
-        document.getElementById('lightboxImage').setAttribute('data-original-url', card.getAttribute('data-original-url'));
-        updateLightboxText(data, currentImageIndex, null);
-    }
-
-    function nextImage() { navigateLightbox(1); }
-    function prevImage() { navigateLightbox(-1); }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
-    });
-
-    // Click outside to close
-    document.getElementById('lightbox').addEventListener('click', e => {
-        if (e.target === e.currentTarget) closeLightbox();
-    });
-
-    // Touch swipe for images
-    let touchX = 0;
-    document.getElementById('lightboxImage').addEventListener('touchstart', e => {
-        touchX = e.changedTouches[0].screenX;
-    }, { passive: true });
-    document.getElementById('lightboxImage').addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].screenX - touchX;
-        if (dx > 50) prevImage();
-        else if (dx < -50) nextImage();
-    }, { passive: true });
-
-    // Mobile Bottom Sheet & UI Immersive Toggle Logic
-    document.getElementById('lightboxImage').addEventListener('click', function(e) {
-        if (Img.isMobile()) {
-            const overlay = document.getElementById('lightbox');
             const details = document.querySelector('.lightbox-details');
-            overlay.classList.toggle('ui-hidden');
-            if (details && details.classList.contains('expanded')) {
-                details.classList.remove('expanded');
-            }
+            if (details) details.style.setProperty('--reveal-height', t ? '115px' : '85px');
+
+            document.getElementById('imageCounter').textContent = idx + 1;
+            if (totalStr) document.getElementById('totalCounter').textContent = totalStr;
+
+            const cfg = TABLE_CONFIG[data.tableName];
+            document.getElementById('lightboxMeta').textContent = cfg ? `${cfg.emoji} ${cfg.name}` : data.tableName;
         }
-    });
 
-    const lightboxDetails = document.querySelector('.lightbox-details');
-    if (lightboxDetails) {
-        let sheetStartY = 0;
-        let sheetCurrentY = 0;
-        let isDraggingSheet = false;
+        function openLightbox(imgSrc, index, total, photoData, originalUrl) {
+            savedScrollY = window.scrollY;
+            currentPhotos = Array.from(document.querySelectorAll('.photo-card'));
+            currentImageIndex = index;
 
-        lightboxDetails.addEventListener('touchstart', function(e) {
-            if (!Img.isMobile()) return;
-            sheetStartY = e.touches[0].clientY;
-            isDraggingSheet = true;
-            this.style.transition = 'none';
-            e.stopPropagation();
-        }, { passive: true });
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightboxImage');
+            lbImg.src = imgSrc;
+            lbImg.setAttribute('data-original-url', originalUrl);
 
-        lightboxDetails.addEventListener('touchmove', function(e) {
-            if (!isDraggingSheet) return;
-            sheetCurrentY = e.touches[0].clientY;
-            const deltaY = sheetCurrentY - sheetStartY;
-            
-            if (this.classList.contains('expanded')) {
-                if (deltaY > 0) this.style.transform = `translateY(${deltaY}px)`;
-            } else {
-                if (deltaY < 0) {
-                    const reveal = parseInt(getComputedStyle(this).getPropertyValue('--reveal-height')) || 115;
-                    const maxUp = this.offsetHeight - reveal;
-                    const move = Math.min(-deltaY, maxUp);
-                    this.style.transform = `translateY(calc(100% - var(--reveal-height, 115px) - ${move}px))`;
-                }
+            updateLightboxText(photoData, index, total);
+
+            // Track user preference (for smarter mixing on next load)
+            if (photoData.tableName && photoData.category) {
+                Prefs.record(photoData.tableName, photoData.category);
             }
-            e.stopPropagation();
-        }, { passive: true });
 
-        lightboxDetails.addEventListener('touchend', function(e) {
-            if (!isDraggingSheet) return;
-            isDraggingSheet = false;
-            this.style.transition = '';
-            
-            if (sheetCurrentY === 0) return;
-            const deltaY = sheetCurrentY - sheetStartY;
-            if (Math.abs(deltaY) > 30) {
-                if (this.classList.contains('expanded') && deltaY > 0) {
-                    this.classList.remove('expanded');
-                } else if (!this.classList.contains('expanded') && deltaY < 0) {
-                    this.classList.add('expanded');
-                }
-            }
-            this.style.transform = ''; 
-            sheetCurrentY = 0;
-            e.stopPropagation();
-        }, { passive: true });
+            lb.classList.remove('ui-hidden');
+            const details = document.querySelector('.lightbox-details');
+            if (details) details.classList.remove('expanded');
 
-        lightboxDetails.addEventListener('click', function(e) {
-            if (Img.isMobile() && !this.classList.contains('expanded')) {
-                this.classList.add('expanded');
-            }
-        });
-    }
-
-    // Mouse wheel navigation
-    let lastWheel = 0;
-    document.getElementById('lightbox').addEventListener('wheel', e => {
-        if (Date.now() - lastWheel < 300) return;
-        if (Math.abs(e.deltaX) > 20 || Math.abs(e.deltaY) > 20) {
-            lastWheel = Date.now();
-            (e.deltaX > 0 || e.deltaY > 0) ? nextImage() : prevImage();
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            history.pushState({ lightbox: true }, '', '#view');
         }
-    }, { passive: true });
 
-    // Browser back button
-    window.addEventListener('popstate', () => {
-        const lb = document.getElementById('lightbox');
-        if (lb.classList.contains('active')) {
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            if (!lb.classList.contains('active')) return;
             lb.classList.remove('active');
             document.body.style.overflow = '';
+            if (location.hash === '#view') history.back();
             window.scrollTo({ top: savedScrollY, behavior: 'instant' });
         }
-    });
 
-    // ============================================
-    // DOWNLOAD (with blob fallback)
-    // ============================================
-    async function downloadImage() {
-        const img = document.getElementById('lightboxImage');
-        const url = img.getAttribute('data-original-url') || img.src;
-        const title = document.getElementById('lightboxTitle').textContent || 'kobir_lyrics';
-        if (!url) { alert('ছবি পাওয়া যায়নি'); return; }
+        function navigateLightbox(dir) {
+            if (!currentPhotos.length) return;
+            currentImageIndex = (currentImageIndex + dir + currentPhotos.length) % currentPhotos.length;
+            const card = currentPhotos[currentImageIndex];
+            const data = JSON.parse(card.getAttribute('data-photo'));
 
-        const btn = document.querySelector('.btn-download');
-        const origHTML = btn.innerHTML;
-        try {
-            btn.innerHTML = '<span class="material-icons" style="animation:spin 1s linear infinite;">sync</span>';
-            btn.disabled = true;
-
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error('Fetch failed');
-            const blob = await resp.blob();
-
-            let fname = title.replace(/[^a-z0-9\u0980-\u09FF]/gi, '_').substring(0, 50);
-            const ext = blob.type === 'image/png' ? '.png' : blob.type === 'image/webp' ? '.webp' : '.jpg';
-            fname += ext;
-
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = fname;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(a.href), 500);
-
-            btn.innerHTML = '<span class="material-icons">check_circle</span> Done';
-            setTimeout(() => { btn.innerHTML = origHTML; btn.disabled = false; }, 2000);
-        } catch (e) {
-            console.error('Download failed:', e);
-            btn.innerHTML = origHTML;
-            btn.disabled = false;
-            window.open(url, '_blank');
-        }
-    }
-
-    // ============================================
-    // UI UPDATES
-    // ============================================
-    function updateUI() {
-        updateStats();
-        updatePagination();
-    }
-
-    function updateStats() {
-        const el = document.getElementById('statsText');
-        const totalPages = getTotalPages();
-        el.textContent = `মোট ${State.mixedPhotos.length} ছবি • পৃষ্ঠা ${State.currentPage}/${totalPages}`;
-    }
-
-    function updatePagination() {
-        const totalPages = getTotalPages();
-        const bar = document.getElementById('paginationBar');
-        bar.style.display = totalPages > 1 ? 'flex' : 'none';
-
-        document.getElementById('prevBtn').disabled = State.currentPage <= 1;
-        document.getElementById('nextBtn').disabled = State.currentPage >= totalPages;
-
-        // Smart page numbers (show first, last, current ± 2)
-        const container = document.getElementById('pageNumbers');
-        container.innerHTML = '';
-
-        const pages = new Set();
-        pages.add(1);
-        pages.add(totalPages);
-        for (let i = Math.max(1, State.currentPage - 2); i <= Math.min(totalPages, State.currentPage + 2); i++) {
-            pages.add(i);
+            document.getElementById('lightboxImage').src = card.getAttribute('data-lightbox-url');
+            document.getElementById('lightboxImage').setAttribute('data-original-url', card.getAttribute('data-original-url'));
+            updateLightboxText(data, currentImageIndex, null);
         }
 
-        const sorted = [...pages].sort((a, b) => a - b);
-        let last = 0;
-        sorted.forEach(p => {
-            if (last && p - last > 1) {
-                const dots = document.createElement('span');
-                dots.className = 'page-info';
-                dots.textContent = '…';
-                container.appendChild(dots);
+        function nextImage() { navigateLightbox(1); }
+        function prevImage() { navigateLightbox(-1); }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        });
+
+        // Click outside to close
+        document.getElementById('lightbox').addEventListener('click', e => {
+            if (e.target === e.currentTarget) closeLightbox();
+        });
+
+        // Touch swipe for images
+        let touchX = 0;
+        document.getElementById('lightboxImage').addEventListener('touchstart', e => {
+            touchX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        document.getElementById('lightboxImage').addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].screenX - touchX;
+            if (dx > 50) prevImage();
+            else if (dx < -50) nextImage();
+        }, { passive: true });
+
+        // Mobile Bottom Sheet & UI Immersive Toggle Logic
+        document.getElementById('lightboxImage').addEventListener('click', function (e) {
+            if (Img.isMobile()) {
+                const overlay = document.getElementById('lightbox');
+                const details = document.querySelector('.lightbox-details');
+                overlay.classList.toggle('ui-hidden');
+                if (details && details.classList.contains('expanded')) {
+                    details.classList.remove('expanded');
+                }
             }
-            const btn = document.createElement('button');
-            btn.className = 'page-btn' + (p === State.currentPage ? ' active' : '');
-            btn.textContent = p;
-            btn.addEventListener('click', () => goToPage(p));
-            container.appendChild(btn);
-            last = p;
         });
-    }
 
-    function goToPage(page) {
-        State.currentPage = page;
-        renderGallery();
-        updateUI();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        const lightboxDetails = document.querySelector('.lightbox-details');
+        if (lightboxDetails) {
+            let sheetStartY = 0;
+            let sheetCurrentY = 0;
+            let isDraggingSheet = false;
 
-    // ============================================
-    // FILTER BUTTONS
-    // ============================================
-    document.querySelectorAll('.filter-chip').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            filterPhotos(this.dataset.category);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
+            lightboxDetails.addEventListener('touchstart', function (e) {
+                if (!Img.isMobile()) return;
+                sheetStartY = e.touches[0].clientY;
+                isDraggingSheet = true;
+                this.style.transition = 'none';
+                e.stopPropagation();
+            }, { passive: true });
 
-    // Pagination nav buttons
-    document.getElementById('prevBtn').addEventListener('click', () => {
-        if (State.currentPage > 1) goToPage(State.currentPage - 1);
-    });
-    document.getElementById('nextBtn').addEventListener('click', () => {
-        if (State.currentPage < getTotalPages()) goToPage(State.currentPage + 1);
-    });
+            lightboxDetails.addEventListener('touchmove', function (e) {
+                if (!isDraggingSheet) return;
+                sheetCurrentY = e.touches[0].clientY;
+                const deltaY = sheetCurrentY - sheetStartY;
 
-    // ============================================
-    // UTILITY
-    // ============================================
-    function escapeHtml(text) {
-        if (!text || typeof text !== 'string') return '';
-        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
+                if (this.classList.contains('expanded')) {
+                    if (deltaY > 0) this.style.transform = `translateY(${deltaY}px)`;
+                } else {
+                    if (deltaY < 0) {
+                        const reveal = parseInt(getComputedStyle(this).getPropertyValue('--reveal-height')) || 115;
+                        const maxUp = this.offsetHeight - reveal;
+                        const move = Math.min(-deltaY, maxUp);
+                        this.style.transform = `translateY(calc(100% - var(--reveal-height, 115px) - ${move}px))`;
+                    }
+                }
+                e.stopPropagation();
+            }, { passive: true });
 
-    // ============================================
-    // PWA SERVICE WORKER & INSTALL PROMPT
-    // ============================================
-    let deferredPrompt;
-    const installPrompt = document.getElementById('installPrompt');
-    const btnInstall = document.getElementById('btnInstallNow');
-    const btnCancel = document.getElementById('btnCancelInstall');
+            lightboxDetails.addEventListener('touchend', function (e) {
+                if (!isDraggingSheet) return;
+                isDraggingSheet = false;
+                this.style.transition = '';
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                console.log('✓ SW Registered');
-            }).catch(err => console.error('SW Error:', err));
-        });
-    }
+                if (sheetCurrentY === 0) return;
+                const deltaY = sheetCurrentY - sheetStartY;
+                if (Math.abs(deltaY) > 30) {
+                    if (this.classList.contains('expanded') && deltaY > 0) {
+                        this.classList.remove('expanded');
+                    } else if (!this.classList.contains('expanded') && deltaY < 0) {
+                        this.classList.add('expanded');
+                    }
+                }
+                this.style.transform = '';
+                sheetCurrentY = 0;
+                e.stopPropagation();
+            }, { passive: true });
 
-    // Capture the install prompt
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent Chrome 67 and earlier from automatically showing the prompt
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
-        
-        // Check if already running as standalone app
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        
-        // If not already in app mode
-        if (!isStandalone) {
-            // Show the promo after a short delay
-            setTimeout(() => {
-                installPrompt.classList.add('visible');
-            }, 2000);
-        }
-    });
-
-    btnInstall.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        // Show the install prompt
-        deferredPrompt.prompt();
-        // Wait for the user to respond to the prompt
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response to install prompt: ${outcome}`);
-        // We've used the prompt, and can't use it again, throw it away
-        deferredPrompt = null;
-        installPrompt.classList.remove('visible');
-    });
-
-    if (btnCancel) {
-        btnCancel.addEventListener('click', () => {
-            installPrompt.classList.remove('visible');
-        });
-    }
-
-    // Tracking app usage as a standalone app (installed)
-    window.addEventListener('appinstalled', (evt) => {
-        console.log('✓ App was installed.');
-        installPrompt.classList.remove('visible');
-    });
-
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    async function init() {
-        console.log('🎨 Kobir Lyrics Gallery initializing...');
-        showSkeletons();
-
-        State.allPhotos = await loadAllPhotos();
-        State.filteredPhotos = [...State.allPhotos];
-
-        // Smart global mix: recency + quality + user preference + diversity
-        State.mixedPhotos = smartGlobalMix(State.filteredPhotos);
-
-        renderGallery();
-        updateUI();
-
-        console.log('✅ Gallery ready!');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
-
-    // ============================================
-    // SCROLL BEHAVIOR: hide header + show footer at bottom
-    // ============================================
-    (function() {
-        const appBar = document.querySelector('.app-bar');
-        const bottomBar = document.querySelector('.bottom-bar');
-        let lastScrollY = 0;
-        let ticking = false;
-
-        function onScroll() {
-            const currentY = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight;
-            const winHeight = window.innerHeight;
-            const distanceToBottom = docHeight - (currentY + winHeight);
-
-            // Header: hide on scroll down, show on scroll up
-            if (currentY > lastScrollY && currentY > 80) {
-                appBar.classList.add('hidden');
-            } else {
-                appBar.classList.remove('hidden');
-            }
-
-            // Footer: show only when near bottom (within 150px)
-            if (distanceToBottom < 150) {
-                bottomBar.classList.add('visible');
-            } else {
-                bottomBar.classList.remove('visible');
-            }
-
-            lastScrollY = currentY;
-            ticking = false;
+            lightboxDetails.addEventListener('click', function (e) {
+                if (Img.isMobile() && !this.classList.contains('expanded')) {
+                    this.classList.add('expanded');
+                }
+            });
         }
 
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(onScroll);
-                ticking = true;
+        // Mouse wheel navigation
+        let lastWheel = 0;
+        document.getElementById('lightbox').addEventListener('wheel', e => {
+            if (Date.now() - lastWheel < 300) return;
+            if (Math.abs(e.deltaX) > 20 || Math.abs(e.deltaY) > 20) {
+                lastWheel = Date.now();
+                (e.deltaX > 0 || e.deltaY > 0) ? nextImage() : prevImage();
             }
         }, { passive: true });
-    })();
+
+        // Browser back button
+        window.addEventListener('popstate', () => {
+            const lb = document.getElementById('lightbox');
+            if (lb.classList.contains('active')) {
+                lb.classList.remove('active');
+                document.body.style.overflow = '';
+                window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+            }
+        });
+
+        // ============================================
+        // DOWNLOAD (with blob fallback)
+        // ============================================
+        async function downloadImage() {
+            const img = document.getElementById('lightboxImage');
+            const url = img.getAttribute('data-original-url') || img.src;
+            const title = document.getElementById('lightboxTitle').textContent || 'kobir_lyrics';
+            if (!url) { alert('ছবি পাওয়া যায়নি'); return; }
+
+            const btn = document.querySelector('.btn-download');
+            const origHTML = btn.innerHTML;
+            try {
+                btn.innerHTML = '<span class="material-icons" style="animation:spin 1s linear infinite;">sync</span>';
+                btn.disabled = true;
+
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('Fetch failed');
+                const blob = await resp.blob();
+
+                let fname = title.replace(/[^a-z0-9\u0980-\u09FF]/gi, '_').substring(0, 50);
+                const ext = blob.type === 'image/png' ? '.png' : blob.type === 'image/webp' ? '.webp' : '.jpg';
+                fname += ext;
+
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = fname;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(a.href), 500);
+
+                btn.innerHTML = '<span class="material-icons">check_circle</span> Done';
+                setTimeout(() => { btn.innerHTML = origHTML; btn.disabled = false; }, 2000);
+            } catch (e) {
+                console.error('Download failed:', e);
+                btn.innerHTML = origHTML;
+                btn.disabled = false;
+                window.open(url, '_blank');
+            }
+        }
+
+        // ============================================
+        // UI UPDATES
+        // ============================================
+        function updateUI() {
+            updateStats();
+            updatePagination();
+        }
+
+        function updateStats() {
+            const el = document.getElementById('statsText');
+            const totalPages = getTotalPages();
+            el.textContent = `মোট ${State.mixedPhotos.length} ছবি • পৃষ্ঠা ${State.currentPage}/${totalPages}`;
+        }
+
+        function updatePagination() {
+            const totalPages = getTotalPages();
+            const bar = document.getElementById('paginationBar');
+            bar.style.display = totalPages > 1 ? 'flex' : 'none';
+
+            document.getElementById('prevBtn').disabled = State.currentPage <= 1;
+            document.getElementById('nextBtn').disabled = State.currentPage >= totalPages;
+
+            // Smart page numbers (show first, last, current ± 2)
+            const container = document.getElementById('pageNumbers');
+            container.innerHTML = '';
+
+            const pages = new Set();
+            pages.add(1);
+            pages.add(totalPages);
+            for (let i = Math.max(1, State.currentPage - 2); i <= Math.min(totalPages, State.currentPage + 2); i++) {
+                pages.add(i);
+            }
+
+            const sorted = [...pages].sort((a, b) => a - b);
+            let last = 0;
+            sorted.forEach(p => {
+                if (last && p - last > 1) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-info';
+                    dots.textContent = '…';
+                    container.appendChild(dots);
+                }
+                const btn = document.createElement('button');
+                btn.className = 'page-btn' + (p === State.currentPage ? ' active' : '');
+                btn.textContent = p;
+                btn.addEventListener('click', () => goToPage(p));
+                container.appendChild(btn);
+                last = p;
+            });
+        }
+
+        function goToPage(page) {
+            State.currentPage = page;
+            renderGallery();
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================
+        // FILTER BUTTONS
+        // ============================================
+        document.querySelectorAll('.filter-chip').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                filterPhotos(this.dataset.category);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Pagination nav buttons
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (State.currentPage > 1) goToPage(State.currentPage - 1);
+        });
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (State.currentPage < getTotalPages()) goToPage(State.currentPage + 1);
+        });
+
+        // ============================================
+        // UTILITY
+        // ============================================
+        function escapeHtml(text) {
+            if (!text || typeof text !== 'string') return '';
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // ============================================
+        // PWA SERVICE WORKER & INSTALL PROMPT
+        // ============================================
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const btnInstall = document.getElementById('btnInstallNow');
+        const btnCancel = document.getElementById('btnCancelInstall');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('✓ SW Registered');
+                }).catch(err => console.error('SW Error:', err));
+            });
+        }
+
+        // Capture the install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+
+            // Check if already running as standalone app
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+            // If not already in app mode
+            if (!isStandalone) {
+                // Show the promo after a short delay
+                setTimeout(() => {
+                    installPrompt.classList.add('visible');
+                }, 2000);
+            }
+        });
+
+        btnInstall.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to install prompt: ${outcome}`);
+            // We've used the prompt, and can't use it again, throw it away
+            deferredPrompt = null;
+            installPrompt.classList.remove('visible');
+        });
+
+        if (btnCancel) {
+            btnCancel.addEventListener('click', () => {
+                installPrompt.classList.remove('visible');
+            });
+        }
+
+        // Tracking app usage as a standalone app (installed)
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('✓ App was installed.');
+            installPrompt.classList.remove('visible');
+        });
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        // ============================================
+        // SITE VIEW COUNTER (site_view table)
+        // ============================================
+        const SITE_VIEW_IID = 106639;
+
+        async function getSiteViewCount() {
+            try {
+                const url = `${SUPABASE_URL}/rest/v1/site_view?site_iid=eq.${SITE_VIEW_IID}&select=site_view_count,site_name`;
+                const resp = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!resp.ok) return null;
+                const data = await resp.json();
+                return data && data.length > 0 ? data[0] : null;
+            } catch (e) {
+                console.warn('⚠️ site_view GET error:', e.message);
+                return null;
+            }
+        }
+
+        // ── 2. View Count Update (Upsert Strategy) ───────────
+
+        async function updateSiteViewCount(newTotal) {
+            try {
+                // We use POST with 'resolution=merge-duplicates' for an UPSERT behavior in PostgREST
+                const url = `${SUPABASE_URL}/rest/v1/site_view`;
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        site_iid: SITE_VIEW_IID,
+                        site_name: 'Kobir Lyrics',
+                        site_view_count: newTotal,
+                        last_updated_at: new Date().toISOString()
+                    })
+                });
+
+                if (!resp.ok) {
+                    const error = await resp.text();
+                    console.warn(`⚠️ site_view update failed: ${resp.status} - ${error}`);
+                } else {
+                    console.log(`✅ site_view updated to: ${newTotal}`);
+                }
+            } catch (e) {
+                console.warn('⚠️ site_view network error:', e.message);
+            }
+        }
+
+        async function processSiteStats(currentSessionImages) {
+            const bar = document.getElementById('siteViewBar');
+            const countEl = document.getElementById('siteViewCount');
+            if (!bar || !countEl) return;
+
+            try {
+                // 1. Fetch current total from DB
+                const dbData = await getSiteViewCount();
+                
+                // If dbData is null, previousTotal is 0 (first time)
+                let previousTotal = 0;
+                if (dbData && dbData.site_view_count !== undefined && dbData.site_view_count !== null) {
+                    previousTotal = parseInt(dbData.site_view_count) || 0;
+                }
+
+                // 2. Add current session images to it
+                let newTotal = previousTotal + currentSessionImages;
+
+                // 3. Display in UI immediately for better UX
+                countEl.textContent = newTotal.toLocaleString('bn-BD');
+                bar.style.display = 'flex';
+
+                // 4. Save the cumulative total back to DB
+                updateSiteViewCount(newTotal);
+                
+            } catch (err) {
+                console.error('❌ Error processing site stats:', err);
+                // On error, show current session count at least
+                countEl.textContent = currentSessionImages.toLocaleString('bn-BD');
+                bar.style.display = 'flex';
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        async function init() {
+            console.log('🎨 Kobir Lyrics Gallery initializing...');
+            showSkeletons();
+
+            State.allPhotos = await loadAllPhotos();
+            State.filteredPhotos = [...State.allPhotos];
+
+            // Smart global mix: recency + quality + user preference + diversity
+            State.mixedPhotos = smartGlobalMix(State.filteredPhotos);
+
+            renderGallery();
+            updateUI();
+
+            // Calculate and update site stats (Total from DB + current images)
+            const totalImages = State.allPhotos.length;
+            if (totalImages > 0) {
+                processSiteStats(totalImages);
+            }
+
+            console.log('✅ Gallery ready!');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        // ============================================
+        // SCROLL BEHAVIOR: hide header + show footer at bottom
+        // ============================================
+        (function () {
+            const appBar = document.querySelector('.app-bar');
+            const bottomBar = document.querySelector('.bottom-bar');
+            let lastScrollY = 0;
+            let ticking = false;
+
+            function onScroll() {
+                const currentY = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                const winHeight = window.innerHeight;
+                const distanceToBottom = docHeight - (currentY + winHeight);
+
+                // Header: hide on scroll down, show on scroll up
+                if (currentY > lastScrollY && currentY > 80) {
+                    appBar.classList.add('hidden');
+                } else {
+                    appBar.classList.remove('hidden');
+                }
+
+                // Footer: show only when near bottom (within 150px)
+                if (distanceToBottom < 150) {
+                    bottomBar.classList.add('visible');
+                } else {
+                    bottomBar.classList.remove('visible');
+                }
+
+                lastScrollY = currentY;
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(onScroll);
+                    ticking = true;
+                }
+            }, { passive: true });
+        })();
     </script>
 </body>
+
 </html>
