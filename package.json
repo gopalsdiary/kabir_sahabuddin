@@ -1,0 +1,24 @@
+{
+  "name": "kabir_sahabuddin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pinterest_algoridom.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gopalsdiary/kabir_sahabuddin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gopalsdiary/kabir_sahabuddin/issues"
+  },
+  "homepage": "https://github.com/gopalsdiary/kabir_sahabuddin#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.2"
+  }
+}
