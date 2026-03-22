@@ -460,6 +460,52 @@
             box-shadow: 0 2px 8px rgba(238, 182, 0, 0.3);
         }
 
+        /* ===== Section Filter (dynamic) ===== */
+        .section-filter-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 12px 8px;
+        }
+
+        .section-filter-scroll {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .section-filter-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section-chip {
+            flex-shrink: 0;
+            padding: 6px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--surface);
+            color: var(--on-surface);
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .section-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .section-chip.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(238, 182, 0, 0.3);
+        }
+
         /* ===== Lightbox ===== */
         .lightbox-overlay {
             position: fixed;
@@ -1017,7 +1063,7 @@
             }
 
             body {
-                padding-bottom: 70px;
+                padding-bottom: 76px;
             }
         }
     </style>
@@ -1109,9 +1155,12 @@
 
     <!-- ===== Bottom Filter Bar ===== -->
     <div class="bottom-bar">
+        <div class="section-filter-wrap" id="sectionFilterBar">
+            <div class="section-filter-scroll" id="sectionFilterScroll"></div>
+        </div>
         <div class="filter-scroll">
             <button class="filter-chip active" data-category="all">✨ All</button>
-            <button class="filter-chip" data-category="bangla">🇧🇩 বাংলা কোটস</button>
+            <button class="filter-chip" data-category="bangla">Bangla Quote</button>
             <button class="filter-chip" data-category="photography">📸 Photography</button>
             <button class="filter-chip" data-category="illustrations">🎨 Illustration</button>
             <button class="filter-chip" data-category="english">🌍 English</button>
@@ -1144,23 +1193,53 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmNranJvaXNyaHBscnBxemtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4NDQzODYsImV4cCI6MjA3NzQyMDM4Nn0.nIbdwysoW2dp59eqPh3M9axjxR74rGDkn8OdZciue4Y';
 
         const TABLE_CONFIG = {
-            'bangla_quotes_1': { name: 'বাংলা কোটস ১', category: 'bangla', emoji: '' },
-            'bangla_quotes_2': { name: 'বাংলা কোটস ২', category: 'bangla', emoji: '' },
-            'bangla_quotes_3': { name: 'বাংলা কোটস ৩', category: 'bangla', emoji: '' },
-            'bangla_quotes_4': { name: 'বাংলা কোটস ৪', category: 'bangla', emoji: '' },
-            'photography_1': { name: 'ফটো ১', category: 'photography', emoji: '📸' },
-            'photography_2': { name: 'ফটো ২', category: 'photography', emoji: '📸' },
-            'illustration_1': { name: 'ইলাস্ট্রেশন ১', category: 'illustrations', emoji: '🎨' },
-            'illustration_2': { name: 'ইলাস্ট্রেশন ২', category: 'illustrations', emoji: '🎨' },
+            'bangla_quotes_1': { name: 'Bangla Quote 1', category: 'bangla', emoji: '' },
+            'bangla_quotes_2': { name: 'Bangla Quote 2', category: 'bangla', emoji: '' },
+            'bangla_quotes_3': { name: 'Bangla Quote 3', category: 'bangla', emoji: '' },
+            'bangla_quotes_4': { name: 'Bangla Quote 4', category: 'bangla', emoji: '' },
+            'photography_1': { name: 'Photography 1', category: 'photography', emoji: '📸' },
+            'photography_2': { name: 'Photography 2', category: 'photography', emoji: '📸' },
+            'illustration_1': { name: 'Illustration 1', category: 'illustrations', emoji: '🎨' },
+            'illustration_2': { name: 'Illustration 2', category: 'illustrations', emoji: '🎨' },
             'english_quote_1': { name: 'English 1', category: 'english', emoji: '🌍' },
             'english_quote_2': { name: 'English 2', category: 'english', emoji: '🌍' },
-            'story_1': { name: 'গল্প ১', category: 'stories', emoji: '📖' },
-            'story_2': { name: 'গল্প ২', category: 'stories', emoji: '📖' },
-            'story_3': { name: 'গল্প ৩', category: 'stories', emoji: '📖' },
-            'others': { name: 'অন্যান্য', category: 'others', emoji: '✨' }
+            'story_1': { name: 'Story 1', category: 'stories', emoji: '📖' },
+            'story_2': { name: 'Story 2', category: 'stories', emoji: '📖' },
+            'story_3': { name: 'Story 3', category: 'stories', emoji: '📖' },
+            'others': { name: 'Others', category: 'others', emoji: '✨' }
         };
 
         const ITEMS_PER_PAGE = 80;
+
+        const SECTION_GROUPS = {
+            all: [],
+            bangla: [
+                { key: 'bangla_quotes_1', label: 'Bangla Quotes 1' },
+                { key: 'bangla_quotes_2', label: 'Bangla Quotes 2' },
+                { key: 'bangla_quotes_3', label: 'Bangla Quotes 3' },
+                { key: 'bangla_quotes_4', label: 'Bangla Quotes 4' }
+            ],
+            photography: [
+                { key: 'photography_1', label: 'Photography 1' },
+                { key: 'photography_2', label: 'Photography 2' }
+            ],
+            illustrations: [
+                { key: 'illustration_1', label: 'Illustration 1' },
+                { key: 'illustration_2', label: 'Illustration 2' }
+            ],
+            english: [
+                { key: 'english_quote_1', label: 'English Quote 1' },
+                { key: 'english_quote_2', label: 'English Quote 2' }
+            ],
+            stories: [
+                { key: 'story_1', label: 'Story 1' },
+                { key: 'story_2', label: 'Story 2' },
+                { key: 'story_3', label: 'Story 3' }
+            ],
+            others: [
+                { key: 'others', label: 'Other' }
+            ]
+        };
 
         // ============================================
         // STATE
@@ -1171,6 +1250,7 @@
             mixedPhotos: [],
             currentPage: 1,
             currentCategory: 'all',
+            currentSection: 'all',
             isLoading: false,
             tableStats: {},
             cache: { data: null, ts: null },
@@ -1528,22 +1608,69 @@
         // ============================================
         // FILTERING
         // ============================================
-        function filterPhotos(category) {
-            State.currentCategory = category;
+        function normalizeSection(section) {
+            if (!section || section === 'all') return 'all';
+            return section === 'other' ? 'others' : section;
+        }
+
+        function applyFilters() {
             State.currentPage = 1;
 
-            if (category === 'all') {
-                State.filteredPhotos = [...State.allPhotos];
-            } else {
-                State.filteredPhotos = State.allPhotos.filter(p => p.category === category);
+            const selectedCategory = State.currentCategory;
+            const selectedSection = normalizeSection(State.currentSection);
+
+            let photos = [...State.allPhotos];
+
+            if (selectedCategory !== 'all') {
+                photos = photos.filter(p => p.category === selectedCategory);
             }
 
-            State.mixedPhotos = category === 'all'
+            if (selectedSection !== 'all') {
+                photos = photos.filter(p => normalizeSection(p.section || 'others') === selectedSection);
+            }
+
+            State.filteredPhotos = photos;
+
+            const useGlobalMix = selectedCategory === 'all' && selectedSection === 'all';
+            State.mixedPhotos = useGlobalMix
                 ? smartGlobalMix(State.filteredPhotos)
                 : smartCategoryMix(State.filteredPhotos);
 
             renderGallery();
             updateUI();
+        }
+
+        function filterPhotos(category) {
+            State.currentCategory = category;
+            applyFilters();
+        }
+
+        function filterBySection(section) {
+            State.currentSection = normalizeSection(section);
+            applyFilters();
+        }
+
+        function renderSectionButtons() {
+            const wrap = document.getElementById('sectionFilterBar');
+            const scroll = document.getElementById('sectionFilterScroll');
+            if (!wrap || !scroll) return;
+
+            const activeCategory = State.currentCategory;
+            const sections = SECTION_GROUPS[activeCategory] || [];
+
+            if (!sections.length) {
+                wrap.style.display = 'none';
+                scroll.innerHTML = '';
+                return;
+            }
+
+            wrap.style.display = 'block';
+            scroll.innerHTML = [
+                `<button class="section-chip ${State.currentSection === 'all' ? 'active' : ''}" data-section="all">All Sections</button>`,
+                ...sections.map(sec =>
+                    `<button class="section-chip ${State.currentSection === sec.key ? 'active' : ''}" data-section="${sec.key}">${sec.label}</button>`
+                )
+            ].join('');
         }
 
         // ============================================
@@ -1673,8 +1800,8 @@
                 card.setAttribute('data-lightbox-url', lightboxUrl);
                 card.setAttribute('data-original-url', photo.image_url);
 
-                const cfg = TABLE_CONFIG[photo.tableName];
-                const badgeText = cfg ? cfg.emoji + ' ' + cfg.name : photo.tableName;
+                const cfg = TABLE_CONFIG[photo.section] || TABLE_CONFIG['others'];
+                const badgeText = cfg ? cfg.emoji + ' ' + cfg.name : photo.section;
 
                 card.innerHTML = `
                 <div class="photo-image">
@@ -1741,8 +1868,8 @@
             document.getElementById('imageCounter').textContent = idx + 1;
             if (totalStr) document.getElementById('totalCounter').textContent = totalStr;
 
-            const cfg = TABLE_CONFIG[data.tableName];
-            document.getElementById('lightboxMeta').textContent = cfg ? `${cfg.emoji} ${cfg.name}` : data.tableName;
+            const cfg = TABLE_CONFIG[data.section] || TABLE_CONFIG['others'];
+            document.getElementById('lightboxMeta').textContent = cfg ? `${cfg.emoji} ${cfg.name}` : data.section;
         }
 
         function openLightbox(imgSrc, index, total, photoData, originalUrl) {
@@ -2013,10 +2140,24 @@
             btn.addEventListener('click', function () {
                 document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
+                State.currentSection = 'all';
                 filterPhotos(this.dataset.category);
+                renderSectionButtons();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
+
+        const sectionFilterBar = document.getElementById('sectionFilterBar');
+        if (sectionFilterBar) {
+            sectionFilterBar.addEventListener('click', function (e) {
+                const btn = e.target.closest('.section-chip');
+                if (!btn) return;
+                document.querySelectorAll('.section-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterBySection(btn.dataset.section);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
 
         // Pagination nav buttons
         document.getElementById('prevBtn').addEventListener('click', () => {
@@ -2102,85 +2243,40 @@
         // ============================================
         const SITE_VIEW_IID = 106639;
 
-        async function getSiteViewCount() {
-            try {
-                const url = `${SUPABASE_URL}/rest/v1/site_view?site_iid=eq.${SITE_VIEW_IID}&select=site_view_count,site_name`;
-                const resp = await fetch(url, {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (!resp.ok) return null;
-                const data = await resp.json();
-                return data && data.length > 0 ? data[0] : null;
-            } catch (e) {
-                console.warn('⚠️ site_view GET error:', e.message);
-                return null;
-            }
-        }
-
-        // ── 2. View Count Update (Upsert Strategy) ───────────
-
-        async function updateSiteViewCount(newTotal) {
-            try {
-                // We use POST with 'resolution=merge-duplicates' for an UPSERT behavior in PostgREST
-                const url = `${SUPABASE_URL}/rest/v1/site_view`;
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates'
-                    },
-                    body: JSON.stringify({
-                        site_iid: SITE_VIEW_IID,
-                        site_name: 'Kobir Lyrics',
-                        site_view_count: newTotal,
-                        last_updated_at: new Date().toISOString()
-                    })
-                });
-
-                if (!resp.ok) {
-                    const error = await resp.text();
-                    console.warn(`⚠️ site_view update failed: ${resp.status} - ${error}`);
-                } else {
-                    console.log(`✅ site_view updated to: ${newTotal}`);
-                }
-            } catch (e) {
-                console.warn('⚠️ site_view network error:', e.message);
-            }
-        }
-
+        // ── 1. Site Stats Processing (Atomic Increment via RPC) ──
         async function processSiteStats(currentSessionImages) {
             const bar = document.getElementById('siteViewBar');
             const countEl = document.getElementById('siteViewCount');
             if (!bar || !countEl) return;
 
             try {
-                // 1. Fetch current total from DB
-                const dbData = await getSiteViewCount();
-                
-                // If dbData is null, previousTotal is 0 (first time)
-                let previousTotal = 0;
-                if (dbData && dbData.site_view_count !== undefined && dbData.site_view_count !== null) {
-                    previousTotal = parseInt(dbData.site_view_count) || 0;
+                // We use RPC for atomic increment to avoid race conditions (Safe for 10+ concurrent users)
+                const url = `${SUPABASE_URL}/rest/v1/rpc/increment_site_view`;
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        row_id: SITE_VIEW_IID,
+                        inc_val: currentSessionImages
+                    })
+                });
+
+                if (!resp.ok) throw new Error(`RPC Failed: ${resp.status}`);
+
+                // The RPC returns the NEW total from the RETURNING clause
+                const newTotal = await resp.json();
+
+                if (newTotal !== null && newTotal !== undefined) {
+                    countEl.textContent = parseInt(newTotal).toLocaleString('bn-BD');
+                    bar.style.display = 'flex';
+                    console.log(`✅ Site views updated to: ${newTotal}`);
                 }
-
-                // 2. Add current session images to it
-                let newTotal = previousTotal + currentSessionImages;
-
-                // 3. Display in UI immediately for better UX
-                countEl.textContent = newTotal.toLocaleString('bn-BD');
-                bar.style.display = 'flex';
-
-                // 4. Save the cumulative total back to DB
-                updateSiteViewCount(newTotal);
-                
             } catch (err) {
-                console.error('❌ Error processing site stats:', err);
+                console.warn('⚠️ site_view update error:', err.message);
                 // On error, show current session count at least
                 countEl.textContent = currentSessionImages.toLocaleString('bn-BD');
                 bar.style.display = 'flex';
@@ -2200,6 +2296,7 @@
             // Smart global mix: recency + quality + user preference + diversity
             State.mixedPhotos = smartGlobalMix(State.filteredPhotos);
 
+            renderSectionButtons();
             renderGallery();
             updateUI();
 
@@ -2236,11 +2333,15 @@
                     appBar.classList.remove('hidden');
                 }
 
-                // Footer: show only when near bottom (within 150px)
+                // Bottom Bar: Show only when near the bottom (within 150px)
                 if (distanceToBottom < 150) {
                     bottomBar.classList.add('visible');
+                    bottomBar.style.transform = 'translateY(0)';
+                    bottomBar.style.opacity = '1';
                 } else {
                     bottomBar.classList.remove('visible');
+                    bottomBar.style.transform = 'translateY(100%)';
+                    bottomBar.style.opacity = '0';
                 }
 
                 lastScrollY = currentY;
@@ -2253,6 +2354,9 @@
                     ticking = true;
                 }
             }, { passive: true });
+            
+            // Initial call to ensure visibility
+            onScroll();
         })();
     </script>
 </body>
