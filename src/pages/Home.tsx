@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search, 
-  Menu, 
-  Download, 
-  X, 
-  LayoutGrid, 
+import {
+  Search,
+  Menu,
+  Download,
+  X,
+  LayoutGrid,
   Image as ImageIcon,
   Quote,
   Camera,
@@ -45,9 +45,9 @@ export default function Home() {
       // Site View Counter Update
       if (data.length > 0) {
         try {
-          const { data: viewData } = await supabase.rpc('increment_site_view', { 
-            row_id: 106639, 
-            inc_val: data.length 
+          const { data: viewData } = await supabase.rpc('increment_site_view', {
+            row_id: 106639,
+            inc_val: data.length
           });
           if (viewData) setSiteViews(viewData);
         } catch (e) {
@@ -75,7 +75,7 @@ export default function Home() {
 
     // Forced show for iOS/Unsupported if not installed
     if (!checkStandalone() && detectedIOS) {
-       setTimeout(() => setShowInstallBanner(true), 3000);
+      setTimeout(() => setShowInstallBanner(true), 3000);
     }
   }, []);
 
@@ -106,8 +106,8 @@ export default function Home() {
       result = result.filter(p => p.category === selectedCategory);
     }
     if (searchQuery) {
-      result = result.filter(p => 
-        p.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      result = result.filter(p =>
+        p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.section?.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -160,7 +160,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[var(--bg)]">
-        <motion.div 
+        <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360], opacity: [0.5, 1, 0.5] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="w-16 h-16 border-t-4 border-b-4 border-[var(--primary)] rounded-full"
@@ -181,11 +181,11 @@ export default function Home() {
       <header className="sticky top-0 z-40 bg-[var(--glass)] backdrop-blur-xl border-b border-[var(--glass-border)] py-3 md:py-4">
         <div className="max-w-[2000px] mx-auto px-4 md:px-8 flex items-center justify-between gap-4 md:gap-8">
           <div className="flex items-center gap-3">
-            <motion.img 
+            <motion.img
               whileHover={{ rotate: 10 }}
-              src="/favicon-96x96.png" 
-              alt="Logo" 
-              className="w-10 h-10 md:w-12 md:h-12 object-contain" 
+              src="/favicon-96x96.png"
+              alt="Logo"
+              className="w-10 h-10 md:w-12 md:h-12 object-contain"
             />
             <h1 className="text-lg md:text-2xl font-black tracking-tighter bg-gradient-to-br from-[var(--text)] to-[var(--text-dim)] bg-clip-text text-transparent hidden sm:block">
               KOBIR LYRICS
@@ -194,7 +194,7 @@ export default function Home() {
 
           <div className="flex-1 max-w-2xl relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-dim)]" size={18} />
-            <input 
+            <input
               type="text"
               placeholder="Search aesthetics, lyrics, sections..."
               value={searchQuery}
@@ -219,11 +219,10 @@ export default function Home() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl whitespace-nowrap transition-all duration-300 border text-sm md:text-base font-bold ${
-                  selectedCategory === cat.id 
-                  ? 'bg-[var(--primary)] border-[var(--primary)] text-black shadow-lg scale-105' 
-                  : 'bg-[var(--surface)] border-[var(--glass-border)] text-[var(--text-dim)] hover:text-[var(--text)] hover:bg-[var(--surface-hover)]'
-                }`}
+                className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl whitespace-nowrap transition-all duration-300 border text-sm md:text-base font-bold ${selectedCategory === cat.id
+                    ? 'bg-[var(--primary)] border-[var(--primary)] text-black shadow-lg scale-105'
+                    : 'bg-[var(--surface)] border-[var(--glass-border)] text-[var(--text-dim)] hover:text-[var(--text)] hover:bg-[var(--surface-hover)]'
+                  }`}
               >
                 {cat.icon}
                 {cat.name}
@@ -236,7 +235,7 @@ export default function Home() {
       {/* Install Banner */}
       <AnimatePresence>
         {showInstallBanner && (
-          <motion.div 
+          <motion.div
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
@@ -252,13 +251,13 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setShowInstallBanner(false)}
                 className="text-[10px] font-black uppercase opacity-40 hover:opacity-100 transition-opacity px-2"
               >
                 Later
               </button>
-              <button 
+              <button
                 onClick={handleInstall}
                 className="px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase shadow-xl hover:scale-105 transition-transform"
               >
@@ -285,8 +284,8 @@ export default function Home() {
               className="group relative bg-[var(--surface)] border border-[var(--glass-border)] rounded-2xl mb-2 overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all sm:rounded-[2rem] sm:mb-4"
             >
               <div className="overflow-hidden bg-[var(--surface-hover)]">
-                <img 
-                  src={ImageOptimizer.getOptimizedUrl(photo.thumbnail_url || photo.image_url, 400, 60)} 
+                <img
+                  src={ImageOptimizer.getOptimizedUrl(photo.thumbnail_url || photo.image_url, 400, 60)}
                   alt={photo.title}
                   loading="lazy"
                   className="w-full h-auto group-hover:scale-105 group-hover:blur-sm transition-all duration-700 ease-out"
@@ -300,9 +299,9 @@ export default function Home() {
                     <ImageIcon size={18} />
                   </div>
                 </div>
-                
+
                 <div className="space-y-1 md:space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                   <span className="px-2 py-0.5 md:px-3 md:py-1 bg-[var(--primary)] text-black text-[8px] md:text-[10px] font-black uppercase rounded-md md:rounded-lg tracking-widest block w-fit">
+                  <span className="px-2 py-0.5 md:px-3 md:py-1 bg-[var(--primary)] text-black text-[8px] md:text-[10px] font-black uppercase rounded-md md:rounded-lg tracking-widest block w-fit">
                     {photo.category}
                   </span>
                 </div>
@@ -310,7 +309,7 @@ export default function Home() {
 
               {/* Static info on mobile if not hovered */}
               <div className="p-2 md:hidden group-hover:hidden">
-                 <p className="text-[8px] text-[var(--text-dim)] uppercase tracking-tight font-bold">{photo.section}</p>
+                <p className="text-[8px] text-[var(--text-dim)] uppercase tracking-tight font-bold">{photo.section}</p>
               </div>
             </motion.div>
           ))}
@@ -320,39 +319,39 @@ export default function Home() {
         {totalPages > 1 && (
           <div className="mt-20 flex flex-col items-center gap-6">
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 disabled={currentPage === 1}
-                onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="px-6 py-3 bg-[var(--surface)] border border-[var(--glass-border)] rounded-2xl font-bold disabled:opacity-20 flex items-center gap-2 hover:bg-[var(--surface-hover)] transition-colors"
               >
                 Previous
               </button>
-              
+
               <div className="flex items-center gap-1 px-4">
                 <span className="text-sm font-black uppercase tracking-widest opacity-40">Page</span>
                 <span className="text-lg font-black">{currentPage}</span>
                 <span className="text-sm font-black uppercase tracking-widest opacity-40">of {totalPages}</span>
               </div>
 
-              <button 
+              <button
                 disabled={currentPage === totalPages}
-                onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="px-6 py-3 bg-[var(--primary)] text-black rounded-2xl font-bold disabled:opacity-20 flex items-center gap-2 hover:scale-105 transition-all shadow-lg shadow-[var(--primary)]/20"
               >
                 Next
               </button>
             </div>
-            
+
             <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-20">
-              Showing {(currentPage-1)*pageSize + 1} - {Math.min(currentPage*pageSize, filteredPhotos.length)} of {filteredPhotos.length} Items
+              Showing {(currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, filteredPhotos.length)} of {filteredPhotos.length} Items
             </p>
           </div>
         )}
-        
+
         {filteredPhotos.length === 0 && (
           <div className="py-20 text-center">
-            <motion.div 
-              initial={{ opacity: 0 }} 
+            <motion.div
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="max-w-xs mx-auto space-y-4"
             >
@@ -361,8 +360,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold">No results found</h3>
               <p className="text-[var(--text-dim)]">We couldn't find any matches for "{searchQuery}". Try something else?</p>
-              <button 
-                onClick={() => {setSearchQuery(''); setSelectedCategory('all');}}
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }}
                 className="text-[var(--primary)] font-bold decoration-[var(--primary)] underline underline-offset-4"
               >
                 Clear all filters
@@ -397,7 +396,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex gap-4">
-                  <button 
+                  <button
                     onClick={() => setSelectedPhoto(null)}
                     className="p-3 bg-black/5 hover:bg-black/10 rounded-full text-black transition-colors backdrop-blur-md"
                   >
@@ -433,7 +432,7 @@ export default function Home() {
               </div>
 
               {/* Dark Draggable Bottom Sheet */}
-              <motion.div 
+              <motion.div
                 drag="y"
                 dragConstraints={{ top: 0, bottom: 500 }}
                 dragElastic={0.05}
@@ -452,7 +451,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="max-w-xl mx-auto px-8 pb-12 text-[var(--text)]">
                   <div className="space-y-8">
                     <div className="text-center space-y-4">
@@ -480,7 +479,7 @@ export default function Home() {
 
                     {/* Action Buttons */}
                     <div className="space-y-4 pt-4">
-                      <button 
+                      <button
                         onClick={(e) => { e.stopPropagation(); handleDownload(selectedPhoto); }}
                         className="w-full flex items-center justify-center gap-3 py-5 bg-[var(--primary)] text-black rounded-[2rem] text-base font-black uppercase hover:scale-[1.02] active:scale-[0.98] transition-all"
                       >
@@ -497,42 +496,40 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      {/* Compact Footer */}
+      <footer className="py-6 px-4 text-center border-t border-[var(--glass-border)] bg-white/30 backdrop-blur-xl">
+        <div className="max-w-xl mx-auto flex flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-black/[0.03] border border-black/5 rounded-xl">
+              <img src="/favicon-96x96.png" className="w-5 h-5 object-contain" alt="" />
+              <p className="text-black font-black tracking-[0.15em] text-[9px] uppercase">Kobir Lyrics Studio</p>
+            </div>
 
-      {/* Footer Info */}
-      <footer className="py-12 px-4 text-center border-t border-[var(--glass-border)] bg-white/50 backdrop-blur-sm">
-         <div className="max-w-2xl mx-auto space-y-4">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-               <div className="flex items-center gap-2">
-                  <img src="/favicon-96x96.png" className="w-6 h-6 opacity-40" alt="" />
-                  <p className="text-[var(--text-dim)]/60 font-black tracking-[0.2em] text-[10px] uppercase">Kobir Lyrics Studio</p>
-               </div>
-               
-               {siteViews !== null && (
-                  <div className="flex items-center gap-2 px-4 py-1.5 bg-black/5 rounded-full">
-                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                     <p className="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-wider">
-                        <span className="text-[var(--text)] font-black">{siteViews.toLocaleString()}</span> Images Viewed
-                     </p>
-                  </div>
-               )}
-            </div>
-            
-            <div className="flex flex-col items-center gap-4">
-              <p className="text-[var(--text-dim)]/40 text-[9px] uppercase font-bold tracking-widest leading-loose">
-                 Free for personal use • Handcrafted by Gopal's Diary
-              </p>
-              <a 
-                href="/admin/login" 
-                className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-dim)]/20 hover:text-[var(--primary)] transition-colors"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = '/admin/login';
-                }}
-              >
-                Admin Login
-              </a>
-            </div>
-         </div>
+            {siteViews !== null && (
+              <div className="px-3 py-1.5 bg-black/[0.02] border border-black/5 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                  <p className="text-[9px] font-bold text-black/40 uppercase tracking-[0.1em]">
+                    <span className="text-black font-black tracking-tight">{siteViews.toLocaleString()}</span> Images Viewed
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <motion.a
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.97 }}
+            href="/admin/login"
+            className="bg-black text-white px-7 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-[0.25em] shadow-lg shadow-black/10 inline-block"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/admin/login';
+            }}
+          >
+            Admin Login
+          </motion.a>
+        </div>
       </footer>
 
     </div>
