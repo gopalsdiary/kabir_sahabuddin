@@ -4,14 +4,14 @@
 
 :root {
   --primary: #eeb600;
-  --primary-glow: rgba(238, 182, 0, 0.15);
+  --primary-glow: rgba(238, 182, 0, 0.1);
   --bg: #ffffff;
-  --surface: #f7f7f7;
-  --surface-hover: #efefef;
-  --text: #111111;
-  --text-dim: #666666;
-  --glass: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  --surface: #ffffff;
+  --surface-hover: #fafafa;
+  --text: #0a0a0a;
+  --text-dim: #737373;
+  --glass: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.05);
 }
 
 @layer base {
