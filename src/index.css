@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #eeb600;
+  --primary-glow: rgba(238, 182, 0, 0.15);
+  --bg: #ffffff;
+  --surface: #f7f7f7;
+  --surface-hover: #efefef;
+  --text: #111111;
+  --text-dim: #666666;
+  --glass: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.08);
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--bg)] text-[var(--text)] font-sans antialiased;
+    background-image: radial-gradient(circle at top right, rgba(238, 182, 0, 0.08), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(238, 182, 0, 0.05), transparent 40%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-[var(--glass)] backdrop-blur-xl border border-[var(--glass-border)] rounded-2xl transition-all duration-300;
+  }
+  
+  .premium-button {
+    @apply px-6 py-3 bg-[var(--primary)] text-black font-bold rounded-full hover:bg-[#ffc400] active:scale-95 transition-all shadow-lg;
+  }
+
+  .masonry-grid {
+    column-count: 3;
+    column-gap: 8px;
+  }
+
+  @screen sm {
+    .masonry-grid {
+      column-count: 4;
+      column-gap: 12px;
+    }
+  }
+
+  @screen md {
+    .masonry-grid {
+      column-count: 5;
+    }
+  }
+
+  @screen lg {
+    .masonry-grid {
+      column-count: 6;
+    }
+  }
+
+  @screen xl {
+    .masonry-grid {
+      column-count: 8;
+    }
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
