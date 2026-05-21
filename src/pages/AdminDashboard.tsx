@@ -126,16 +126,16 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-50">
       {/* Sidebar - Modern & Sleek */}
-      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-black/5 p-8 overflow-y-auto hidden lg:block">
+      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white/80 backdrop-blur-xl border-r border-indigo-100 p-8 overflow-y-auto hidden lg:block">
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
             <ShieldCheck size={20} className="text-white" />
           </div>
           <div>
-             <h2 className="text-lg font-black uppercase tracking-tighter">Admin</h2>
-             <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest">Dashboard Panel</p>
+             <h2 className="text-lg font-black uppercase tracking-tighter bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Admin</h2>
+             <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Dashboard Panel</p>
           </div>
         </div>
 
@@ -152,8 +152,8 @@ export default function AdminDashboard() {
                   }}
                   className={`w-full text-left px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
                     selectedSection === section 
-                    ? 'bg-black text-white shadow-xl shadow-black/10' 
-                    : 'text-[var(--text-dim)] hover:bg-black/[0.03] hover:text-[var(--text)]'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30' 
+                    : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
                   }`}
                 >
                   {SECTION_CONFIG[section]?.name || (section === 'all' ? '✨ All Items' : section.replace(/_/g, ' '))}
@@ -185,26 +185,26 @@ export default function AdminDashboard() {
                 placeholder="Search database records..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-black/[0.03] border border-transparent focus:border-black/10 rounded-2xl py-3.5 pl-14 pr-6 transition-all focus:outline-none text-[13px] font-medium"
+                className="w-full bg-white border border-indigo-100 focus:border-indigo-500 rounded-2xl py-3.5 pl-14 pr-6 transition-all focus:outline-none focus:ring-4 focus:ring-indigo-500/10 text-[13px] font-medium shadow-sm"
               />
             </div>
 
             <div className="flex items-center gap-4 w-full md:w-auto">
                <button 
                 onClick={loadPhotos}
-                className="p-3.5 bg-black/[0.03] hover:bg-black/10 rounded-2xl text-[var(--text)] transition-all"
+                className="p-3.5 bg-white border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 rounded-2xl text-indigo-600 transition-all shadow-sm"
                >
                 <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
                </button>
                <button 
                 onClick={toggleSelectAll}
-                className="p-3.5 bg-black/[0.03] hover:bg-black/10 rounded-2xl text-[var(--text)] transition-all flex items-center gap-2"
+                className="p-3.5 bg-white border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 rounded-2xl text-indigo-600 transition-all flex items-center gap-2 shadow-sm"
                 title="Select All on Page"
                >
                 <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${
                   selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length
-                  ? 'bg-black border-black text-white'
-                  : 'border-black/20'
+                  ? 'bg-indigo-500 border-indigo-500 text-white'
+                  : 'border-indigo-200'
                 }`}>
                   {selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length && <CheckCircle2 size={12} />}
                 </div>
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
                <button 
                 onClick={() => navigate('/admin/add')}
 
-                className="flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-3.5 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-black/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-teal-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
                >
                 <Plus size={20} />
                 Add Record
@@ -235,8 +235,8 @@ export default function AdminDashboard() {
                   }}
                   className={`flex-shrink-0 px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
                     selectedSection === section 
-                    ? 'bg-black text-white border-black shadow-lg shadow-black/10' 
-                    : 'bg-white text-[var(--text-dim)] border-black/5 hover:border-black/20'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-lg shadow-indigo-500/30' 
+                    : 'bg-white text-slate-500 border-indigo-100 hover:border-indigo-300 shadow-sm'
                   }`}
                 >
                   {SECTION_CONFIG[section]?.name || (section === 'all' ? 'All' : section.replace(/_/g, ' '))}
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
                   <motion.div 
                     layout
                     key={photo.id}
-                    className="group relative bg-white border border-black/5 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all"
+                    className="group relative bg-white border border-indigo-50 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-200 transition-all duration-300"
                   >
                     <div className="aspect-[4/5] overflow-hidden relative">
                       <img 
@@ -310,21 +310,21 @@ export default function AdminDashboard() {
                   <button 
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(prev => prev - 1)}
-                    className="p-4 bg-black text-white rounded-2xl disabled:opacity-20 transition-all active:scale-95"
+                    className="p-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
                   >
                     <ArrowLeft size={18} />
                   </button>
                   <div className="flex items-center gap-2">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-black">Page</span>
-                     <div className="bg-black text-white w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black">
+                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-700">Page</span>
+                     <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-md shadow-indigo-500/20">
                         {currentPage}
                      </div>
-                     <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)]">of {totalPages}</span>
+                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">of {totalPages}</span>
                   </div>
                   <button 
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(prev => prev + 1)}
-                    className="p-4 bg-black text-white rounded-2xl disabled:opacity-20 transition-all active:scale-95"
+                    className="p-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
                   >
                     <ArrowRight size={18} />
                   </button>

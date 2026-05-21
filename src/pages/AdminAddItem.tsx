@@ -22,7 +22,7 @@ export default function AdminAddItem() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [section, setSection] = useState('photography_1');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [directUrl, setDirectUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -36,28 +36,10 @@ export default function AdminAddItem() {
     const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
     const data = await res.json();
     if (!data.success) throw new Error('ImgBB Upload failed');
-    return data.data.url;
-  };
-
-  const createThumbnail = (file: File): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let w = img.width, h = img.height;
-          if (w > 600) { h *= 600 / w; w = 600; }
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d')?.drawImage(img, 0, 0, w, h);
-          canvas.toBlob(blob => blob ? resolve(blob) : reject('Blob error'), 'image/jpeg', 0.7);
-        };
-        img.onerror = () => reject('Image load error');
-        img.src = e.target?.result as string;
-      };
-      reader.onerror = () => reject('Reader error');
-      reader.readAsDataURL(file);
-    });
+    return {
+      url: data.data.url,
+      mediumUrl: data.data.medium?.url || data.data.thumb?.url || data.data.url
+    };
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -67,31 +49,38 @@ export default function AdminAddItem() {
     setStatus('Initializing entry secure connection...');
 
     try {
-      let url = directUrl;
-      let thumb = directUrl;
-
-      if (file) {
-        setStatus('Optimizing & Compressing Media...');
-        url = await uploadToImgBB(file);
-        
-        setStatus('Generating Neural Thumbnail...');
-        const tBlob = await createThumbnail(file);
-        const tFile = new File([tBlob], `thumb-${file.name}`, { type: 'image/jpeg' });
-        thumb = await uploadToImgBB(tFile);
+      if (files.length === 0 && !directUrl) {
+        throw new Error('Selection required: Image files or Direct URL');
       }
 
-      if (!url) throw new Error('Selection required: Image file or Direct URL');
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const currentFile = files[i];
+          setStatus(`Processing and uploading image ${i + 1} of ${files.length}...`);
+          
+          const { url, mediumUrl } = await uploadToImgBB(currentFile);
 
-      const { error: dbError } = await supabase.from('kabirdatabase').insert([{
-        title,
-        description,
-        section,
-        image_url: url,
-        thumbnail_url: thumb
-      }]);
+          const { error: dbError } = await supabase.from('kabirdatabase').insert([{
+            title: files.length > 1 ? `${title} ${i + 1}`.trim() : title,
+            description,
+            section,
+            image_url: url,
+            thumbnail_url: mediumUrl
+          }]);
 
-
-      if (dbError) throw dbError;
+          if (dbError) throw dbError;
+        }
+      } else {
+        setStatus('Saving Direct URL...');
+        const { error: dbError } = await supabase.from('kabirdatabase').insert([{
+          title,
+          description,
+          section,
+          image_url: directUrl,
+          thumbnail_url: directUrl
+        }]);
+        if (dbError) throw dbError;
+      }
 
       setStatus('Success! Integration Complete');
       setTimeout(() => navigate('/admin/dashboard'), 1500);
@@ -177,12 +166,21 @@ export default function AdminAddItem() {
                       <Upload className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--text-dim)]" size={16} />
                       <input 
                         type="file"
+                        multiple
                         accept="image/*"
-                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        onChange={(e) => {
+                          const selectedFiles = Array.from(e.target.files || []);
+                          if (selectedFiles.length > 5) {
+                            alert('You can only upload up to 5 photos at a time.');
+                            setFiles(selectedFiles.slice(0, 5));
+                          } else {
+                            setFiles(selectedFiles);
+                          }
+                        }}
                         className="w-full bg-black/[0.03] border border-dashed border-black/10 group-hover:border-[var(--primary)] rounded-2xl py-4 px-14 transition-all focus:outline-none text-[10px] font-bold uppercase opacity-0 absolute inset-0 cursor-pointer"
                       />
                       <div className="bg-black/[0.03] border border-dashed border-black/10 group-hover:bg-white group-hover:border-[var(--primary)] group-hover:shadow-xl group-hover:shadow-[var(--primary)]/10 rounded-2xl py-4 px-14 transition-all text-[10px] font-black uppercase tracking-tighter text-[var(--text-dim)] group-hover:text-black truncate">
-                         {file ? file.name : 'Select HD Media'}
+                         {files.length > 0 ? `${files.length} file(s) selected (max 5)` : 'Select HD Media (up to 5)'}
                       </div>
                     </div>
                   </div>
@@ -204,7 +202,7 @@ export default function AdminAddItem() {
 
                <div className="pt-4 flex flex-col items-center gap-4">
                   <button 
-                    disabled={loading || (!file && !directUrl)}
+                    disabled={loading || (files.length === 0 && !directUrl)}
                     type="submit"
                     className="w-full max-w-sm bg-black text-white rounded-2xl py-5 font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-3 hover:gap-6 transition-all disabled:opacity-20 shadow-xl shadow-black/10"
                   >
@@ -247,9 +245,9 @@ export default function AdminAddItem() {
              <div className="space-y-3">
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-dim)] ml-4">Live Preview</h3>
                 <div className="aspect-[4/5] bg-black/[0.03] rounded-[3rem] border border-black/5 overflow-hidden flex items-center justify-center group relative shadow-2xl shadow-black/5">
-                   {file ? (
+                   {files.length > 0 ? (
                      <img 
-                       src={URL.createObjectURL(file)} 
+                       src={URL.createObjectURL(files[0])} 
                        className="w-full h-full object-cover" 
                        alt="Preview" 
                      />
@@ -263,6 +261,11 @@ export default function AdminAddItem() {
                      <div className="flex flex-col items-center gap-3 opacity-20">
                         <ImageIcon size={48} />
                         <span className="text-[10px] font-black uppercase tracking-widest">No Media</span>
+                     </div>
+                   )}
+                   {files.length > 1 && (
+                     <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-[10px] font-bold backdrop-blur-md">
+                       + {files.length - 1} more
                      </div>
                    )}
                    
