@@ -281,7 +281,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: Math.min(i * 0.02, 0.4) }}
               onClick={() => setSelectedPhoto(photo)}
-              className="group relative bg-[var(--surface)] border border-[var(--glass-border)] rounded-2xl mb-2 overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all sm:rounded-[2rem] sm:mb-4"
+              className="group relative bg-[var(--surface)] border border-[var(--glass-border)] rounded-xl mb-1 overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all sm:rounded-2xl sm:mb-1.5"
             >
               <div className="overflow-hidden bg-[var(--surface-hover)]">
                 <img
@@ -305,11 +305,6 @@ export default function Home() {
                     {photo.category}
                   </span>
                 </div>
-              </div>
-
-              {/* Static info on mobile if not hovered */}
-              <div className="p-2 md:hidden group-hover:hidden">
-                <p className="text-[8px] text-[var(--text-dim)] uppercase tracking-tight font-bold">{photo.section}</p>
               </div>
             </motion.div>
           ))}
