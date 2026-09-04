@@ -26,13 +26,17 @@ import {
   Upload,
   Key,
   Lock,
-  Settings
+  Settings,
+  Users,
+  Copy,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { Photo, fetchAllPhotos, SECTION_CONFIG } from '../lib/gallery';
-import { postService, Post, Postcard, formatTimeAgo } from '../lib/postService';
+import { postService, Post, Postcard, Account, formatTimeAgo } from '../lib/postService';
 
 export default function AdminDashboard() {
-  const [mainTab, setMainTab] = useState<'gallery' | 'posts' | 'postcards'>('gallery');
+  const [mainTab, setMainTab] = useState<'gallery' | 'posts' | 'postcards' | 'users'>('gallery');
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,6 +67,19 @@ export default function AdminDashboard() {
   const [adminSuccess, setAdminSuccess] = useState<string | null>(null);
   const [adminError, setAdminError] = useState<string | null>(null);
 
+  // User Accounts State (kabirdatabase_account)
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accountsLoading, setAccountsLoading] = useState(false);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [visiblePasswords, setVisiblePasswords] = useState<Record<number, boolean>>({});
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [editingLimitUser, setEditingLimitUser] = useState<Account | null>(null);
+  const [newPostLimit, setNewPostLimit] = useState<number>(5);
+  const [savingLimit, setSavingLimit] = useState(false);
+  const [editingPasswordUser, setEditingPasswordUser] = useState<Account | null>(null);
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [savingPassword, setSavingPassword] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +87,7 @@ export default function AdminDashboard() {
     loadPhotos();
     loadCommunityPosts();
     loadPostcards();
+    loadAccounts();
   }, []);
 
   const checkAuth = async () => {
@@ -97,6 +115,83 @@ export default function AdminDashboard() {
     setPostcards(cards);
     setPostcardsLoading(false);
   };
+
+  const loadAccounts = async () => {
+    setAccountsLoading(true);
+    const data = await postService.fetchAllAccountsForAdmin();
+    setAccounts(data);
+    setAccountsLoading(false);
+  };
+
+  const togglePasswordVisibility = (userIid: number) => {
+    setVisiblePasswords(prev => ({ ...prev, [userIid]: !prev[userIid] }));
+  };
+
+  const copyPassword = (text: string, userIid: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(userIid);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleSaveLimit = async () => {
+    if (!editingLimitUser) return;
+    setSavingLimit(true);
+    const ok = await postService.updateAccountLimit(editingLimitUser.user_iid, newPostLimit);
+    setSavingLimit(false);
+    if (ok) {
+      setAccounts(prev => prev.map(a => a.user_iid === editingLimitUser.user_iid ? { ...a, post_limit: newPostLimit } : a));
+      setEditingLimitUser(null);
+    } else {
+      alert('Failed to update post limit');
+    }
+  };
+
+  const handleSaveUserPassword = async () => {
+    if (!editingPasswordUser || !newUserPassword.trim()) return;
+    setSavingPassword(true);
+    const ok = await postService.updateAccountPasswordByAdmin(editingPasswordUser.user_iid, newUserPassword.trim());
+    setSavingPassword(false);
+    if (ok) {
+      setAccounts(prev => prev.map(a => a.user_iid === editingPasswordUser.user_iid ? { ...a, password: newUserPassword.trim() } : a));
+      setEditingPasswordUser(null);
+      setNewUserPassword('');
+      alert('User password updated successfully!');
+    } else {
+      alert('Failed to update password');
+    }
+  };
+
+  const handleDeleteUser = async (userIid: number, name: string) => {
+    if (!confirm(`Are you sure you want to delete user "${name}" (ID #${userIid})? This will also remove all their posts!`)) return;
+    const ok = await postService.deleteAccountByAdmin(userIid);
+    if (ok) {
+      setAccounts(prev => prev.filter(a => a.user_iid !== userIid));
+      loadCommunityPosts();
+    } else {
+      alert('Failed to delete user');
+    }
+  };
+
+  const userPostCounts = useMemo(() => {
+    const map: Record<number, number> = {};
+    communityPosts.forEach(p => {
+      if (p.user_iid) {
+        map[p.user_iid] = (map[p.user_iid] || 0) + 1;
+      }
+    });
+    return map;
+  }, [communityPosts]);
+
+  const filteredAccounts = useMemo(() => {
+    const q = userSearchQuery.trim().toLowerCase();
+    if (!q) return accounts;
+    return accounts.filter(a => 
+      a.name.toLowerCase().includes(q) ||
+      a.userid.toLowerCase().includes(q) ||
+      String(a.user_iid).includes(q) ||
+      (a.whats_app_number && String(a.whats_app_number).includes(q))
+    );
+  }, [accounts, userSearchQuery]);
 
   const handleApprovePost = async (postId: number) => {
     const success = await postService.approvePost(postId);
@@ -385,6 +480,21 @@ export default function AdminDashboard() {
               </button>
 
               <button 
+                onClick={() => setMainTab('users')}
+                className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all ${
+                  mainTab === 'users'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30'
+                    : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Users size={16} />
+                  <span>ইউজার একাউন্ট</span>
+                </div>
+                <span className="text-[10px] font-bold opacity-80">{accounts.length}</span>
+              </button>
+
+              <button 
                 onClick={() => navigate('/post')}
                 className="w-full flex items-center justify-between px-5 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-slate-100 transition-all"
               >
@@ -565,6 +675,16 @@ export default function AdminDashboard() {
                 }`}
               >
                 🎴 পোস্টকার্ড টেমপ্লেট ({postcards.length})
+              </button>
+              <button
+                onClick={() => setMainTab('users')}
+                className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  mainTab === 'users'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                👥 ইউজার একাউন্ট ({accounts.length})
               </button>
            </div>
 
@@ -866,8 +986,243 @@ export default function AdminDashboard() {
                    ))}
                  </div>
                )}
-             </div>
-           ) : (
+              </div>
+            ) : mainTab === 'users' ? (
+              /* User Accounts Management View (kabirdatabase_account) */
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-800 flex items-center gap-2">
+                        <span>কমিউনিটি ইউজার ও একাউন্ট তালিকা</span>
+                      </h3>
+                      <span className="bg-indigo-100 text-indigo-700 text-xs font-black px-2.5 py-1 rounded-full">
+                        {accounts.length} Total
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 font-medium mt-1">
+                      kabirdatabase_account টেবিল থেকে সকল ইউজারের আইডি, ইউজারনেম, পাসওয়ার্ড ও পোস্ট লিমিট নিয়ন্ত্রণ করুন
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={loadAccounts}
+                      disabled={accountsLoading}
+                      className="px-3.5 py-2 bg-white border border-indigo-100 text-slate-600 hover:text-indigo-600 rounded-2xl shadow-xs hover:shadow-md transition cursor-pointer flex items-center gap-2 text-xs font-bold"
+                      title="রিফ্রেশ করুন"
+                    >
+                      <RefreshCcw size={15} className={accountsLoading ? 'animate-spin text-indigo-600' : ''} />
+                      <span>রিফ্রেশ</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">মোট ইউজার</span>
+                    <span className="text-2xl font-black text-slate-800">{accounts.length} জন</span>
+                  </div>
+                  <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">ডিফল্ট দৈনিক কোটা</span>
+                    <span className="text-2xl font-black text-indigo-600">৫টি / দিন</span>
+                  </div>
+                  <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">কাস্টম কোটা ইউজার</span>
+                    <span className="text-2xl font-black text-purple-600">
+                      {accounts.filter(a => (a.post_limit || 5) !== 5).length} জন
+                    </span>
+                  </div>
+                  <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs">
+                    <span className="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">মোট পোস্ট সংখ্যা</span>
+                    <span className="text-2xl font-black text-emerald-600">{communityPosts.length} টি</span>
+                  </div>
+                </div>
+
+                {/* Search input */}
+                <div className="bg-white p-3 rounded-2xl border border-indigo-100 shadow-xs flex items-center gap-3">
+                  <Search size={18} className="text-slate-400 shrink-0 ml-2" />
+                  <input 
+                    type="text"
+                    placeholder="ইউজারের নাম, @username, ইউজার আইডি (#user_iid) বা WhatsApp নম্বর দিয়ে খুঁজুন..."
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                    className="flex-1 text-xs font-medium focus:outline-none bg-transparent"
+                  />
+                  {userSearchQuery && (
+                    <button 
+                      onClick={() => setUserSearchQuery('')}
+                      className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+
+                {/* User List Table */}
+                {accountsLoading ? (
+                  <div className="bg-white rounded-3xl p-16 text-center border border-indigo-100 shadow-sm space-y-3">
+                    <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-xs font-bold text-slate-500">ইউজার একাউন্ট তালিকা লোড হচ্ছে...</p>
+                  </div>
+                ) : filteredAccounts.length === 0 ? (
+                  <div className="bg-white rounded-3xl p-16 text-center border border-indigo-100 shadow-sm space-y-2">
+                    <Users size={36} className="text-slate-300 mx-auto" />
+                    <h4 className="font-bold text-slate-800 text-base">কোনো ইউজার পাওয়া যায়নি</h4>
+                    <p className="text-xs text-slate-400">
+                      {userSearchQuery ? 'সার্চ কুয়েরির সাথে কোনো একাউন্ট মেলেনি।' : 'বর্তমানে কোনো ইউজার একাউন্ট নিবন্ধিত নেই।'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-3xl border border-indigo-100 shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-slate-100 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                            <th className="py-4 px-5">ইউজার তথ্য</th>
+                            <th className="py-4 px-5">পাসওয়ার্ড (Password)</th>
+                            <th className="py-4 px-5">পোস্ট লিমিট (Daily Limit)</th>
+                            <th className="py-4 px-5">WhatsApp নম্বর</th>
+                            <th className="py-4 px-5">মোট পোস্ট</th>
+                            <th className="py-4 px-5">যোগদান</th>
+                            <th className="py-4 px-5 text-right">অ্যাকশন</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-xs">
+                          {filteredAccounts.map((user) => {
+                            const isPassVisible = !!visiblePasswords[user.user_iid];
+                            const isCopied = copiedId === user.user_iid;
+                            const postsCount = userPostCounts[user.user_iid] || 0;
+
+                            return (
+                              <tr key={user.user_iid} className="hover:bg-indigo-50/30 transition-colors">
+                                {/* User Info */}
+                                <td className="py-4 px-5">
+                                  <div className="flex items-center gap-3">
+                                    <img 
+                                      src={user.profile_photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'} 
+                                      alt={user.name} 
+                                      className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100 shadow-xs shrink-0"
+                                    />
+                                    <div>
+                                      <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                                        <span>{user.name}</span>
+                                        <span className="text-[10px] font-mono text-slate-400 font-normal">#{user.user_iid}</span>
+                                      </div>
+                                      <span className="text-[11px] font-mono text-indigo-600 font-semibold">@{user.userid}</span>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                {/* Password with View & Copy */}
+                                <td className="py-4 px-5">
+                                  <div className="inline-flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 px-2.5 py-1.5 rounded-xl transition">
+                                    <Key size={13} className="text-amber-500 shrink-0" />
+                                    <span className="font-mono font-bold text-xs text-slate-800 select-all">
+                                      {isPassVisible ? user.password : '••••••••'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => togglePasswordVisibility(user.user_iid)}
+                                      className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer ml-1"
+                                      title={isPassVisible ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখুন'}
+                                    >
+                                      {isPassVisible ? <EyeOff size={14} /> : <Eye size={14} />}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => copyPassword(user.password || '', user.user_iid)}
+                                      className="text-slate-400 hover:text-indigo-600 p-0.5 cursor-pointer"
+                                      title="পাসওয়ার্ড কপি করুন"
+                                    >
+                                      {isCopied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                                    </button>
+                                  </div>
+                                </td>
+
+                                {/* Post Limit with Quick Edit */}
+                                <td className="py-4 px-5">
+                                  <div className="flex items-center gap-2">
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-[#1877F2] border border-blue-200">
+                                      {user.post_limit || 5} টি / দিন
+                                    </span>
+                                    <button
+                                      onClick={() => {
+                                        setEditingLimitUser(user);
+                                        setNewPostLimit(user.post_limit || 5);
+                                      }}
+                                      className="p-1 text-slate-400 hover:text-[#1877F2] hover:bg-blue-50 rounded-md transition cursor-pointer"
+                                      title="পোস্ট লিমিট পরিবর্তন করুন"
+                                    >
+                                      <Edit3 size={13} />
+                                    </button>
+                                  </div>
+                                </td>
+
+                                {/* WhatsApp */}
+                                <td className="py-4 px-5">
+                                  {user.whats_app_number ? (
+                                    <a
+                                      href={`https://wa.me/${user.whats_app_number}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 hover:bg-emerald-100 transition"
+                                    >
+                                      <Phone size={12} />
+                                      <span>+{user.whats_app_number}</span>
+                                    </a>
+                                  ) : (
+                                    <span className="text-slate-400 text-[11px] italic">দেওয়া হয়নি</span>
+                                  )}
+                                </td>
+
+                                {/* Posts Count */}
+                                <td className="py-4 px-5">
+                                  <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-xl">
+                                    <MessageSquare size={12} className="text-indigo-500" />
+                                    <span>{postsCount} টি</span>
+                                  </span>
+                                </td>
+
+                                {/* Joined Date */}
+                                <td className="py-4 px-5 text-slate-500 font-medium text-[11px]">
+                                  {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                                </td>
+
+                                {/* Actions */}
+                                <td className="py-4 px-5 text-right">
+                                  <div className="inline-flex items-center gap-1">
+                                    <button
+                                      onClick={() => {
+                                        setEditingPasswordUser(user);
+                                        setNewUserPassword(user.password || '');
+                                      }}
+                                      className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition cursor-pointer"
+                                      title="পাসওয়ার্ড পরিবর্তন করুন"
+                                    >
+                                      <Key size={15} />
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteUser(user.user_iid, user.name)}
+                                      className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                                      title="ইউজার ডিলিট করুন"
+                                    >
+                                      <Trash2 size={15} />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
              /* Gallery Records View */
              <>
                {/* Mobile/Device Section Pills */}
@@ -1330,6 +1685,154 @@ export default function AdminDashboard() {
             </motion.div>
           </div>
         )}
+        {/* Edit User Post Limit Modal */}
+        <AnimatePresence>
+          {editingLimitUser && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-200"
+              >
+                <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 text-[#1877F2] flex items-center justify-center">
+                      <Edit3 size={16} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm">দৈনিক পোস্ট লিমিট পরিবর্তন</h4>
+                      <p className="text-[10px] text-slate-400">@{editingLimitUser.userid} ({editingLimitUser.name})</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setEditingLimitUser(null)}
+                    className="w-7 h-7 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="p-5 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                      প্রতিদিনের পোস্ট কোটা (পোস্ট / দিন)
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={newPostLimit}
+                      onChange={(e) => setNewPostLimit(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-base font-bold text-slate-800 focus:bg-white focus:border-[#1877F2] focus:outline-none transition text-center"
+                    />
+                  </div>
+
+                  {/* Preset limit pills */}
+                  <div className="flex items-center justify-center gap-2">
+                    {[5, 10, 20, 50].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setNewPostLimit(num)}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+                          newPostLimit === num
+                            ? 'bg-[#1877F2] text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        {num} টি
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setEditingLimitUser(null)}
+                      className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                    >
+                      বাতিল
+                    </button>
+                    <button
+                      type="button"
+                      disabled={savingLimit}
+                      onClick={handleSaveLimit}
+                      className="px-5 py-2 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {savingLimit ? 'সংরক্ষণ হচ্ছে...' : 'লিমিট সেভ করুন'}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Edit User Password Modal */}
+        <AnimatePresence>
+          {editingPasswordUser && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl border border-slate-200"
+              >
+                <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <Key size={16} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm">ইউজার পাসওয়ার্ড পরিবর্তন</h4>
+                      <p className="text-[10px] text-slate-400">{editingPasswordUser.name} (@{editingPasswordUser.userid})</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setEditingPasswordUser(null)}
+                    className="w-7 h-7 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="p-5 space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                      নতুন পাসওয়ার্ড দিন
+                    </label>
+                    <input
+                      type="text"
+                      value={newUserPassword}
+                      onChange={(e) => setNewUserPassword(e.target.value)}
+                      placeholder="নতুন পাসওয়ার্ড লিখুন"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm font-mono font-bold text-slate-800 focus:bg-white focus:border-amber-500 focus:outline-none transition"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setEditingPasswordUser(null)}
+                      className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                    >
+                      বাতিল
+                    </button>
+                    <button
+                      type="button"
+                      disabled={savingPassword || !newUserPassword.trim()}
+                      onClick={handleSaveUserPassword}
+                      className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    >
+                      {savingPassword ? 'আপডেট হচ্ছে...' : 'পাসওয়ার্ড আপডেট করুন'}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </AnimatePresence>
     </div>
   );

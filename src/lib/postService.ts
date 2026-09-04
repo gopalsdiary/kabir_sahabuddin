@@ -605,6 +605,47 @@ export const postService = {
       .eq('post_iid', postId);
 
     return !error;
+  },
+
+  // Admin Account Management
+  async fetchAllAccountsForAdmin(): Promise<Account[]> {
+    const { data, error } = await supabase
+      .from('kabirdatabase_account')
+      .select('*')
+      .order('user_iid', { ascending: false });
+
+    if (error) {
+      console.error('Fetch all accounts error:', error);
+      return [];
+    }
+    return data || [];
+  },
+
+  async updateAccountLimit(userIid: number, newLimit: number): Promise<boolean> {
+    const { error } = await supabase
+      .from('kabirdatabase_account')
+      .update({ post_limit: newLimit })
+      .eq('user_iid', userIid);
+
+    return !error;
+  },
+
+  async updateAccountPasswordByAdmin(userIid: number, newPass: string): Promise<boolean> {
+    const { error } = await supabase
+      .from('kabirdatabase_account')
+      .update({ password: newPass })
+      .eq('user_iid', userIid);
+
+    return !error;
+  },
+
+  async deleteAccountByAdmin(userIid: number): Promise<boolean> {
+    const { error } = await supabase
+      .from('kabirdatabase_account')
+      .delete()
+      .eq('user_iid', userIid);
+
+    return !error;
   }
 };
 
