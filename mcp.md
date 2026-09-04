@@ -16,8 +16,8 @@
       ],
       "command": "npx",
       "env": {
-        "SUPABASE_ACCESS_TOKEN": "sbp_ce3e6f363e1eaee19845a94931be7e245d748bee",
-        "SUPABASE_PROJECT_REF": "sbyvmktfmnucnmglajpr"
+        "SUPABASE_ACCESS_TOKEN": " ",
+        "SUPABASE_PROJECT_REF": " "
       }
     }
   }
