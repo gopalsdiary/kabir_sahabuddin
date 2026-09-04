@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -12,14 +13,17 @@ import {
   BookOpen,
   Filter,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  MessageSquare,
+  Settings
 } from 'lucide-react';
 import { Photo, fetchAllPhotos, smartShuffle, ImageOptimizer } from '../lib/gallery';
 import { supabase } from '../lib/supabase';
-
-
+import { postService, Account } from '../lib/postService';
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState<Account | null>(() => postService.getCurrentUser());
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -204,9 +208,29 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-3 bg-[var(--surface)] hover:bg-[var(--surface-hover)] border border-[var(--glass-border)] rounded-2xl transition-colors hidden md:flex">
-              <Menu size={20} />
+            <button
+              onClick={() => navigate('/post')}
+              className="flex items-center gap-2 bg-[var(--primary)] hover:opacity-90 text-black px-3 md:px-4 py-2 md:py-2.5 rounded-2xl font-bold text-xs md:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+            >
+              <MessageSquare size={16} />
+              <span>Community Posts</span>
             </button>
+
+            {currentUser && (
+              <button
+                onClick={() => navigate('/settings')}
+                className="flex items-center gap-2 bg-[var(--surface)] hover:bg-[var(--surface-hover)] border border-[var(--glass-border)] text-[var(--text)] p-1.5 md:px-3 md:py-1.5 rounded-2xl transition shadow-xs cursor-pointer group"
+                title="Account Settings"
+              >
+                <img 
+                  src={currentUser.profile_photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'} 
+                  alt={currentUser.name} 
+                  className="w-7 h-7 rounded-full object-cover group-hover:scale-105 transition"
+                />
+                <span className="text-xs font-bold hidden md:inline">{currentUser.name.split(' ')[0]}</span>
+                <Settings size={14} className="text-[var(--text-dim)] group-hover:text-[var(--primary)] transition" />
+              </button>
+            )}
           </div>
         </div>
       </header>

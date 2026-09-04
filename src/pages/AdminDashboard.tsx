@@ -16,11 +16,23 @@ import {
   Image as ImageIcon,
   CheckCircle2,
   X,
-  ExternalLink
+  ExternalLink,
+  MessageSquare,
+  Check,
+  Clock,
+  Phone,
+  ThumbsUp,
+  Layers,
+  Upload,
+  Key,
+  Lock,
+  Settings
 } from 'lucide-react';
 import { Photo, fetchAllPhotos, SECTION_CONFIG } from '../lib/gallery';
+import { postService, Post, Postcard, formatTimeAgo } from '../lib/postService';
 
 export default function AdminDashboard() {
+  const [mainTab, setMainTab] = useState<'gallery' | 'posts' | 'postcards'>('gallery');
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,12 +42,34 @@ export default function AdminDashboard() {
   const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
   const itemsPerPage = 50;
 
-  const navigate = useNavigate();
+  // Community Posts Moderation State
+  const [communityPosts, setCommunityPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postFilter, setPostFilter] = useState<'all' | 'pending' | 'approved'>('pending');
 
+  // Postcard Templates State
+  const [postcards, setPostcards] = useState<Postcard[]>([]);
+  const [postcardsLoading, setPostcardsLoading] = useState(false);
+  const [isAddPostcardOpen, setIsAddPostcardOpen] = useState(false);
+  const [newPostcardTitle, setNewPostcardTitle] = useState('');
+  const [newPostcardUrl, setNewPostcardUrl] = useState('');
+  const [postcardUploading, setPostcardUploading] = useState(false);
+
+  // Admin Security / Password state
+  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
+  const [adminNewPassword, setAdminNewPassword] = useState('');
+  const [adminConfirmPassword, setAdminConfirmPassword] = useState('');
+  const [adminUpdating, setAdminUpdating] = useState(false);
+  const [adminSuccess, setAdminSuccess] = useState<string | null>(null);
+  const [adminError, setAdminError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
     loadPhotos();
+    loadCommunityPosts();
+    loadPostcards();
   }, []);
 
   const checkAuth = async () => {
@@ -50,10 +84,148 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  const loadCommunityPosts = async () => {
+    setPostsLoading(true);
+    const data = await postService.fetchAllPostsForAdmin();
+    setCommunityPosts(data);
+    setPostsLoading(false);
+  };
+
+  const loadPostcards = async () => {
+    setPostcardsLoading(true);
+    const cards = await postService.fetchPostcards();
+    setPostcards(cards);
+    setPostcardsLoading(false);
+  };
+
+  const handleApprovePost = async (postId: number) => {
+    const success = await postService.approvePost(postId);
+    if (success) {
+      setCommunityPosts(prev => prev.map(p => p.post_iid === postId ? { ...p, is_approved: true } : p));
+    } else {
+      alert('অনুমোদন করা সম্ভব হয়নি।');
+    }
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    if (!confirm('এই পোস্টটি স্থায়ীভাবে মুছে ফেলতে চান?')) return;
+    const success = await postService.deletePost(postId);
+    if (success) {
+      setCommunityPosts(prev => prev.filter(p => p.post_iid !== postId));
+    } else {
+      alert('পোস্ট মুছে ফেলতে সমস্যা হয়েছে।');
+    }
+  };
+
+  const uploadToImgBB = async (imageInput: File | string): Promise<string> => {
+    const formData = new FormData();
+    formData.append('image', imageInput);
+    formData.append('key', '03cd19c7e6990d72a74e764559101b63');
+    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (!data.success || !data.data?.url) {
+      throw new Error(data.error?.message || 'ImgBB upload failed');
+    }
+    return data.data.url;
+  };
+
+  const handleUploadPostcardFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPostcardUploading(true);
+    try {
+      const url = await uploadToImgBB(file);
+      setNewPostcardUrl(url);
+    } catch (err: any) {
+      alert('ImgBB-তে ছবি আপলোড করতে সমস্যা হয়েছে: ' + (err.message || 'Error'));
+    } finally {
+      setPostcardUploading(false);
+    }
+  };
+
+  const handleAddPostcard = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPostcardUrl.trim()) {
+      alert('দয়া করে ছবি নির্বাচন করে ImgBB-তে আপলোড করুন');
+      return;
+    }
+    setPostcardUploading(true);
+    try {
+      let finalUrl = newPostcardUrl.trim();
+      // If external URL is provided and not on ImgBB, automatically transfer to ImgBB
+      if (!finalUrl.includes('ibb.co')) {
+        try {
+          finalUrl = await uploadToImgBB(finalUrl);
+        } catch (uploadErr) {
+          console.warn('Direct URL used as ImgBB transfer failed', uploadErr);
+        }
+      }
+
+      const res = await postService.addPostcard({
+        title: newPostcardTitle.trim() || 'Postcard Background',
+        image_url: finalUrl
+      });
+
+      if (res) {
+        setNewPostcardTitle('');
+        setNewPostcardUrl('');
+        setIsAddPostcardOpen(false);
+        loadPostcards();
+      } else {
+        alert('পোস্টকার্ড যোগ করা যায়নি।');
+      }
+    } catch (err: any) {
+      alert('ত্রুটি: ' + (err.message || 'পোস্টকার্ড সংরক্ষণে সমস্যা হয়েছে'));
+    } finally {
+      setPostcardUploading(false);
+    }
+  };
+
+  const handleDeletePostcard = async (postcardIid: number) => {
+    if (!confirm('এই পোস্টকার্ড টেমপ্লেটটি মুছে ফেলতে চান? ব্যবহারকারীরা আর এটি নির্বাচন করতে পারবেন না।')) return;
+    const ok = await postService.deletePostcard(postcardIid);
+    if (ok) {
+      setPostcards(prev => prev.filter(c => c.postcard_iid !== postcardIid));
+    } else {
+      alert('পোস্টকার্ড মোছা যায়নি।');
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/admin/login');
   };
+
+  const handleUpdateAdminPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminError(null);
+    setAdminSuccess(null);
+    if (!adminNewPassword || adminNewPassword.length < 6) {
+      setAdminError('পাসওয়ার্ড ন্যূনতম ৬ অক্ষরের হতে হবে।');
+      return;
+    }
+    if (adminNewPassword !== adminConfirmPassword) {
+      setAdminError('নতুন পাসওয়ার্ড ও কনফার্ম পাসওয়ার্ড মিলছে না!');
+      return;
+    }
+    setAdminUpdating(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: adminNewPassword });
+      if (error) throw error;
+      setAdminSuccess('অ্যাডমিন পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!');
+      setAdminNewPassword('');
+      setAdminConfirmPassword('');
+      setTimeout(() => {
+        setIsAdminSettingsOpen(false);
+        setAdminSuccess(null);
+      }, 1500);
+    } catch (err: any) {
+      setAdminError(err.message || 'পাসওয়ার্ড পরিবর্তন ব্যর্থ হয়েছে');
+    } finally {
+      setAdminUpdating(false);
+    }
+  };
+
 
   const filteredPhotos = useMemo(() => {
     return photos.filter(p => {
@@ -124,12 +296,30 @@ export default function AdminDashboard() {
 
   const sections = ['all', ...Array.from(new Set(photos.map(p => p.section)))].sort();
 
+  const pendingCount = useMemo(() => communityPosts.filter(p => !p.is_approved).length, [communityPosts]);
+  const approvedCount = useMemo(() => communityPosts.filter(p => p.is_approved).length, [communityPosts]);
+
+  const filteredCommunityPosts = useMemo(() => {
+    return communityPosts.filter(p => {
+      const matchFilter = postFilter === 'all' 
+        ? true 
+        : postFilter === 'pending' 
+          ? !p.is_approved 
+          : p.is_approved;
+      const matchSearch = !searchQuery.trim() || 
+        p.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.author?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.author?.userid?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchFilter && matchSearch;
+    });
+  }, [communityPosts, postFilter, searchQuery]);
 
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Sidebar - Modern & Sleek */}
       <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white/80 backdrop-blur-xl border-r border-indigo-100 p-8 overflow-y-auto hidden lg:block">
-        <div className="flex items-center gap-3 mb-10">
+        <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
             <ShieldCheck size={20} className="text-white" />
           </div>
@@ -139,34 +329,116 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <nav className="space-y-8">
+        <nav className="space-y-6">
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-dim)]/40 mb-4 ml-4">Management</h3>
-            <div className="space-y-1">
-              {sections.map(section => (
-                <button 
-                  key={section}
-                  onClick={() => {
-                    setSelectedSection(section);
-                    setCurrentPage(1);
-                  }}
-                  className={`w-full text-left px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    selectedSection === section 
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30' 
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 ml-2">মডিউল নির্বাচন</h3>
+            <div className="space-y-2">
+              <button 
+                onClick={() => setMainTab('gallery')}
+                className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all ${
+                  mainTab === 'gallery'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30'
                     : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
-                  }`}
-                >
-                  {SECTION_CONFIG[section]?.name || (section === 'all' ? '✨ All Items' : section.replace(/_/g, ' '))}
-                </button>
-              ))}
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <ImageIcon size={16} />
+                  <span>গ্যালারি ছবিসমূহ</span>
+                </div>
+                <span className="text-[10px] font-bold opacity-80">{photos.length}</span>
+              </button>
+
+              <button 
+                onClick={() => setMainTab('posts')}
+                className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all ${
+                  mainTab === 'posts'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30'
+                    : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <MessageSquare size={16} />
+                  <span>কমিউনিটি পোস্ট</span>
+                </div>
+                {pendingCount > 0 ? (
+                  <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black animate-pulse">
+                    {pendingCount}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold opacity-80">{communityPosts.length}</span>
+                )}
+              </button>
+
+              <button 
+                onClick={() => setMainTab('postcards')}
+                className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all ${
+                  mainTab === 'postcards'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30'
+                    : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Layers size={16} />
+                  <span>পোস্টকার্ড টেমপ্লেট</span>
+                </div>
+                <span className="text-[10px] font-bold opacity-80">{postcards.length}</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/post')}
+                className="w-full flex items-center justify-between px-5 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-slate-100 transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <ExternalLink size={14} />
+                  <span>লাইভ ফিড দেখুন</span>
+                </div>
+                <span>↗</span>
+              </button>
             </div>
           </div>
+
+          {mainTab === 'gallery' && (
+            <div>
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-dim)]/40 mb-3 ml-2">Categories</h3>
+              <div className="space-y-1 max-h-[300px] overflow-y-auto pr-1">
+                {sections.map(section => (
+                  <button 
+                    key={section}
+                    onClick={() => {
+                      setSelectedSection(section);
+                      setCurrentPage(1);
+                    }}
+                    className={`w-full text-left px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                      selectedSection === section 
+                      ? 'bg-indigo-50 text-indigo-700 font-black' 
+                      : 'text-slate-500 hover:bg-indigo-50/50 hover:text-indigo-700'
+                    }`}
+                  >
+                    {SECTION_CONFIG[section]?.name || (section === 'all' ? '✨ All Items' : section.replace(/_/g, ' '))}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </nav>
 
-        <div className="absolute bottom-8 left-8 right-8">
+        <div className="absolute bottom-8 left-8 right-8 space-y-2">
           <button 
+            type="button"
+            onClick={() => {
+              setAdminError(null);
+              setAdminSuccess(null);
+              setIsAdminSettingsOpen(true);
+            }}
+            className="w-full flex items-center justify-center gap-2.5 py-3 bg-slate-100 text-slate-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all cursor-pointer"
+          >
+            <Key size={14} />
+            পাসওয়ার্ড পরিবর্তন
+          </button>
+          <button 
+            type="button"
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-red-50 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5 group"
+            className="w-full flex items-center justify-center gap-3 py-3 bg-red-50 text-red-500 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-500/5 group cursor-pointer"
           >
             <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
             Sign Out
@@ -191,146 +463,522 @@ export default function AdminDashboard() {
 
             <div className="flex items-center gap-4 w-full md:w-auto">
                <button 
-                onClick={loadPhotos}
+                onClick={mainTab === 'posts' ? loadCommunityPosts : mainTab === 'postcards' ? loadPostcards : loadPhotos}
                 className="p-3.5 bg-white border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 rounded-2xl text-indigo-600 transition-all shadow-sm"
+                title="রিফ্রেশ করুন"
                >
-                <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
-               </button>
-               <button 
-                onClick={toggleSelectAll}
-                className="p-3.5 bg-white border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 rounded-2xl text-indigo-600 transition-all flex items-center gap-2 shadow-sm"
-                title="Select All on Page"
-               >
-                <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${
-                  selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length
-                  ? 'bg-indigo-500 border-indigo-500 text-white'
-                  : 'border-indigo-200'
-                }`}>
-                  {selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length && <CheckCircle2 size={12} />}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Select Page</span>
+                <RefreshCcw size={20} className={(mainTab === 'posts' ? postsLoading : mainTab === 'postcards' ? postcardsLoading : loading) ? 'animate-spin' : ''} />
                </button>
 
-               <button 
-                onClick={() => navigate('/admin/add')}
+               {mainTab === 'gallery' ? (
+                 <>
+                   <button 
+                    onClick={toggleSelectAll}
+                    className="p-3.5 bg-white border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 rounded-2xl text-indigo-600 transition-all flex items-center gap-2 shadow-sm"
+                    title="Select All on Page"
+                   >
+                    <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${
+                      selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length
+                      ? 'bg-indigo-500 border-indigo-500 text-white'
+                      : 'border-indigo-200'
+                    }`}>
+                      {selectedIds.length > 0 && selectedIds.length === paginatedPhotos.length && <CheckCircle2 size={12} />}
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">Select Page</span>
+                   </button>
 
-                className="flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-teal-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
-               >
-                <Plus size={20} />
-                Add Record
-               </button>
-            </div>
-          </div>
-        </header>
+                   <button 
+                    onClick={() => navigate('/admin/add')}
+                    className="flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-teal-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                   >
+                    <Plus size={20} />
+                    Add Record
+                   </button>
+                 </>
+               ) : mainTab === 'postcards' ? (
+                 <button 
+                  onClick={() => setIsAddPostcardOpen(true)}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                 >
+                  <Plus size={18} />
+                  <span>নতুন পোস্টকার্ড যুক্ত করুন</span>
+                 </button>
+               ) : (
+                 <button
+                  onClick={() => navigate('/post')}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#1877F2] to-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                 >
+                  <ExternalLink size={16} />
+                  <span>লাইভ ফিড দেখুন</span>
+                 </button>
+               )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminError(null);
+                    setAdminSuccess(null);
+                    setIsAdminSettingsOpen(true);
+                  }}
+                  className="flex items-center justify-center p-3.5 bg-slate-100 text-slate-600 hover:text-indigo-600 hover:bg-slate-200 rounded-2xl transition cursor-pointer"
+                  title="অ্যাডমিন পাসওয়ার্ড পরিবর্তন"
+                >
+                  <Key size={16} />
+                </button>
+             </div>
+           </div>
+         </header>
 
         <div className="p-6 md:p-12 max-w-[1600px] mx-auto">
-           {/* Mobile/Device Section Pills */}
-           <div className="flex lg:hidden overflow-x-auto pb-6 gap-2 no-scrollbar -mx-6 px-6">
-              {sections.map(section => (
-                <button 
-                  key={section}
-                  onClick={() => {
-                    setSelectedSection(section);
-                    setCurrentPage(1);
-                  }}
-                  className={`flex-shrink-0 px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
-                    selectedSection === section 
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-lg shadow-indigo-500/30' 
-                    : 'bg-white text-slate-500 border-indigo-100 hover:border-indigo-300 shadow-sm'
-                  }`}
-                >
-                  {SECTION_CONFIG[section]?.name || (section === 'all' ? 'All' : section.replace(/_/g, ' '))}
-                </button>
-              ))}
+           {/* Mobile Tab Switcher */}
+           <div className="flex lg:hidden overflow-x-auto pb-4 gap-2 no-scrollbar -mx-6 px-6">
+              <button
+                onClick={() => setMainTab('gallery')}
+                className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  mainTab === 'gallery'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                🖼️ গ্যালারি ছবি ({photos.length})
+              </button>
+              <button
+                onClick={() => setMainTab('posts')}
+                className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  mainTab === 'posts'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                💬 পোস্ট অনুমোদন
+                {pendingCount > 0 && (
+                  <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[10px] font-black">
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setMainTab('postcards')}
+                className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  mainTab === 'postcards'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                🎴 পোস্টকার্ড টেমপ্লেট ({postcards.length})
+              </button>
            </div>
 
-           <div className="mb-8 flex items-end justify-between">
-              <div>
-                <h3 className="text-2xl font-black uppercase tracking-tighter">
-                   {SECTION_CONFIG[selectedSection]?.name || (selectedSection === 'all' ? 'All Global Records' : selectedSection.replace(/_/g, ' '))}
-                </h3>
-                <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1">
-                   Showing {filteredPhotos.length} items in this directory
-                </p>
-              </div>
-           </div>
+           {mainTab === 'posts' ? (
+             /* Community Posts Moderation View */
+             <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900">
+                      কমিউনিটি পোস্ট অনুমোদন ও পরিচালনা
+                    </h3>
+                    <p className="text-xs text-slate-500 font-semibold mt-1">
+                      মোট পোস্ট: {communityPosts.length} টি | পর্যালোচনার অপেক্ষায়: {pendingCount} টি
+                    </p>
+                  </div>
 
-           {loading ? (
-             <div className="flex flex-col items-center justify-center py-40 gap-4">
-                <div className="w-12 h-12 border-t-4 border-black rounded-full animate-spin" />
-                <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)]">Synchronizing...</p>
+                  <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-indigo-100 shadow-sm">
+                    <button
+                      onClick={() => setPostFilter('pending')}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                        postFilter === 'pending'
+                          ? 'bg-amber-500 text-white shadow-sm'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      <Clock size={13} />
+                      <span>অপেক্ষমান ({pendingCount})</span>
+                    </button>
+                    <button
+                      onClick={() => setPostFilter('approved')}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                        postFilter === 'approved'
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      <CheckCircle2 size={13} />
+                      <span>অনুমোদিত ({approvedCount})</span>
+                    </button>
+                    <button
+                      onClick={() => setPostFilter('all')}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                        postFilter === 'all'
+                          ? 'bg-indigo-600 text-white shadow-sm'
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      সকল ({communityPosts.length})
+                    </button>
+                  </div>
+                </div>
+
+                {postsLoading ? (
+                  <div className="bg-white rounded-3xl p-16 text-center border border-indigo-50 shadow-sm space-y-3">
+                    <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-xs font-bold text-slate-500">পোস্ট তালিকা লোড হচ্ছে...</p>
+                  </div>
+                ) : filteredCommunityPosts.length === 0 ? (
+                  <div className="bg-white rounded-3xl p-16 text-center border border-indigo-50 shadow-sm space-y-2">
+                    <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <MessageSquare size={24} />
+                    </div>
+                    <h4 className="font-bold text-slate-800 text-base">কোনো পোস্ট পাওয়া যায়নি</h4>
+                    <p className="text-xs text-slate-500">বর্তমানে এই ক্যাটাগরিতে পর্যালোচনার জন্য কোনো পোস্ট নেই।</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredCommunityPosts.map((post) => (
+                      <div 
+                        key={post.post_iid}
+                        className="bg-white rounded-3xl border border-indigo-100 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* Card Header */}
+                          <div className="p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                              <img 
+                                src={post.author?.profile_photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'} 
+                                alt="" 
+                                className="w-10 h-10 rounded-full object-cover border border-slate-100 shadow-xs"
+                              />
+                              <div>
+                                <h4 className="font-bold text-sm text-slate-900 leading-tight">
+                                  {post.author?.name || 'অজ্ঞাতনামা লেখক'}
+                                </h4>
+                                <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                                  {post.author?.userid && <span>@{post.author.userid}</span>}
+                                  <span>•</span>
+                                  <span>{formatTimeAgo(post.created_at)}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              {post.is_approved ? (
+                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                                  <CheckCircle2 size={12} />
+                                  অনুমোদিত
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+                                  <Clock size={12} />
+                                  অপেক্ষমান
+                                </span>
+                              )}
+
+                              {post.author?.whats_app_number && (
+                                <a
+                                  href={`https://wa.me/${post.author.whats_app_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-7 h-7 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center transition"
+                                  title="WhatsApp"
+                                >
+                                  <Phone size={12} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Card Body */}
+                          <div className="p-5 space-y-2">
+                            {post.title && (
+                              <h5 className="font-bold text-slate-900 text-sm">
+                                {post.title}
+                              </h5>
+                            )}
+                            {post.description && (
+                              <p className="text-slate-600 text-xs leading-relaxed whitespace-pre-line">
+                                {post.description}
+                              </p>
+                            )}
+
+                            {post.postcard?.image_url ? (
+                              <div className="mt-3 relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-900 border border-slate-200 shadow-sm">
+                                <img 
+                                  src={post.postcard.image_url} 
+                                  alt={post.postcard.title || 'Postcard'} 
+                                  className="w-full h-full object-cover brightness-[0.7]" 
+                                  loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/50 p-4 flex flex-col justify-between text-white">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
+                                    🎴 {post.postcard.title || 'Postcard Background'}
+                                  </span>
+                                  <p className="text-xs font-semibold text-white/95 text-center leading-snug line-clamp-4 drop-shadow">
+                                    "{post.description}"
+                                  </p>
+                                  <span className="text-[10px] text-right text-white/70 italic">
+                                    — {post.author?.name || 'Author'}
+                                  </span>
+                                </div>
+                              </div>
+                            ) : post.image_url ? (
+                              <div className="mt-3 rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 max-h-48 flex items-center justify-center">
+                                <img 
+                                  src={post.image_url} 
+                                  alt="" 
+                                  className="max-h-48 w-full object-contain" 
+                                  loading="lazy"
+                                />
+                              </div>
+                            ) : null}
+
+                            <div className="pt-2 text-[11px] text-slate-400 flex items-center gap-3">
+                              <span>❤️ {post.like_count} লাইক</span>
+                              <span>💬 {(post.user_comment || []).length} মন্তব্য</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Card Action Buttons */}
+                        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
+                          <button
+                            onClick={() => handleDeletePost(post.post_iid)}
+                            className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                          >
+                            <Trash2 size={14} />
+                            <span>মুছুন</span>
+                          </button>
+
+                          {!post.is_approved ? (
+                            <button
+                              onClick={() => handleApprovePost(post.post_iid)}
+                              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
+                            >
+                              <Check size={14} />
+                              <span>অনুমোদন করুন</span>
+                            </button>
+                          ) : (
+                            <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
+                              <CheckCircle2 size={14} />
+                              অনুমোদিত
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+             </div>
+           ) : mainTab === 'postcards' ? (
+             /* Postcard Templates View */
+             <div className="space-y-6">
+               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                 <div>
+                   <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900 flex items-center gap-3">
+                     <span>পোস্টকার্ড ব্যাকগ্রাউন্ড টেমপ্লেট</span>
+                     <span className="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold">
+                       {postcards.length} টি সক্রিয়
+                     </span>
+                   </h3>
+                   <p className="text-xs text-slate-500 font-semibold mt-1">
+                     ইউজাররা /post এ পোস্ট লেখার সময় "Add Photo" তে এই ব্যাকগ্রাউন্ডগুলো বেছে নিয়ে এর ওপর তাদের লেখা ফিট করে পোস্ট করতে পারে।
+                   </p>
+                 </div>
+
+                 <button
+                   onClick={() => setIsAddPostcardOpen(true)}
+                   className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl text-xs font-bold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition active:scale-95"
+                 >
+                   <Plus size={16} />
+                   <span>নতুন পোস্টকার্ড যোগ করুন</span>
+                 </button>
+               </div>
+
+               {postcardsLoading ? (
+                 <div className="bg-white rounded-3xl p-16 text-center border border-indigo-50 shadow-sm space-y-3">
+                   <div className="w-10 h-10 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                   <p className="text-xs font-bold text-slate-500">পোস্টকার্ড লোড হচ্ছে...</p>
+                 </div>
+               ) : postcards.length === 0 ? (
+                 <div className="bg-white rounded-3xl p-16 text-center border border-indigo-50 shadow-sm space-y-4">
+                   <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto">
+                     <Layers size={28} />
+                   </div>
+                   <h4 className="font-bold text-slate-800 text-lg">কোনো পোস্টকার্ড নেই</h4>
+                   <p className="text-xs text-slate-500 max-w-md mx-auto">
+                     এডমিন হিসেবে নতুন ছবি যুক্ত করুন যাতে ব্যবহারকারীরা পোস্টকার্ড স্টাইলে আকর্ষণীয় পোস্ট লিখতে পারে।
+                   </p>
+                   <button
+                     onClick={() => setIsAddPostcardOpen(true)}
+                     className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold hover:bg-indigo-700 transition"
+                   >
+                     <Plus size={16} />
+                     <span>প্রথম পোস্টকার্ড যোগ করুন</span>
+                   </button>
+                 </div>
+               ) : (
+                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                   {postcards.map((card) => (
+                     <div
+                       key={card.postcard_iid}
+                       className="group relative bg-white border border-indigo-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                     >
+                       <div className="aspect-[4/3] w-full relative overflow-hidden bg-slate-950">
+                         <img
+                           src={card.image_url}
+                           alt={card.title || 'Postcard'}
+                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                           loading="lazy"
+                         />
+                         {/* Subtle Card ID Badge */}
+                          <div className="absolute top-3 left-3 pointer-events-none">
+                            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur-xs shadow-xs">
+                              ID #{card.postcard_iid}
+                            </span>
+                          </div>
+
+                         <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <button
+                             onClick={() => handleDeletePostcard(card.postcard_iid)}
+                             className="p-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg backdrop-blur-md transition-all active:scale-90"
+                             title="মুছে ফেলুন"
+                           >
+                             <Trash2 size={15} />
+                           </button>
+                         </div>
+                       </div>
+
+                       <div className="p-4 flex items-center justify-between border-t border-slate-100 bg-white">
+                         <div>
+                           <h4 className="font-bold text-xs text-slate-900 truncate max-w-[170px]">
+                             {card.title || 'Postcard Template'}
+                           </h4>
+                           <p className="text-[10px] text-slate-400">
+                             {card.created_at ? formatTimeAgo(card.created_at) : 'Active'}
+                           </p>
+                         </div>
+                         <button
+                           onClick={() => handleDeletePostcard(card.postcard_iid)}
+                           className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                           title="মুছুন"
+                         >
+                           <Trash2 size={14} />
+                         </button>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               )}
              </div>
            ) : (
+             /* Gallery Records View */
              <>
-               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-8">
-                {paginatedPhotos.map((photo) => (
-
-                  <motion.div 
-                    layout
-                    key={photo.id}
-                    className="group relative bg-white border border-indigo-50 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-200 transition-all duration-300"
-                  >
-                    <div className="aspect-[4/5] overflow-hidden relative">
-                      <img 
-                        src={photo.thumbnail_url || photo.image_url} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        alt=""
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                         <button 
-                            onClick={() => setEditingPhoto(photo)}
-                            className="p-3 bg-white/20 hover:bg-white/40 rounded-xl text-white backdrop-blur-md"
-                         >
-                            <Edit3 size={18} />
-                         </button>
-</div>
-
-                      <button 
-                        onClick={() => toggleSelect(photo.id)}
-                        className={`absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
-                          selectedIds.includes(photo.id) 
-                          ? 'bg-green-500 border-green-500 text-white' 
-                          : 'bg-black/20 border-white/20 text-white opacity-0 group-hover:opacity-100 hover:bg-white/40'
-                        }`}
-                      >
-                        <CheckCircle2 size={18} />
-                      </button>
-                    </div>
-                    <div className="p-3 space-y-1">
-                       <p className="text-[7px] font-black text-[var(--text-dim)] uppercase tracking-wider">{photo.section}</p>
-                       <h4 className="text-[9px] font-bold truncate text-[var(--text)] uppercase">{photo.title || 'Untitled'}</h4>
-                    </div>
-                  </motion.div>
-                ))}
-             </div>
-
-             {/* Pagination Control */}
-             {totalPages > 1 && (
-               <div className="mt-12 flex items-center justify-center gap-4">
-                  <button 
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => prev - 1)}
-                    className="p-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
-                  >
-                    <ArrowLeft size={18} />
-                  </button>
-                  <div className="flex items-center gap-2">
-                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-700">Page</span>
-                     <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-md shadow-indigo-500/20">
-                        {currentPage}
-                     </div>
-                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">of {totalPages}</span>
-                  </div>
-                  <button 
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(prev => prev + 1)}
-                    className="p-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
-                  >
-                    <ArrowRight size={18} />
-                  </button>
+               {/* Mobile/Device Section Pills */}
+               <div className="flex lg:hidden overflow-x-auto pb-6 gap-2 no-scrollbar -mx-6 px-6">
+                  {sections.map(section => (
+                    <button 
+                      key={section}
+                      onClick={() => {
+                        setSelectedSection(section);
+                        setCurrentPage(1);
+                      }}
+                      className={`flex-shrink-0 px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${
+                        selectedSection === section 
+                        ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-lg shadow-indigo-500/30' 
+                        : 'bg-white text-slate-500 border-indigo-100 hover:border-indigo-300 shadow-sm'
+                      }`}
+                    >
+                      {SECTION_CONFIG[section]?.name || (section === 'all' ? 'All' : section.replace(/_/g, ' '))}
+                    </button>
+                  ))}
                </div>
-             )}
-           </>
+
+               <div className="mb-8 flex items-end justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter">
+                       {SECTION_CONFIG[selectedSection]?.name || (selectedSection === 'all' ? 'All Global Records' : selectedSection.replace(/_/g, ' '))}
+                    </h3>
+                    <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1">
+                       Showing {filteredPhotos.length} items in this directory
+                    </p>
+                  </div>
+               </div>
+
+               {loading ? (
+                 <div className="flex flex-col items-center justify-center py-40 gap-4">
+                    <div className="w-12 h-12 border-t-4 border-black rounded-full animate-spin" />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)]">Synchronizing...</p>
+                 </div>
+               ) : (
+                 <>
+                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-2 md:gap-8">
+                    {paginatedPhotos.map((photo) => (
+
+                      <motion.div 
+                        layout
+                        key={photo.id}
+                        className="group relative bg-white border border-indigo-50 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-200 transition-all duration-300"
+                      >
+                        <div className="aspect-[4/5] overflow-hidden relative">
+                          <img 
+                            src={photo.thumbnail_url || photo.image_url} 
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            alt=""
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                             <button 
+                                onClick={() => setEditingPhoto(photo)}
+                                className="p-3 bg-white/20 hover:bg-white/40 rounded-xl text-white backdrop-blur-md"
+                             >
+                                <Edit3 size={18} />
+                             </button>
+                          </div>
+
+                          <button 
+                            onClick={() => toggleSelect(photo.id)}
+                            className={`absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center border transition-all ${
+                              selectedIds.includes(photo.id) 
+                              ? 'bg-green-500 border-green-500 text-white' 
+                              : 'bg-black/20 border-white/20 text-white opacity-0 group-hover:opacity-100 hover:bg-white/40'
+                            }`}
+                          >
+                            <CheckCircle2 size={18} />
+                          </button>
+                        </div>
+                        <div className="p-3 space-y-1">
+                           <p className="text-[7px] font-black text-[var(--text-dim)] uppercase tracking-wider">{photo.section}</p>
+                           <h4 className="text-[9px] font-bold truncate text-[var(--text)] uppercase">{photo.title || 'Untitled'}</h4>
+                        </div>
+                      </motion.div>
+                    ))}
+                 </div>
+
+                 {/* Pagination Control */}
+                 {totalPages > 1 && (
+                   <div className="mt-12 flex items-center justify-center gap-4">
+                      <button 
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(prev => prev - 1)}
+                        className="p-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                      >
+                        <ArrowLeft size={18} />
+                      </button>
+                      <div className="flex items-center gap-2">
+                         <span className="text-[10px] font-black uppercase tracking-widest text-slate-700">Page</span>
+                         <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-md shadow-indigo-500/20">
+                            {currentPage}
+                         </div>
+                         <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">of {totalPages}</span>
+                      </div>
+                      <button 
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(prev => prev + 1)}
+                        className="p-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-2xl disabled:opacity-50 disabled:grayscale transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                      >
+                        <ArrowRight size={18} />
+                      </button>
+                   </div>
+                 )}
+               </>
+               )}
+             </>
            )}
 
         </div>
@@ -455,6 +1103,228 @@ export default function AdminDashboard() {
                    >
                     Update Integration
                    </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Add Postcard Modal */}
+      <AnimatePresence>
+        {isAddPostcardOpen && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddPostcardOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-md relative z-10 overflow-hidden shadow-2xl border border-indigo-100"
+            >
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <Layers size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-base">নতুন পোস্টকার্ড টেমপ্লেট</h3>
+                    <p className="text-xs text-slate-500">ইউজারদের পোস্টের ব্যাকগ্রাউন্ড হিসেবে যুক্ত হবে</p>
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setIsAddPostcardOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddPostcard} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    টেমপ্লেটের নাম / শিরোনাম
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Sunset Minimal, Moody Rain, Vintage Paper"
+                    value={newPostcardTitle}
+                    onChange={(e) => setNewPostcardTitle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    ছবি নির্বাচন করুন (কম্পিউটার থেকে আপলোড)
+                  </label>
+                  <label className="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/40 rounded-2xl p-4 text-center cursor-pointer flex flex-col items-center justify-center gap-2 transition group">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadPostcardFile}
+                      className="hidden"
+                    />
+                    <div className="w-10 h-10 rounded-xl bg-white text-indigo-600 shadow-sm flex items-center justify-center group-hover:scale-110 transition">
+                      <Upload size={18} />
+                    </div>
+                    <span className="text-xs font-bold text-indigo-700">
+                      {postcardUploading ? 'আপলোড হচ্ছে...' : 'ছবি নির্বাচন করতে ক্লিক করুন'}
+                    </span>
+                    <span className="text-[10px] text-slate-400">JPG, PNG, WebP (স্বয়ংক্রিয় ক্লাউড আপলোড)</span>
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    অথবা সরাসরি ছবির লিঙ্ক (Direct Image URL)
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://images.unsplash.com/..."
+                    value={newPostcardUrl}
+                    onChange={(e) => setNewPostcardUrl(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white transition font-mono"
+                  />
+                </div>
+
+                {/* Live Preview of Postcard */}
+                {newPostcardUrl && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-600">ImgBB ছবি প্রিভিউ:</span>
+                      {newPostcardUrl.includes('ibb.co') && (
+                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          ✓ ImgBB ক্লাউডে হোস্ট করা হয়েছে
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-slate-900 border border-slate-200 shadow-sm">
+                      <img
+                        src={newPostcardUrl}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddPostcardOpen(false)}
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={postcardUploading || !newPostcardUrl.trim()}
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale transition flex items-center gap-2"
+                  >
+                    {postcardUploading && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                    <span>সংরক্ষণ করুন</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Admin Password Change Modal */}
+      <AnimatePresence>
+        {isAdminSettingsOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-slate-200"
+            >
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <Key size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-slate-800 text-base leading-tight">অ্যাডমিন পাসওয়ার্ড</h3>
+                    <p className="text-[11px] text-slate-500 font-medium">নিরাপত্তা পাসওয়ার্ড পরিবর্তন করুন</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAdminSettingsOpen(false)}
+                  className="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleUpdateAdminPassword} className="p-6 space-y-4">
+                {adminError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bold">
+                    {adminError}
+                  </div>
+                )}
+                {adminSuccess && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600" />
+                    <span>{adminSuccess}</span>
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">নতুন পাসওয়ার্ড</label>
+                  <div className="relative">
+                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="password"
+                      required
+                      value={adminNewPassword}
+                      onChange={(e) => setAdminNewPassword(e.target.value)}
+                      placeholder="কমপক্ষে ৬ অক্ষর"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-medium focus:bg-white focus:border-indigo-500 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+                  <div className="relative">
+                    <Check size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="password"
+                      required
+                      value={adminConfirmPassword}
+                      onChange={(e) => setAdminConfirmPassword(e.target.value)}
+                      placeholder="পুনরায় নতুন পাসওয়ার্ড লিখুন"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-medium focus:bg-white focus:border-indigo-500 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsAdminSettingsOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={adminUpdating}
+                    className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
+                  >
+                    {adminUpdating ? 'আপডেট হচ্ছে...' : 'পাসওয়ার্ড সেভ করুন'}
+                  </button>
                 </div>
               </form>
             </motion.div>
