@@ -12,8 +12,9 @@ create table public.kabirdatabase (
   constraint kabirdatabase_pkey primary key (image_iid)
 ) TABLESPACE pg_default;
 
-api url : https://sbyvmktfmnucnmglajpr.supabase.co/rest/v1/
-key : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNieXZta3RmbW51Y25tZ2xhanByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDQ2MTEsImV4cCI6MjA5NjkyMDYxMX0.tCfl-jVijPf9s3C7-NsudfdG1GcgVZg--XgJVz85i5Y 
+-- Supabase connection configuration:
+-- api url : https://<YOUR_SUPABASE_URL>/rest/v1/
+-- key : <YOUR_SUPABASE_ANON_KEY>
 
 supabase MCP is connected. 
 
