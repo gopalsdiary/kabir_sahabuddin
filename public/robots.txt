@@ -1,11 +1,58 @@
+# ==============================================================================
+# Robots.txt for Kobir Sahabuddin Official Web Platform
+# Domain: https://kobirsahabuddin.netlify.app
+# ==============================================================================
+
+# Global Crawler Directives
 User-agent: *
 Allow: /
 Allow: /gallery
 Allow: /post
 Allow: /sitemap
 Allow: /assets/
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-96x96.png
+Allow: /apple-touch-icon.png
+Allow: /manifest.json
+Allow: /sitemap.xml
+Allow: /rss.xml
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /settings
+Disallow: /account
+
+# Google Search & Google Image Bot Directives
+User-agent: Googlebot
+User-agent: Googlebot-Image
+Allow: /
+Allow: /assets/
 Disallow: /admin/
 Disallow: /settings
 Disallow: /account
 
+# Microsoft Bing Search Bot Directives
+User-agent: Bingbot
+Allow: /
+Allow: /assets/
+Disallow: /admin/
+Disallow: /settings
+Disallow: /account
+
+# Apple Search Bot
+User-agent: Applebot
+Allow: /
+Allow: /assets/
+Disallow: /admin/
+
+# Social Media Link Preview Bots
+User-agent: Twitterbot
+User-agent: facebookexternalhit
+User-agent: WhatsApp
+User-agent: LinkedInBot
+Allow: /
+Allow: /assets/
+
+# Host & Sitemaps
+Host: https://kobirsahabuddin.netlify.app
 Sitemap: https://kobirsahabuddin.netlify.app/sitemap.xml

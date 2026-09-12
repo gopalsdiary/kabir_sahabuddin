@@ -42,6 +42,7 @@ import {
   CommentItem, 
   formatTimeAgo 
 } from '../lib/postService';
+import { useSEO } from '../lib/useSEO';
 
 const IMGBB_API_KEY = '03cd19c7e6990d72a74e764559101b63';
 
@@ -114,6 +115,22 @@ function formatFullWhatsAppNumber(dialCode: string, localNum: string): string | 
 export default function PostFeed({ initialOpenSettings = false }: { initialOpenSettings?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
+
+  useSEO({
+    title: 'Literary Posts & Quotes Feed — Kobir Sahabuddin',
+    description: 'Read the latest poetic thoughts, quotes, story updates, and reflections from Bengali author and voice artist Kobir Sahabuddin (কবির সাহাবুদ্দিন).',
+    keywords: 'Kobir Sahabuddin posts, Bengali literature feed, poetry quotes, Kobir Sahabuddin thoughts, Bengali microblog',
+    canonical: '/post',
+    ogImage: '/assets/kobir-sahabuddin-portrait.webp',
+    ogType: 'website',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      'name': 'Literary Posts & Quotes Feed — Kobir Sahabuddin',
+      'description': 'Latest literary quotes, poetry cards, and artistic updates from Kobir Sahabuddin.',
+      'url': 'https://kobirsahabuddin.netlify.app/post'
+    }
+  });
 
   // User state
   const [currentUser, setCurrentUser] = useState<Account | null>(() => postService.getCurrentUser());
@@ -923,8 +940,10 @@ export default function PostFeed({ initialOpenSettings = false }: { initialOpenS
                   <div className="flex items-center gap-3">
                     <img 
                       src={post.author?.profile_photo || AVATAR_PRESETS[0]} 
-                      alt={post.author?.name || 'Author'} 
+                      alt={`${post.author?.name || 'Author'} profile photo`} 
                       className="w-10 h-10 rounded-full object-cover border border-slate-100 shadow-xs"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div>
                       <div className="flex items-center gap-1.5">
@@ -991,9 +1010,10 @@ export default function PostFeed({ initialOpenSettings = false }: { initialOpenS
                   >
                     <img 
                       src={post.postcard?.image_url || post.image_url || ''} 
-                      alt={post.title || 'Postcard Post'} 
+                      alt={post.title || `${post.author?.name || 'Kobir Sahabuddin'} — Bengali poetry postcard`} 
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
+                      decoding="async"
                     />
                     {/* Dark gradient / vignette overlay to make text pop */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/60" />
@@ -1043,9 +1063,10 @@ export default function PostFeed({ initialOpenSettings = false }: { initialOpenS
                       >
                         <img 
                           src={post.image_url} 
-                          alt={post.title || 'Post Image'} 
+                          alt={post.title || `${post.author?.name || 'Kobir Sahabuddin'} — community post visual`} 
                           className="w-full object-contain max-h-[480px] transition-transform duration-300 group-hover:scale-[1.01]"
                           loading="lazy"
+                          decoding="async"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition flex items-center justify-center">
                           <span className="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-[11px] font-semibold px-3 py-1.5 rounded-full backdrop-blur-xs transition">

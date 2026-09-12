@@ -1,8 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, MapPin, BookOpen, Mic, Film, Newspaper, Image as ImageIcon, MessageSquare, Globe, Shield, Code2 } from 'lucide-react';
+import { useSEO } from '../lib/useSEO';
 
 export default function HtmlSitemap() {
+  useSEO({
+    title: 'Website Directory & Architectural Sitemap — Kobir Sahabuddin',
+    description: 'Complete architectural index and sitemap of public pages, books, audio series, films, and media profiles for Kobir Sahabuddin (কবির সাহাবুদ্দিন).',
+    keywords: 'Kobir Sahabuddin sitemap, website directory, Kobir Sahabuddin works, site index, HTML sitemap',
+    canonical: '/sitemap',
+    ogImage: '/assets/kobir-sahabuddin-portrait.webp',
+    ogType: 'website',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Website Directory & Architectural Sitemap — Kobir Sahabuddin',
+      'description': 'Architectural index of public routes, literary works, and media for Kobir Sahabuddin.',
+      'url': 'https://kobirsahabuddin.netlify.app/sitemap'
+    }
+  });
+
   return (
     <div className="portfolio-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
@@ -193,6 +210,13 @@ export default function HtmlSitemap() {
                   <ExternalLink size={14} color="var(--ink-muted)" />
                 </a>
                 <p style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', margin: '2px 0 0' }}>Google Image, Video, and multilingual schema feed.</p>
+              </li>
+              <li>
+                <a href="/rss.xml" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--ink)', textDecoration: 'none', fontWeight: 500 }}>
+                  <span>rss.xml (RSS 2.0 Feed)</span>
+                  <ExternalLink size={14} color="var(--ink-muted)" />
+                </a>
+                <p style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', margin: '2px 0 0' }}>Syndication feed for news, audio stories &amp; published books.</p>
               </li>
               <li>
                 <a href="/robots.txt" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--ink)', textDecoration: 'none', fontWeight: 500 }}>

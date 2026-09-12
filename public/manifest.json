@@ -1,31 +1,63 @@
 {
-    "name": "Kobir Lyrics",
-    "short_name": "Kobir Lyrics",
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Kobir Lyrics — Free to download and use beautiful aesthetic content.",
-    "orientation": "portrait-primary",
-    "prefer_related_applications": false,
-    "icons": [
-        {
-            "src": "web-app-manifest-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "app_logo.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "app_logo.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
-    ]
+  "name": "Kobir Sahabuddin — Voice Actor & Author",
+  "short_name": "Kobir Sahabuddin",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c0f14",
+  "theme_color": "#eeb600",
+  "description": "Official portfolio, published books, audio dramas, poetry cards, and films by Kobir Sahabuddin (কবির সাহাবুদ্দিন).",
+  "orientation": "portrait-primary",
+  "categories": ["entertainment", "books", "music", "art"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app_logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Main Portfolio",
+      "short_name": "Portfolio",
+      "description": "Kobir Sahabuddin biography, books, and film",
+      "url": "/",
+      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Photo & Lyrics Gallery",
+      "short_name": "Gallery",
+      "description": "Aesthetic photography and poetry cards",
+      "url": "/gallery",
+      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Community Posts",
+      "short_name": "Feed",
+      "description": "Literary feed and daily thoughts",
+      "url": "/post",
+      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Site Directory",
+      "short_name": "Sitemap",
+      "description": "Full architectural site map and index",
+      "url": "/sitemap",
+      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
 }

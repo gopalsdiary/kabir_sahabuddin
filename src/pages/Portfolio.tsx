@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { portfolioService, PortfolioData } from '../lib/portfolioService';
 import { Photo, fetchAllPhotos } from '../lib/gallery';
+import { useSEO } from '../lib/useSEO';
 import '../styles/portfolio.css';
 
 export default function Portfolio() {
@@ -12,15 +13,21 @@ export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  useSEO({
+    title: data?.site_metadata?.title || 'Kobir Sahabuddin — Bengali Voice Actor, Author & Storyteller',
+    description: data?.site_metadata?.description || 'Official portfolio of Bengali author, poet, voice actor and storyteller Kobir Sahabuddin (কবির সাহাবুদ্দিন).',
+    keywords: data?.site_metadata?.keywords || 'Kobir Sahabuddin, কবির সাহাবুদ্দিন, Kabir Sahabuddin, Bengali voice actor, Bengali author, Bengali poet',
+    canonical: '/',
+    ogImage: data?.site_metadata?.og_image || '/assets/kobir-sahabuddin-portrait.webp',
+    ogType: 'profile'
+  });
+
   useEffect(() => {
     let isMounted = true;
     portfolioService.getPortfolioData().then((fetchedData) => {
       if (isMounted) {
         if (fetchedData) {
           setData(fetchedData);
-          if (fetchedData.site_metadata?.title) {
-            document.title = fetchedData.site_metadata.title;
-          }
         } else {
           setError('ডাটাবেজ থেকে পোর্টফোলিও তথ্য পাওয়া যায়নি।');
         }
@@ -186,7 +193,12 @@ export default function Portfolio() {
             <div className="hero-frame">
               <img
                 src={data.hero.portrait_image || '/assets/kobir-sahabuddin-portrait.webp'}
-                alt="Kobir Sahabuddin portrait"
+                alt="Kobir Sahabuddin (কবির সাহাবুদ্দিন) — Bengali Voice Actor, Author & Storyteller"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                width="640"
+                height="800"
               />
               <span className="image-tag">{data.hero.image_tag}</span>
             </div>
@@ -443,9 +455,10 @@ export default function Portfolio() {
                 >
                   <img
                     src={photo.thumbnail_url || photo.image_url}
-                    alt={photo.title || 'Gallery visual'}
+                    alt={`${photo.title || 'Kobir Sahabuddin'} — Bengali poetry & aesthetic visual`}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                     <span className="text-white text-xs font-bold line-clamp-1">

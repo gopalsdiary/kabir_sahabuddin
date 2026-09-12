@@ -575,8 +575,8 @@ export default function AdminDashboard() {
 
       {/* Main Content Area */}
       <main className="lg:ml-72 min-h-screen">
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/5 p-6 md:px-12">
-          <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-black/5 px-3 py-3 sm:px-6 md:px-8">
+          <div className="w-full max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="relative w-full md:max-w-md">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-dim)]" size={18} />
               <input 
@@ -655,9 +655,9 @@ export default function AdminDashboard() {
            </div>
          </header>
 
-        <div className="p-6 md:p-12 max-w-[1600px] mx-auto">
+        <div className="px-2.5 py-3 sm:px-5 sm:py-6 md:px-8 md:py-8 w-full max-w-[1600px] mx-auto">
            {/* Mobile Tab Switcher */}
-           <div className="flex lg:hidden overflow-x-auto pb-4 gap-2 no-scrollbar -mx-6 px-6">
+           <div className="flex lg:hidden overflow-x-auto pb-4 gap-2 no-scrollbar -mx-2.5 px-2.5 sm:-mx-5 sm:px-5">
               <button
                 onClick={() => setMainTab('gallery')}
                 className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${

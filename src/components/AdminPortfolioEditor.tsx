@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Save,
   RotateCcw,
@@ -36,6 +37,12 @@ interface SectionMeta {
   icon: React.ReactNode;
 }
 
+interface DeleteConfirmModal {
+  type: 'book' | 'audio' | 'press' | 'link' | 'paragraph' | 'tag';
+  index: number;
+  title: string;
+}
+
 const SECTIONS: SectionMeta[] = [
   { key: 'hero', label: 'Hero & Banner', sub: 'Hero & Intro', icon: <User size={18} /> },
   { key: 'about', label: 'About & Biography', sub: 'Bio & Story', icon: <Info size={18} /> },
@@ -54,6 +61,7 @@ export default function AdminPortfolioEditor() {
   const [savingSection, setSavingSection] = useState<string | null>(null);
   const [savingAll, setSavingAll] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmModal | null>(null);
 
   useEffect(() => {
     loadData();
@@ -347,6 +355,29 @@ export default function AdminPortfolioEditor() {
     });
   };
 
+  const handleConfirmDelete = () => {
+    if (!deleteConfirm || !data) return;
+    const { type, index } = deleteConfirm;
+
+    if (type === 'book') {
+      handleRemoveBook(index);
+    } else if (type === 'audio') {
+      handleRemoveAudio(index);
+    } else if (type === 'press') {
+      handleRemovePress(index);
+    } else if (type === 'link') {
+      handleRemoveLink(index);
+    } else if (type === 'paragraph') {
+      const updated = (data.about.paragraphs || []).filter((_, i) => i !== index);
+      updateAbout('paragraphs', updated);
+    } else if (type === 'tag') {
+      const updated = (data.about.identity_strip || []).filter((_, i) => i !== index);
+      updateAbout('identity_strip', updated);
+    }
+
+    setDeleteConfirm(null);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-20 text-slate-400 bg-white rounded-3xl border border-slate-100 shadow-sm">
@@ -381,9 +412,9 @@ export default function AdminPortfolioEditor() {
   const activeMeta = SECTIONS.find(s => s.key === activeSection) || SECTIONS[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-5">
       {/* Top Header Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+      <div className="bg-white p-3.5 sm:p-5 md:p-6 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-100">
@@ -398,11 +429,11 @@ export default function AdminPortfolioEditor() {
           </p>
         </div>
 
-        <div className="flex items-center flex-wrap gap-2.5">
+        <div className="flex items-center flex-wrap gap-2 sm:gap-2.5">
           <button
             onClick={loadData}
             title="Reload from database"
-            className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer"
           >
             <RefreshCw size={14} />
             <span>Refresh</span>
@@ -412,7 +443,7 @@ export default function AdminPortfolioEditor() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition"
           >
             <ExternalLink size={14} />
             <span>View Live Site</span>
@@ -421,7 +452,7 @@ export default function AdminPortfolioEditor() {
           <button
             onClick={handleSaveAll}
             disabled={savingAll}
-            className="flex items-center gap-1.5 px-5 py-2.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition shadow-sm disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <Save size={14} />
             <span>{savingAll ? 'Saving all...' : 'Save All Sections'}</span>
@@ -432,7 +463,7 @@ export default function AdminPortfolioEditor() {
       {/* Notification Banner */}
       {message && (
         <div
-          className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold transition-all ${
+          className={`p-3.5 rounded-xl sm:rounded-2xl flex items-center justify-between text-xs font-bold transition-all ${
             message.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-sm'
               : 'bg-red-50 text-red-800 border border-red-200 shadow-sm'
@@ -447,7 +478,7 @@ export default function AdminPortfolioEditor() {
       )}
 
       {/* Section Switcher Tabs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {SECTIONS.map((sec) => {
           const isActive = activeSection === sec.key;
           return (
@@ -458,18 +489,18 @@ export default function AdminPortfolioEditor() {
                 setActiveSection(sec.key);
                 setMessage(null);
               }}
-              className={`p-3.5 rounded-2xl text-left transition-all border flex items-center gap-3.5 cursor-pointer ${
+              className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-left transition-all border flex items-center gap-2.5 sm:gap-3.5 cursor-pointer ${
                 isActive
                   ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-500/25 ring-2 ring-indigo-600/20'
                   : 'bg-white text-slate-700 border-slate-200/80 hover:border-indigo-300 hover:bg-indigo-50/30 shadow-xs'
               }`}
             >
-              <div className={`p-2.5 rounded-xl shrink-0 transition-colors ${isActive ? 'bg-white/20 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
+              <div className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0 transition-colors ${isActive ? 'bg-white/20 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
                 {sec.icon}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-black leading-tight text-inherit">{sec.label}</p>
-                <p className={`text-[11px] font-medium mt-0.5 ${isActive ? 'text-indigo-100' : 'text-slate-400'}`}>{sec.sub}</p>
+                <p className="text-xs font-black leading-tight text-inherit truncate">{sec.label}</p>
+                <p className={`text-[10px] sm:text-[11px] font-medium mt-0.5 truncate ${isActive ? 'text-indigo-100' : 'text-slate-400'}`}>{sec.sub}</p>
               </div>
             </button>
           );
@@ -477,12 +508,12 @@ export default function AdminPortfolioEditor() {
       </div>
 
       {/* Active Section Content Container */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         
         {/* Section Action Bar (Per-section save option) */}
-        <div className="p-6 bg-slate-50/70 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="px-3.5 py-3 sm:px-6 sm:py-4 bg-slate-50/70 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-sm shrink-0">
               {activeMeta.icon}
             </div>
             <div>
@@ -492,7 +523,7 @@ export default function AdminPortfolioEditor() {
                 </span>
                 <span className="text-xs text-slate-400">JSONB Format</span>
               </div>
-              <h3 className="text-lg font-black text-slate-900 mt-0.5">{activeMeta.label}</h3>
+              <h3 className="text-base sm:text-lg font-black text-slate-900 mt-0.5">{activeMeta.label}</h3>
             </div>
           </div>
 
@@ -500,9 +531,9 @@ export default function AdminPortfolioEditor() {
           <button
             onClick={handleSaveCurrentSection}
             disabled={savingSection === activeSection}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs font-black uppercase tracking-wider rounded-xl transition shadow-md shadow-indigo-500/20 disabled:opacity-50 cursor-pointer"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs font-black uppercase tracking-wider rounded-xl transition shadow-md shadow-indigo-500/20 disabled:opacity-50 cursor-pointer"
           >
-            <Save size={16} />
+            <Save size={15} />
             <span>
               {savingSection === activeSection
                 ? 'Saving...'
@@ -511,7 +542,7 @@ export default function AdminPortfolioEditor() {
           </button>
         </div>
 
-        <div className="p-6 md:p-8">
+        <div className="p-3 sm:p-5 md:p-6">
           {/* ================= 1. HERO SECTION ================= */}
           {activeSection === 'hero' && (
             <div className="space-y-6">
@@ -540,7 +571,7 @@ export default function AdminPortfolioEditor() {
               </div>
 
               {/* Title breakdown */}
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-4">
+              <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/60 space-y-3 sm:space-y-4">
                 <p className="text-xs font-bold text-slate-800">Main Heading Structure</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
@@ -587,8 +618,8 @@ export default function AdminPortfolioEditor() {
               </div>
 
               {/* Call to Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/60 space-y-3">
                   <p className="text-xs font-bold text-slate-800">Primary Action Button</p>
                   <div>
                     <label className="block text-[11px] text-slate-500 mb-1">Button Text</label>
@@ -739,11 +770,12 @@ export default function AdminPortfolioEditor() {
                     />
                     <button
                       type="button"
-                      onClick={() => {
-                        const updated = data.about.paragraphs.filter((_, i) => i !== idx);
-                        updateAbout('paragraphs', updated);
-                      }}
-                      className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition self-start"
+                      onClick={() => setDeleteConfirm({
+                        type: 'paragraph',
+                        index: idx,
+                        title: p ? (p.length > 50 ? p.slice(0, 50) + '...' : p) : `Paragraph #${idx + 1}`
+                      })}
+                      className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition self-start cursor-pointer"
                       title="Remove paragraph"
                     >
                       <Trash2 size={16} />
@@ -795,11 +827,13 @@ export default function AdminPortfolioEditor() {
                       />
                       <button
                         type="button"
-                        onClick={() => {
-                          const updated = data.about.identity_strip.filter((_, i) => i !== idx);
-                          updateAbout('identity_strip', updated);
-                        }}
-                        className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"
+                        onClick={() => setDeleteConfirm({
+                          type: 'tag',
+                          index: idx,
+                          title: item.label ? `${item.label} (${item.value})` : `Tag #${idx + 1}`
+                        })}
+                        className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                        title="Delete Tag"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -847,14 +881,19 @@ export default function AdminPortfolioEditor() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {(data.books.items || []).map((book, idx) => (
-                  <div key={book.id || idx} className="p-5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 relative group">
+                  <div key={book.id || idx} className="p-3.5 sm:p-4 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/80 space-y-2.5 sm:space-y-3 relative group">
                     <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
                       <span className="text-[10px] font-mono text-slate-400 font-bold">BOOK #{idx + 1}</span>
                       <button
-                        onClick={() => handleRemoveBook(idx)}
-                        className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition"
+                        type="button"
+                        onClick={() => setDeleteConfirm({
+                          type: 'book',
+                          index: idx,
+                          title: book.title_bn || book.title_en || `Book #${idx + 1}`
+                        })}
+                        className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition cursor-pointer"
                         title="Delete Book"
                       >
                         <Trash2 size={15} />
@@ -965,15 +1004,20 @@ export default function AdminPortfolioEditor() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {(data.audio.items || []).map((audio, idx) => (
-                  <div key={audio.id || idx} className="p-5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3 relative group">
+                  <div key={audio.id || idx} className="p-3.5 sm:p-4 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/80 space-y-2.5 sm:space-y-3 relative group">
                     <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
                       <span className="text-[10px] font-mono text-slate-400 font-bold">AUDIO #{audio.number || idx + 1}</span>
                       <button
-                        onClick={() => handleRemoveAudio(idx)}
-                        className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition"
-                        title="Delete"
+                        type="button"
+                        onClick={() => setDeleteConfirm({
+                          type: 'audio',
+                          index: idx,
+                          title: audio.title || `Audio #${audio.number || idx + 1}`
+                        })}
+                        className="text-slate-400 hover:text-red-500 p-1 rounded-lg transition cursor-pointer"
+                        title="Delete Audio Story"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -1029,8 +1073,8 @@ export default function AdminPortfolioEditor() {
 
           {/* ================= 5. FILM SECTION ================= */}
           {activeSection === 'film' && (
-            <div className="space-y-6">
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/60 space-y-3 sm:space-y-4">
                 <p className="text-xs font-bold text-slate-800">Movie Poster Metadata</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
@@ -1123,9 +1167,9 @@ export default function AdminPortfolioEditor() {
                 </button>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5 sm:space-y-3">
                 {(data.press.items || []).map((item, idx) => (
-                  <div key={item.id || idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200/70 flex flex-col md:flex-row items-start md:items-center gap-3">
+                  <div key={item.id || idx} className="p-3 sm:p-4 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/70 flex flex-col md:flex-row items-start md:items-center gap-2.5 sm:gap-3">
                     <span className="text-xs font-mono font-bold text-indigo-600 w-8">{item.no}</span>
                     <input
                       type="text"
@@ -1149,8 +1193,14 @@ export default function AdminPortfolioEditor() {
                       placeholder="https://..."
                     />
                     <button
-                      onClick={() => handleRemovePress(idx)}
-                      className="p-2 text-slate-400 hover:text-red-500 rounded-xl transition"
+                      type="button"
+                      onClick={() => setDeleteConfirm({
+                        type: 'press',
+                        index: idx,
+                        title: item.title || item.source || `Press #${idx + 1}`
+                      })}
+                      className="p-2 text-slate-400 hover:text-red-500 rounded-xl transition cursor-pointer"
+                      title="Delete Press Feature"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -1207,9 +1257,9 @@ export default function AdminPortfolioEditor() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
                 {(data.connect.links || []).map((link, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 relative group">
+                  <div key={idx} className="p-3 sm:p-3.5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/80 space-y-2 relative group">
                     <div className="flex items-center justify-between">
                       <input
                         type="text"
@@ -1219,8 +1269,14 @@ export default function AdminPortfolioEditor() {
                         placeholder="Platform"
                       />
                       <button
-                        onClick={() => handleRemoveLink(idx)}
-                        className="text-slate-400 hover:text-red-500 p-1"
+                        type="button"
+                        onClick={() => setDeleteConfirm({
+                          type: 'link',
+                          index: idx,
+                          title: link.platform || link.action || `Link #${idx + 1}`
+                        })}
+                        className="text-slate-400 hover:text-red-500 p-1 cursor-pointer transition"
+                        title="Delete Link"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -1251,10 +1307,10 @@ export default function AdminPortfolioEditor() {
 
           {/* ================= 8. FOOTER & METADATA ================= */}
           {activeSection === 'footer' && (
-            <div className="space-y-6">
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/60 space-y-3 sm:space-y-4">
                 <p className="text-xs font-bold text-slate-800">Footer &amp; Branding Information</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-[11px] text-slate-500 mb-1">Brand Monogram</label>
                     <input
@@ -1312,7 +1368,7 @@ export default function AdminPortfolioEditor() {
               </div>
 
               {/* Site Metadata / SEO */}
-              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-4">
+              <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200/60 space-y-3 sm:space-y-4">
                 <p className="text-xs font-bold text-slate-800">Search Engine Metadata (SEO)</p>
                 <div>
                   <label className="block text-[11px] text-slate-500 mb-1">Page Title (Browser tab &amp; Search Engine title)</label>
@@ -1339,7 +1395,7 @@ export default function AdminPortfolioEditor() {
         </div>
 
         {/* Sticky/Bottom Save Bar */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <div className="px-3.5 py-3 sm:px-6 sm:py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
           <span className="text-xs text-slate-500">
             Current Section: <b className="text-slate-800">{activeMeta.label}</b>
           </span>
@@ -1358,6 +1414,68 @@ export default function AdminPortfolioEditor() {
         </div>
 
       </div>
+
+      {/* Confirmation Deletion Modal / Popup */}
+      <AnimatePresence>
+        {deleteConfirm && (
+          <div
+            key="portfolio-delete-confirm-overlay"
+            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setDeleteConfirm(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.93, y: 15 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 overflow-hidden relative"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 border border-red-100 flex items-center justify-center flex-shrink-0">
+                  <Trash2 size={24} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base font-black text-slate-900 leading-tight">
+                    Confirm Deletion
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                    আপনি কি এটি মুছে ফেলতে চান?
+                  </p>
+                  <p className="text-xs text-slate-600 mt-3 leading-relaxed">
+                    Are you sure you want to delete{' '}
+                    <span className="font-bold text-slate-900 underline decoration-red-300">
+                      "{deleteConfirm.title}"
+                    </span>
+                    ?
+                  </p>
+                  <p className="text-[11px] text-red-500 mt-2.5 font-medium bg-red-50/70 p-2.5 rounded-xl border border-red-100/60">
+                    ⚠️ Notice: This item will be removed from this list. To apply these changes permanently to the database, click <b>"Save"</b>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteConfirm(null)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                >
+                  Cancel / বাতিল
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmDelete}
+                  className="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/25 transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+                >
+                  <Trash2 size={14} />
+                  <span>Yes, Delete / মুছে ফেলুন</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

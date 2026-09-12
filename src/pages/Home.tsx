@@ -21,11 +21,28 @@ import {
 import { Photo, fetchAllPhotos, smartShuffle, ImageOptimizer } from '../lib/gallery';
 import { supabase } from '../lib/supabase';
 import { postService, Account } from '../lib/postService';
+import { useSEO } from '../lib/useSEO';
 
 export default function Home() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<Account | null>(() => postService.getCurrentUser());
   const [photos, setPhotos] = useState<Photo[]>([]);
+
+  useSEO({
+    title: 'Photo & Lyrics Gallery — Kobir Sahabuddin',
+    description: 'Explore high-resolution portraits, aesthetic photography, and Bengali lyric poetry cards by Kobir Sahabuddin (কবির সাহাবুদ্দিন).',
+    keywords: 'Kobir Sahabuddin gallery, Bengali lyrics, aesthetic photography, Bengali quotes, lyric cards, Kobir Sahabuddin photos',
+    canonical: '/gallery',
+    ogImage: '/assets/kobir-sahabuddin-author.webp',
+    ogType: 'website',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Photo & Lyrics Gallery — Kobir Sahabuddin',
+      'description': 'Curated high-resolution portraits, lyric wallpapers, and poetic excerpts from Kobir Sahabuddin.',
+      'url': 'https://kobirsahabuddin.netlify.app/gallery'
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -276,7 +293,7 @@ export default function Home() {
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-black/10 rounded-2xl flex items-center justify-center overflow-hidden">
-                <img src="/web-app-manifest-192x192.png" className="w-full h-full object-cover" alt="" />
+                <img src="/web-app-manifest-192x192.png" className="w-full h-full object-cover" alt="Kobir Sahabuddin App Icon" loading="lazy" decoding="async" />
               </div>
               <div>
                 <p className="text-sm font-black uppercase tracking-tight">Install  App?</p>
@@ -319,8 +336,9 @@ export default function Home() {
               <div className="overflow-hidden bg-[var(--surface-hover)]">
                 <img
                   src={ImageOptimizer.getOptimizedUrl(photo.thumbnail_url || photo.image_url, 400, 60)}
-                  alt={photo.title}
+                  alt={photo.title || `Kobir Sahabuddin ${photo.category || 'aesthetic'} visual card`}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-auto group-hover:scale-105 group-hover:blur-sm transition-all duration-700 ease-out"
                 />
               </div>

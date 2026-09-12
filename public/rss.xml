@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" 
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Kobir Sahabuddin — Works, Audio Dramas &amp; Literary Releases</title>
+    <link>https://kobirsahabuddin.netlify.app/</link>
+    <description>Official RSS feed of Bengali voice actor, author, poet, and storyteller Kobir Sahabuddin (কবির সাহাবুদ্দিন). Latest updates on books, films, and audio series.</description>
+    <language>bn</language>
+    <lastBuildDate>Sat, 12 Sep 2026 22:35:00 +0600</lastBuildDate>
+    <atom:link href="https://kobirsahabuddin.netlify.app/rss.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.jpg</url>
+      <title>Kobir Sahabuddin</title>
+      <link>https://kobirsahabuddin.netlify.app/</link>
+    </image>
+    <copyright>© 2026 Kobir Sahabuddin. All rights reserved.</copyright>
+
+    <!-- Item 1: Hotath Dekha 2026 -->
+    <item>
+      <title>Hotath Dekha 2026 (হঠাৎ দেখা ২০২৬) — Short Film directed by Kobir Sahabuddin</title>
+      <link>https://www.imdb.com/title/tt43689187/</link>
+      <guid isPermaLink="true">https://www.imdb.com/title/tt43689187/</guid>
+      <pubDate>Thu, 01 Jan 2026 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Film &amp; Direction</category>
+      <description>Directed and voiced by Kobir Sahabuddin. Produced by In Heartbeat Audio. Official IMDb listed Bengali short film presentation.</description>
+    </item>
+
+    <!-- Item 2: Jomidar Bari Rohosya -->
+    <item>
+      <title>Jomidar Bari Rohosya (জমিদার বাড়ি রহস্য) — Bengali Audio Mystery Series</title>
+      <link>https://www.imdb.com/title/tt43700392/</link>
+      <guid isPermaLink="true">https://www.imdb.com/title/tt43700392/</guid>
+      <pubDate>Mon, 15 Dec 2025 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Audio Drama &amp; Voice Acting</category>
+      <description>Original suspense audio thriller created and voiced by Kobir Sahabuddin. Available across leading audio streaming platforms.</description>
+    </item>
+
+    <!-- Item 3: Published Book - Durotto -->
+    <item>
+      <title>Durotto (দূরত্ব) — Published Bengali Book by Kobir Sahabuddin</title>
+      <link>https://share.google/HBPWSHetmdZ6of1Jd</link>
+      <guid isPermaLink="true">https://share.google/HBPWSHetmdZ6of1Jd</guid>
+      <pubDate>Sun, 01 Jun 2025 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Books &amp; Literature</category>
+      <description>Acclaimed romantic and introspective literary work 'Durotto' authored by Kobir Sahabuddin.</description>
+    </item>
+
+    <!-- Item 4: Published Book - Iti Jibashma -->
+    <item>
+      <title>Iti Jibashma (ইতি জীবাশ্ম) — Poetic Novel by Kobir Sahabuddin</title>
+      <link>https://share.google/lNEuwnJV1FUiP75BJ</link>
+      <guid isPermaLink="true">https://share.google/lNEuwnJV1FUiP75BJ</guid>
+      <pubDate>Wed, 15 Jan 2025 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Books &amp; Literature</category>
+      <description>A profound exploration of modern human connections, memory, and poetry in book form by Kobir Sahabuddin.</description>
+    </item>
+
+    <!-- Item 5: Sesh Tren Horror Story -->
+    <item>
+      <title>Sesh Tren Horror Story (শেষ ট্রেন ভৌতিক গল্প) — Bengali Thriller Audio</title>
+      <link>https://www.imdb.com/title/tt43699854/</link>
+      <guid isPermaLink="true">https://www.imdb.com/title/tt43699854/</guid>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Audio Drama &amp; Voice Acting</category>
+      <description>Atmospheric midnight audio horror tale crafted and narrated by Bengali voice artist Kobir Sahabuddin.</description>
+    </item>
+
+    <!-- Item 6: Ekmutho Opekkha -->
+    <item>
+      <title>Ekmutho Opekkha (একমুঠো অপেক্ষা) — Modern Bengali Literature</title>
+      <link>https://share.google/R9HS9T0GhQiPKXl0j</link>
+      <guid isPermaLink="true">https://share.google/R9HS9T0GhQiPKXl0j</guid>
+      <pubDate>Tue, 10 Sep 2024 00:00:00 +0600</pubDate>
+      <dc:creator>Kobir Sahabuddin</dc:creator>
+      <category>Books &amp; Literature</category>
+      <description>Poignant prose and poetry reflecting patience, melancholy, and human emotions by Kobir Sahabuddin.</description>
+    </item>
+  </channel>
+</rss>

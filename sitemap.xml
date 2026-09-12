@@ -7,8 +7,8 @@
   <!-- 1. Homepage / Main Portfolio -->
   <url>
     <loc>https://kobirsahabuddin.netlify.app/</loc>
-    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-09-12T22:35:00+06:00</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     
     <!-- Multilingual Alternate Links -->
@@ -20,7 +20,7 @@
     <image:image>
       <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.webp</image:loc>
       <image:title>Kobir Sahabuddin — Official Portrait</image:title>
-      <image:caption>Official portrait of Bengali voice actor, author, poet, and storyteller Kobir Sahabuddin.</image:caption>
+      <image:caption>Official portrait of Bengali voice actor, author, poet, and storyteller Kobir Sahabuddin (কবির সাহাবুদ্দিন).</image:caption>
       <image:geo_location>West Bengal, India</image:geo_location>
     </image:image>
 
@@ -48,7 +48,9 @@
       <video:thumbnail_loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.jpg</video:thumbnail_loc>
       <video:title>Hotath Dekha 2026 — Directed by Kobir Sahabuddin</video:title>
       <video:description>Official film presentation and trailer for Hotath Dekha 2026, directed and written by Kobir Sahabuddin.</video:description>
-      <video:player_loc>https://www.youtube.com/embed/dQw4w9WgXcQ</video:player_loc>
+      <video:player_loc>https://www.youtube.com/embed/KZWDosIOMug</video:player_loc>
+      <video:content_loc>https://www.youtube.com/watch?v=KZWDosIOMug</video:content_loc>
+      <video:duration>360</video:duration>
       <video:publication_date>2026-01-01T00:00:00+06:00</video:publication_date>
       <video:family_friendly>yes</video:family_friendly>
       <video:uploader info="https://kobirsahabuddin.netlify.app/">Kobir Sahabuddin</video:uploader>
@@ -58,29 +60,39 @@
   <!-- 2. Photo & Lyrics Gallery -->
   <url>
     <loc>https://kobirsahabuddin.netlify.app/gallery</loc>
-    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <lastmod>2026-09-12T22:35:00+06:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/gallery" />
     <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kobirsahabuddin.netlify.app/gallery" />
+    <image:image>
+      <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-author.webp</image:loc>
+      <image:title>Kobir Sahabuddin Gallery Showcase</image:title>
+      <image:caption>Interactive photo and lyric quote cards gallery by Kobir Sahabuddin.</image:caption>
+    </image:image>
   </url>
 
   <!-- 3. Community Posts & Quotes Feed -->
   <url>
     <loc>https://kobirsahabuddin.netlify.app/post</loc>
-    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-09-12T22:35:00+06:00</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/post" />
     <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/post" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kobirsahabuddin.netlify.app/post" />
   </url>
 
-  <!-- 4. HTML Visual Sitemap -->
+  <!-- 4. HTML Visual Sitemap & Directory -->
   <url>
     <loc>https://kobirsahabuddin.netlify.app/sitemap</loc>
-    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <lastmod>2026-09-12T22:35:00+06:00</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/sitemap" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/sitemap" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kobirsahabuddin.netlify.app/sitemap" />
   </url>
 
 </urlset>
