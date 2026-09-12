@@ -1,3 +1,7 @@
 node_modules
 dist
 package-lock.json
+
+# Local environment files
+.env.local
+.env.*.local

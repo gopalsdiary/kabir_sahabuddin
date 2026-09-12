@@ -15,7 +15,8 @@ import {
   ExternalLink,
   ChevronDown,
   MessageSquare,
-  Settings
+  Settings,
+  ArrowLeft
 } from 'lucide-react';
 import { Photo, fetchAllPhotos, smartShuffle, ImageOptimizer } from '../lib/gallery';
 import { supabase } from '../lib/supabase';
@@ -185,6 +186,14 @@ export default function Home() {
       <header className="sticky top-0 z-40 bg-[var(--glass)] backdrop-blur-xl border-b border-[var(--glass-border)] py-3 md:py-4">
         <div className="max-w-[2000px] mx-auto px-4 md:px-8 flex items-center justify-between gap-4 md:gap-8">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1.5 px-3 py-2 bg-[var(--surface)] hover:bg-[var(--surface-hover)] border border-[var(--glass-border)] rounded-2xl text-xs font-bold text-[var(--text)] transition shadow-xs cursor-pointer"
+              title="পোর্টফোলিও হোম পেজে ফিরুন"
+            >
+              <ArrowLeft size={16} />
+              <span className="hidden sm:inline">Portfolio</span>
+            </button>
             <motion.img
               whileHover={{ rotate: 10 }}
               src="/favicon-96x96.png"

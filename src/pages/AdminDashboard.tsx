@@ -30,13 +30,15 @@ import {
   Users,
   Copy,
   Eye,
-  EyeOff
+  EyeOff,
+  Globe
 } from 'lucide-react';
 import { Photo, fetchAllPhotos, SECTION_CONFIG } from '../lib/gallery';
 import { postService, Post, Postcard, Account, formatTimeAgo } from '../lib/postService';
+import AdminPortfolioEditor from '../components/AdminPortfolioEditor';
 
 export default function AdminDashboard() {
-  const [mainTab, setMainTab] = useState<'gallery' | 'posts' | 'postcards' | 'users'>('gallery');
+  const [mainTab, setMainTab] = useState<'gallery' | 'posts' | 'postcards' | 'users' | 'portfolio'>('gallery');
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -495,6 +497,21 @@ export default function AdminDashboard() {
               </button>
 
               <button 
+                onClick={() => setMainTab('portfolio')}
+                className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all ${
+                  mainTab === 'portfolio'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/30'
+                    : 'text-slate-500 hover:bg-indigo-50 hover:text-indigo-700'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Globe size={16} />
+                  <span>Portfolio Page</span>
+                </div>
+                <span className="text-[10px] font-bold opacity-80">JSONB</span>
+              </button>
+
+              <button 
                 onClick={() => navigate('/post')}
                 className="w-full flex items-center justify-between px-5 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-slate-100 transition-all"
               >
@@ -685,6 +702,16 @@ export default function AdminDashboard() {
                 }`}
               >
                 👥 ইউজার একাউন্ট ({accounts.length})
+              </button>
+              <button
+                onClick={() => setMainTab('portfolio')}
+                className={`flex-shrink-0 px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  mainTab === 'portfolio'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                🌐 Portfolio Page
               </button>
            </div>
 
@@ -1222,6 +1249,8 @@ export default function AdminDashboard() {
                   </div>
                 )}
               </div>
+            ) : mainTab === 'portfolio' ? (
+              <AdminPortfolioEditor />
             ) : (
              /* Gallery Records View */
              <>
@@ -1343,6 +1372,7 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {selectedIds.length > 0 && (
           <motion.div 
+            key="bulk-action-bar"
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
@@ -1374,7 +1404,7 @@ export default function AdminDashboard() {
       {/* Edit Modal */}
       <AnimatePresence>
         {editingPhoto && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div key="edit-photo-modal" className="fixed inset-0 z-[200] flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1468,7 +1498,7 @@ export default function AdminDashboard() {
       {/* Add Postcard Modal */}
       <AnimatePresence>
         {isAddPostcardOpen && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div key="add-postcard-modal" className="fixed inset-0 z-[200] flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1596,7 +1626,7 @@ export default function AdminDashboard() {
       {/* Admin Password Change Modal */}
       <AnimatePresence>
         {isAdminSettingsOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div key="admin-password-modal" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1685,10 +1715,12 @@ export default function AdminDashboard() {
             </motion.div>
           </div>
         )}
-        {/* Edit User Post Limit Modal */}
-        <AnimatePresence>
-          {editingLimitUser && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      </AnimatePresence>
+
+      {/* Edit User Post Limit Modal */}
+      <AnimatePresence>
+        {editingLimitUser && (
+          <div key="edit-user-limit-modal" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1772,7 +1804,7 @@ export default function AdminDashboard() {
         {/* Edit User Password Modal */}
         <AnimatePresence>
           {editingPasswordUser && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div key="edit-user-password-modal" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1833,7 +1865,6 @@ export default function AdminDashboard() {
             </div>
           )}
         </AnimatePresence>
-      </AnimatePresence>
     </div>
   );
 }

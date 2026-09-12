@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- 1. Homepage / Main Portfolio -->
+  <url>
+    <loc>https://kobirsahabuddin.netlify.app/</loc>
+    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    
+    <!-- Multilingual Alternate Links -->
+    <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kobirsahabuddin.netlify.app/" />
+
+    <!-- Google Image Sitemap Extensions -->
+    <image:image>
+      <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.webp</image:loc>
+      <image:title>Kobir Sahabuddin — Official Portrait</image:title>
+      <image:caption>Official portrait of Bengali voice actor, author, poet, and storyteller Kobir Sahabuddin.</image:caption>
+      <image:geo_location>West Bengal, India</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-author.webp</image:loc>
+      <image:title>Kobir Sahabuddin — Author &amp; Creator</image:title>
+      <image:caption>Kobir Sahabuddin, author of Durotto, Iti Jibashma, Ekmutho Opekkha, and director of Hotath Dekha 2026.</image:caption>
+      <image:geo_location>West Bengal, India</image:geo_location>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.jpg</image:loc>
+      <image:title>Kobir Sahabuddin — High-Resolution Press Portrait</image:title>
+      <image:caption>Press kit and high-resolution photo of Kobir Sahabuddin.</image:caption>
+    </image:image>
+
+    <image:image>
+      <image:loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-author.jpg</image:loc>
+      <image:title>Kobir Sahabuddin — Literary Profile</image:title>
+      <image:caption>Kobir Sahabuddin editorial and literary profile picture.</image:caption>
+    </image:image>
+
+    <!-- Google Video Sitemap Extension: Hotath Dekha 2026 -->
+    <video:video>
+      <video:thumbnail_loc>https://kobirsahabuddin.netlify.app/assets/kobir-sahabuddin-portrait.jpg</video:thumbnail_loc>
+      <video:title>Hotath Dekha 2026 — Directed by Kobir Sahabuddin</video:title>
+      <video:description>Official film presentation and trailer for Hotath Dekha 2026, directed and written by Kobir Sahabuddin.</video:description>
+      <video:player_loc>https://www.youtube.com/embed/dQw4w9WgXcQ</video:player_loc>
+      <video:publication_date>2026-01-01T00:00:00+06:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:uploader info="https://kobirsahabuddin.netlify.app/">Kobir Sahabuddin</video:uploader>
+    </video:video>
+  </url>
+
+  <!-- 2. Photo & Lyrics Gallery -->
+  <url>
+    <loc>https://kobirsahabuddin.netlify.app/gallery</loc>
+    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/gallery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/gallery" />
+  </url>
+
+  <!-- 3. Community Posts & Quotes Feed -->
+  <url>
+    <loc>https://kobirsahabuddin.netlify.app/post</loc>
+    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kobirsahabuddin.netlify.app/post" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://kobirsahabuddin.netlify.app/post" />
+  </url>
+
+  <!-- 4. HTML Visual Sitemap -->
+  <url>
+    <loc>https://kobirsahabuddin.netlify.app/sitemap</loc>
+    <lastmod>2026-09-12T17:45:00+06:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

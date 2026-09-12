@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /gallery
+Allow: /post
+Allow: /sitemap
+Allow: /assets/
+Disallow: /admin/
+Disallow: /settings
+Disallow: /account
+
+Sitemap: https://kobirsahabuddin.netlify.app/sitemap.xml
