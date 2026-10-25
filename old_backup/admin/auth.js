@@ -15,7 +15,7 @@ if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
 }
 
 /**
- * Check if a JWT token is expired
+ *  
  */
 function isTokenExpired(token) {
     if (!token) return true;
